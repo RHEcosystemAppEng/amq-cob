@@ -10,7 +10,7 @@
     ```
     - Failover-Clients - Test HA
     ```
-    https://github.com/mpaulgreen/failover-client-1
+    https://github.com/mpaulgreen/failover-client-1.git
 
     https://github.com/mpaulgreen/failover-client-2.git
     ```
