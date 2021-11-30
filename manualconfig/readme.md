@@ -1,4 +1,4 @@
-- Ephermal Code
+- Ephemeral Code
     - Consumers - Test Clustering
     ```
         https://github.com/mpaulgreen/consumer1.git
