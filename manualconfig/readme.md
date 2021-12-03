@@ -16,3 +16,9 @@
     ```
     https://github.com/mpaulgreen/failover-producer.git
     ```
+
+    - AMQ Router Testing for Aggregator Pattern
+    ```
+    https://github.com/mpaulgreen/amq-sender
+    https://github.com/mpaulgreen/amq-receiver
+    ```
