@@ -22,3 +22,8 @@
     https://github.com/mpaulgreen/amq-sender
     https://github.com/mpaulgreen/amq-receiver
     ```
+
+    - DR Broker mirroring
+    ```
+    https://github.com/mpaulgreen/broker-mirroring.git
+    ```
