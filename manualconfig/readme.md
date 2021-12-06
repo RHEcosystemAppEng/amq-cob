@@ -25,5 +25,13 @@
 
     - DR Broker mirroring
     ```
-    https://github.com/mpaulgreen/broker-mirroring.git
+    https://github.com/mpaulgreen/broker-mirroring.git ( mirroing testing on brokers)
+
+
+    // Mirroring testing with Router in place
+    https://github.com/mpaulgreen/mirror-site1-producer
+    https://github.com/mpaulgreen/mirror-site2-consumer
+
+    // Wait for some time before you run this as acknowledgement needs to be mirrored from broker2 to broker1 first
+    https://github.com/mpaulgreen/mirror-site1-consumer
     ```
