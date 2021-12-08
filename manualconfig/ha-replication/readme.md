@@ -344,10 +344,64 @@ To run multiple brokers in a cluster using UDP, you'll need to direct traffic me
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_above info is from [Red Hat AMQ getting started - examples](https://access.redhat.com/documentation/en-us/red_hat_amq/7.0/html/using_amq_broker/getting_started#examples)_
 
-_You may need to run following command as well in case the UDP connectivity doesn't
+> _You may need to run following command as well in case the UDP connectivity doesn't
 work with the above command_
 
-`sudo ifconfig lo multicast`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sudo ifconfig lo multicast`
+
+### Persist the route
+Above route will not survive a reboot of the system. Follow instructions given below to add a service
+that will set the route for you at the startup
+
+* Create a new systemd file by executing following command:
+  * `sudo vi /etc/systemd/system/udp_loopback.service`
+* Paste following text in it and save the file.
+
+<details>
+  <summary>Click to expand or collapse</summary>
+
+```shell
+[Unit]
+Description=Create route for loopback (direct traffic meant for 224.0.0.0 to the loopback interface)
+After=default.target
+
+[Service]
+type=onshot
+ExecStart=/usr/local/sbin/udp_loopback_route.sh
+
+[Install]
+WantedBy=default.target
+```
+
+</details>
+
+* Reload systemd daemon by executing following command:
+  * `sudo systemctl daemon-reload`
+* Enable the newly created service (`udp_loopback.service`) by executing following command:
+  * `sudo systemctl enable udp_loopback`
+    * _This should create a symlink_ 
+* Create the route script by executing following command:
+  * `sudo vi /usr/local/sbin/udp_loopback_route.sh`
+* Paste following text in it and save the file:
+```shell
+#!/bin/sh
+route add -net 224.0.0.0 netmask 240.0.0.0 dev lo
+```
+
+* Change the permission of above script by running following command:
+  * `sudo chmod 744 /usr/local/sbin/udp_loopback_route.sh`
+* Reboot the system by running following command:
+  * `sudo reboot now`
+* After the system restarts, run following command:
+* `route -n`
+  * _You should see following entry in the output from above command_
+
+```shell
+ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface  
+ 224.0.0.0       0.0.0.0         240.0.0.0       U     0      0        0 lo
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_Persist route info is from [Configure command/script to run at startup](https://access.redhat.com/solutions/1751263)_
 
 
 
