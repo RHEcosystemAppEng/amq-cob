@@ -1,0 +1,30 @@
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+    v.gui = false
+  end
+  config.vm.define :producer do |producer|
+    producer.vm.box = "generic/rhel8"
+    producer.vm.network :private_network, ip: "192.168.56.30"
+    producer.vm.hostname = "producer"
+  end
+  config.vm.define :consumer do |consumer|
+    consumer.vm.box = "generic/rhel8"
+    consumer.vm.network :private_network, ip: "192.168.56.31"
+    consumer.vm.hostname = "consumer"
+  end  
+  config.vm.define :aggregate do |aggregate|
+    aggregate.vm.box = "generic/rhel8"
+    aggregate.vm.network :private_network, ip: "192.168.56.32"
+    aggregate.vm.hostname = "aggregate"
+  end    
+  config.vm.define :brokers do |brokers|
+    brokers.vm.box = "generic/rhel8"
+    brokers.vm.network :private_network, ip: "192.168.56.33"
+    brokers.vm.hostname = "brokers"
+  end
+  config.vm.define :mqclients do |mqclients|
+    mqclients.vm.box = "generic/rhel8"
+    mqclients.vm.network :private_network, ip: "192.168.56.34"
+    mqclients.vm.hostname = "mqclients"
+  end  
+end
