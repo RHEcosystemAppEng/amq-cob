@@ -109,7 +109,7 @@ autoLink {
 
 * As the Aggregate is going to listen for incoming connections from producer and consumer, open the needed ports
 ```shell
-sudo firewall-cmd --permanent --add-port={5001,5772,5773,5673}/tcp
+sudo firewall-cmd --permanent --add-port={5772,5773,5673}/tcp
 sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 ```
