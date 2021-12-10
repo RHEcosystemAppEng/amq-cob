@@ -2,7 +2,7 @@
 
 ## Prerequisites
 * 3 VMs each for Producer, Consumer and Aggregate Routers are available with RHEL8, AMQ Interconnect installed and RHEL8 subscriptions activated
-* Two Brokers are configured in a single VM or two separate VMs as appropriate with their amqp ports opened from firewall atleast in a cluster.
+* Two Brokers are configured in a single VM or two separate VMs as appropriate with their amqp ports opened from firewall atleast in a cluster mode.
 
 ## IPs used in this guide
 |Component|IP|
@@ -13,10 +13,9 @@
 |Broker|192.168.56.33|
 
 ## Configure Aggregate
-* Install nano text editor to edit qdrouterd.conf file
+* Edit the qdrouterd.conf file
 ```shell
-sudo yum install nano
-sudo nano /etc/qpid-dispatch/qdrouterd.conf
+sudo vi /etc/qpid-dispatch/qdrouterd.conf
 ```
 
 * Update the router section as below to reflect that we are establishing a network of routers
@@ -128,11 +127,9 @@ qdrouterd
 ```
 
 ## Configure Producer
-* Install nano text editor to edit qdrouterd.conf file
+* Edit the qdrouterd.conf file
 ```shell
-vagrant ssh consumer
-sudo yum install nano
-sudo nano /etc/qpid-dispatch/qdrouterd.conf
+sudo vi /etc/qpid-dispatch/qdrouterd.conf
 ```
 
 * Update the router section as below to reflect that we are establishing a network of routers
@@ -196,11 +193,9 @@ qdrouterd
 ```
 
 ## Configure Consumer
-* Install nano text editor to edit qdrouterd.conf file
+* Edit the qdrouterd.conf file
 ```shell
-vagrant ssh consumer
-sudo yum install nano
-sudo nano /etc/qpid-dispatch/qdrouterd.conf
+sudo vi /etc/qpid-dispatch/qdrouterd.conf
 ```
 
 * Update the router section as below to reflect that we are establishing a network of routers
