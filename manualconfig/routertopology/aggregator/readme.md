@@ -113,12 +113,9 @@ autoLink {
 
 * As the Aggregate is going to listen for incoming connections from producer and consumer, open the needed ports
 ```shell
-sudo firewall-cmd --add-port=5001/tcp;
-sudo firewall-cmd --add-port=5772/tcp;
-sudo firewall-cmd --add-port=5773/tcp;
-sudo firewall-cmd --add-port=5673/tcp;
-sudo firewall-cmd --runtime-to-permanent;
-sudo firewall-cmd --list-ports;
+sudo firewall-cmd --permanent --add-port={5001,5772,5773,5673}/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
 ```
 
 * Start the router 
@@ -181,10 +178,9 @@ address {
 
 * Open the following ports 
 ```shell
-sudo firewall-cmd --add-port=5772/tcp;
-sudo firewall-cmd --add-port=5773/tcp;
-sudo firewall-cmd --runtime-to-permanent;
-sudo firewall-cmd --list-ports;
+sudo firewall-cmd --permanent --add-port={5772,5773}/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
 ```
 
 * Start the router 
@@ -225,12 +221,12 @@ listener {
 }
 ```
 
+    host: 192.168.56.32
 * Add the connector to the aggregate
 ```text
 # Connector to Aggregate
 connector {
     name: aggregagte-connector-1
-    host: 192.168.56.32
     port: 5773
     role: inter-router
 }
@@ -247,10 +243,9 @@ address {
 
 * Open the following ports 
 ```shell
-sudo firewall-cmd --add-port=5772/tcp;
-sudo firewall-cmd --add-port=5773/tcp;
-sudo firewall-cmd --runtime-to-permanent;
-sudo firewall-cmd --list-ports;
+sudo firewall-cmd --permanent --add-port={5772,5773}/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
 ```
 
 * Start the router 
