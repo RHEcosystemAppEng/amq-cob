@@ -1,9 +1,5 @@
 # Aggregate Pattern using AMQ Interconnect routers & brokers
 
-## Prerequisites
-* 3 VMs each for Producer, Consumer and Aggregate Routers are available with RHEL8, AMQ Interconnect installed and RHEL8 subscriptions activated
-* Two Brokers are configured in a single VM or two separate VMs as appropriate with their amqp ports opened from firewall atleast in a cluster mode.
-
 ## IPs used in this guide
 |Component|IP|
 |---|---|
