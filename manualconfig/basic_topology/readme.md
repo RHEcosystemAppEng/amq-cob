@@ -39,17 +39,23 @@
          xsi:schemaLocation="urn:activemq:core ">
 
    <broker-connections>
-      <amqp-connection uri="tcp://<Other Region's Master Broker Internal IP>:5672" name="<Cloud Region e.g.TOR or WDC>">
+      <!-- Mirror to WDC Master  -->
+      <amqp-connection uri="tcp://10.241.0.6:5672" name="WDC">
          <mirror/>
       </amqp-connection>
-   </broker-connections>
+      <!-- Mirror to WDC Slave -->
+      <amqp-connection uri="tcp://10.241.64.6:5672" name="WDC">
+         <mirror/>
+      </amqp-connection>
+    </broker-connections>
 
-   <security-enabled>false</security-enabled>
-      
+    <security-enabled>false</security-enabled>
+
     <paging-directory>/mnt/broker-storage/amq/one/data/paging</paging-directory>
     <bindings-directory>/mnt/broker-storage/amq/one/data/bindings</bindings-directory>
     <journal-directory>/mnt/broker-storage/amq/one/data/journal</journal-directory>
     <large-messages-directory>/mnt/broker-storage/amq/one/data/large-messages</large-messages-directory>
+
 
     <ha-policy>
       <shared-store>
@@ -60,12 +66,13 @@
     </ha-policy>
 
     <connectors>
-      <connector name="netty-connector">tcp://<Master Broker internal IP>:61617</connector>
+      <connector name="netty-connector">tcp://10.249.0.4:61617</connector>
     </connectors>
     
     <acceptors>
-      <acceptor name="netty-acceptor">tcp://<Master Broker internal IP>:61617</acceptor>
-      <acceptor name="amqp">tcp://<Master Broker internal IP>:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300</acceptor>
+      <acceptor name="netty-acceptor">tcp://10.249.0.4:61617</acceptor>
+ <!-- AMQP Acceptor. Listens on default AMQP port for AMQP traffic -->
+      <acceptor name="amqp">tcp://10.249.0.4:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300</acceptor>
     </acceptors>
     
       <broadcast-groups>
@@ -108,6 +115,7 @@
             <permission roles="amq" type="deleteNonDurableQueue"/>
             <permission roles="amq" type="consume"/>
             <permission roles="amq" type="send"/>
+            <permission type="createAddress" roles="amq"/>
             <permission type="deleteAddress" roles="amq"/>
             <permission type="browse" roles="amq"/>
             <!-- we need this otherwise ./artemis data imp wouldn't work -->
@@ -125,6 +133,7 @@
 
    </core>
 </configuration>
+
 
 ```    
 </details>
@@ -232,17 +241,32 @@
    <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="urn:activemq:core ">
 
+   <broker-connections>
+      <!-- Mirror to WDC Master -->
+      <amqp-connection uri="tcp://10.241.0.6:5672" name="WDC">
+         <mirror/>
+      </amqp-connection>
+      <!-- Mirror to WDC Slave -->
+      <amqp-connection uri="tcp://10.241.64.6:5672" name="WDC">
+         <mirror/>
+      </amqp-connection>
+   </broker-connections>
+
+    <security-enabled>false</security-enabled>
+
     <paging-directory>/mnt/broker-storage/amq/one/data/paging</paging-directory>
     <bindings-directory>/mnt/broker-storage/amq/one/data/bindings</bindings-directory>
     <journal-directory>/mnt/broker-storage/amq/one/data/journal</journal-directory>
     <large-messages-directory>/mnt/broker-storage/amq/one/data/large-messages</large-messages-directory>
  
     <connectors>
-      <connector name="netty-connector">tcp://<Slave broker internal IP>:61617</connector>
+      <connector name="netty-connector">tcp://10.249.64.7:61617</connector>
     </connectors>
     
     <acceptors>
-      <acceptor name="netty-acceptor">tcp://<Slave broker internal IP>:61617</acceptor>
+      <acceptor name="netty-acceptor">tcp://10.249.64.7:61617</acceptor>
+ <!-- AMQP Acceptor. Listens on default AMQP port for AMQP traffic -->
+      <acceptor name="amqp">tcp://10.249.64.7:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300</acceptor>
     </acceptors>
 
     <ha-policy>
@@ -294,6 +318,12 @@
             <permission roles="amq" type="deleteNonDurableQueue"/>
             <permission roles="amq" type="consume"/>
             <permission roles="amq" type="send"/>
+            <permission type="createAddress" roles="amq"/>
+            <permission type="deleteAddress" roles="amq"/>
+            <permission type="browse" roles="amq"/>
+            <!-- we need this otherwise ./artemis data imp wouldn't work -->
+            <permission type="manage" roles="amq"/>
+
          </security-setting>
       </security-settings>
     
@@ -307,6 +337,7 @@
 
    </core>
 </configuration>
+
 ```    
 </details>
 
