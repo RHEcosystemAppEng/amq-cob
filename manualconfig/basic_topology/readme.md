@@ -639,8 +639,6 @@ python3 sender.py amqp://localhost SampleQueue WDC_hello_1;  python3 sender.py a
 |Name|Region|Comment|
 |---|---|---|
 |rhkp-tor-cob-global-gateway|TOR|Connect two VPCs in TOR and WDC|
-|rhkp-tor-cob-local-gateway|TOR|VM connectivity between TOR Availability Zones|
-|rhkp-wdc-cob-local-gateway|WDC|VM connectivity between WDC Availability Zones|
 
 ### TOR - IBM Cloud VM Details
 |VM Name| Region| Availability Zone|Comment|
@@ -719,6 +717,7 @@ netstat -taupel | grep nfs;
 ```
 
 ### NFS Client Instructions
+
 * Install NFS Utilities
 ```shell
 sudo dnf install nfs-utils nfs4-acl-tools -y;
@@ -749,3 +748,8 @@ vi  /etc/fstab
 sudo touch /mnt/broker-storage/text.txt
 ll /mnt/broker-storage/
 ```
+
+## Appendix 4 - Notes for IBM Cloud connectivity between VMs
+* VMs in a single Availability Zone (e.g. TOR1) can connect to each other without any changes to security groups (aka firewall changes)
+* VMs in two Availability Zones (e.g. TOR1 and TOR2) can connect to each other with suitable changes to security groups
+* For two VMs to connect, which belong in two separate VPCs (e.g WDC VPC and TOR VPC) in two separate Regions (e.g. TOR and WDC), one needs to use Global Transit Gateway in IBM Cloud
