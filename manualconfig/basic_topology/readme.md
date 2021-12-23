@@ -797,7 +797,7 @@ ll /mnt/broker-storage/
 
 #### Update Security Groups
 * TOR Brokers and WDC Brokers are making use of mirroring on ports 5672(default amqp port)
-* So create Inbound Rules as follows
+* So create Inbound Rules as follows where TOR VMs can get incoming connections from ports 5672(default amqp port) from WDC Brokers.
 * TOR Inbound rules
     * Click VPC Infrastructure -> Security groups -> Security group for Site 1 VPC
     * Click Rules tab
@@ -807,4 +807,4 @@ ll /mnt/broker-storage/
     * Create another same rule but with IP 10.241.64.6
     * This should allow inbound mirroring connections from brokers in the WDC sites
 * WDC Inbound rules
-    * Create Inbound rules as we did for TOR sites for each one of the IPs: 10.249.0.4, 10.249.64.7
+    * Create Inbound rules as we did for TOR sites for each one of the TOR IPs: 10.249.0.4, 10.249.64.7.
