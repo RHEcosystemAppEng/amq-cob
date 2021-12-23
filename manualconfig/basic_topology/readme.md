@@ -40,11 +40,11 @@
 
    <broker-connections>
       <!-- Mirror to WDC Master  -->
-      <amqp-connection uri="tcp://10.241.0.6:5672" name="WDC">
+      <amqp-connection uri="tcp://10.241.0.6:5672" name="WDC01">
          <mirror/>
       </amqp-connection>
       <!-- Mirror to WDC Slave -->
-      <amqp-connection uri="tcp://10.241.64.6:5672" name="WDC">
+      <amqp-connection uri="tcp://10.241.64.6:5672" name="WDC01">
          <mirror/>
       </amqp-connection>
     </broker-connections>
