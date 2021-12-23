@@ -673,20 +673,20 @@ python3 sender.py amqp://localhost SampleQueue WDC_hello_1;  python3 sender.py a
 |rhkp-tor-cob-global-gateway|TOR|Connect two VPCs in TOR and WDC|
 
 ### TOR - IBM Cloud VM Details
-|VM Name| Region| Availability Zone|Comment|
-|---|---|---|---|
-|rhkp-tor1-broker-01|TOR|1|Red Hat AMQ Broker 01|
-|rhkp-tor2-broker-02|TOR|2|Red Hat AMQ Broker 02|
-|rhkp-tor2-nfs-server-01|TOR|2|NFS Server for shared storage|
-|rhkp-tor3-router-01|TOR|3|Red Hat Interconnect Router|
+|VM Name| Region| Availability Zone|Internal IP|Comment|
+|---|---|---|---|---|
+|rhkp-tor1-broker-01|TOR|1|10.249.0.4|Red Hat AMQ Broker 01|
+|rhkp-tor2-broker-02|TOR|2|10.249.64.7|Red Hat AMQ Broker 02|
+|rhkp-tor2-nfs-server-01|TOR|2|10.249.64.8|NFS Server for shared storage|
+|rhkp-tor3-router-01|TOR|3|10.249.128.4|Red Hat Interconnect Router|
 
 ### WDC - IBM Cloud VM Details
-|VM Name| Region| Availability Zone|Comment|
-|---|---|---|---|
-|rhkp-wdc1-broker-01|WDC|1|Red Hat AMQ Broker 01|
-|rhkp-wdc2-broker-02|WDC|2|Red Hat AMQ Broker 02|
-|rhkp-wdc2-nfs-server-01|WDC|2|NFS Server for shared storage|
-|rhkp-wdc3-router-01|WDC|3|Red Hat Interconnect Router|
+|VM Name| Region| Availability Zone|Internal IP|Comment|
+|---|---|---|---|---|
+|rhkp-wdc1-broker-01|WDC|1|10.241.0.6|Red Hat AMQ Broker 01|
+|rhkp-wdc2-broker-02|WDC|2|10.241.64.6|Red Hat AMQ Broker 02|
+|rhkp-wdc2-nfs-server-01|WDC|2|10.241.64.4|NFS Server for shared storage|
+|rhkp-wdc3-router-01|WDC|3|10.241.128.4|Red Hat Interconnect Router|
 
 ## Appendix 2 - RHEL8 Registration on IBM Cloud RHEL8
 ### Issue description
@@ -783,34 +783,6 @@ ll /mnt/broker-storage/
 
 ## Appendix 4 - IBM Cloud connectivity between VMs
 
-### VMs in a Single Availability Zone
-* VMs in a single Availability Zone (e.g. TOR1) can connect to each other without any changes to security groups (aka firewall changes)
-
-### VMs in two Availability Zones within a Region
-* VMs in two Availability Zones (e.g. TOR1 and TOR2) can connect to each other with suitable changes to security groups
-* In this guide, VMs in a given Region/Availability Zones are assumed to be trusted.
-* Thus the security groups have been configured to allow communication among VPC's subnets.
-* In Production usage, followers of this guide should have more restrictive rules and must follow organizational security policies.
-
-#### Site 1 - TOR - Security Groups Configuration 
-* Inbound Rules
-    * Please note the TOR site has 3 subnets: 10.249.0.0/24, 10.249.64.0/24, 10.249.128.0/24
-    * Click VPC Infrastructure -> Security groups -> Security group for Site 1 VPC 
-    * Click Rules tab
-    * Click Add button under Inbound rules
-    * In the Create inbound rule dialog, choose Protocol=All, Source type=CIDR block
-    * Enter the value 10.249.0.0/24, click Save
-    * Add two more Inbound Rules for two more VPC subnets 10.249.64.0/24, 10.249.128.0/24
-    * For access to Master Broker Web Console from your Mac create an Inbound Rule with Protocol=TCP, Port=Port range, Port min=8161, Port max=8161, Source type=Any.
-
-* Outbound Rules
-    * Procedure is exactly same as configuring Inbound rules except the Add button under Outbound rules need to be used 
-    * Create three outbound Rules for TOR site's 3 subnets: 10.249.0.0/24, 10.249.64.0/24, 10.249.128.0/24
-
-#### Site 2 - WDC - Security Groups Configuration 
-* Configure Inbound rules and Outbound rules just as Site 1 - TOR for Site 2 - WDC for subnets 10.241.0.0/24, 10.241.64.0/24, 10.241.128.0/24
-* Be sure you have 3 Inbound and 3 Outbound rules in total
-
 ### VMs in two separate VPCs
 * For two VMs to connect, which belong in two separate VPCs (e.g WDC VPC and TOR VPC) in two separate Regions (e.g. TOR and WDC), one needs to use Global Transit Gateway in IBM Cloud
 
@@ -824,8 +796,15 @@ ll /mnt/broker-storage/
 * Click Create
 
 #### Update Security Groups
-* For TOR and WDC sites update the Security Groups which would allow seamless connectivity between VMs of both sites.
-* Again for sake of this guide, the two sites trust VMs in other sites. 
-* However the followers of this guide should follow the security policy of their environment and may choose more specific or restrictive security groups configuration
-* For Site 1 - TOR, add Inbound and Outbound rules for allowing Site 2 - WDC IP Subnets 10.241.0.0/24, 10.241.64.0/24, 10.241.128.0/24
-* For Site 2 - WDC, add Inbound and Outbound rules for allowing Site 1 - TOR IP Subnets 10.249.0.0/24, 10.249.64.0/24, 10.249.128.0/24
+* TOR Brokers and WDC Brokers are making use of mirroring on ports 5672(default amqp port)
+* So create Inbound Rules as follows
+* TOR Inbound rules
+    * Click VPC Infrastructure -> Security groups -> Security group for Site 1 VPC
+    * Click Rules tab
+    * Click Add button under Inbound rules
+    * In the Create inbound rule dialog, choose Protocol=TCP, Source type=IP Address
+    * Enter the value 10.241.0.6 click Save
+    * Create another same rule but with IP 10.241.64.6
+    * This should allow inbound mirroring connections from brokers in the WDC sites
+* WDC Inbound rules
+    * Create Inbound rules as we did for TOR sites for each one of the IPs: 10.249.0.4, 10.249.64.7
