@@ -24,14 +24,6 @@ router {
 
 * Define following listeners
 ```text
-# Listener for Clients
-listener {
-    host: 0.0.0.0
-    port: 5772
-    authenticatePeer: no
-    saslMechanisms: ANONYMOUS
-}
-
 # Listener for Inter-Router connections
 listener {
     host: 0.0.0.0
@@ -109,7 +101,7 @@ autoLink {
 
 * As the Aggregate is going to listen for incoming connections from producer and consumer, open the needed ports
 ```shell
-sudo firewall-cmd --permanent --add-port={5772,5773,5673}/tcp
+sudo firewall-cmd --permanent --add-port={5773,5673}/tcp
 sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 ```
@@ -142,14 +134,6 @@ listener {
     authenticatePeer: no
     saslMechanisms: ANONYMOUS
 }
-
-# Listener for Inter-Router connections
-listener {
-    host: 0.0.0.0
-    port: 5773
-    authenticatePeer: no
-    role: inter-router
-}
 ```
 
 * Add connector to aggregate
@@ -174,7 +158,7 @@ address {
 
 * Open the following ports 
 ```shell
-sudo firewall-cmd --permanent --add-port={5772,5773}/tcp
+sudo firewall-cmd --permanent --add-port={5772}/tcp
 sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 ```
@@ -207,14 +191,6 @@ listener {
         authenticatePeer: no
         saslMechanisms: ANONYMOUS
 }
-
-# Listener for Inter-Router connections
-listener {
-        host: 0.0.0.0
-        port: 5773
-        authenticatePeer: no
-        role: inter-router
-}
 ```
 
     host: 192.168.56.32
@@ -239,7 +215,7 @@ address {
 
 * Open the following ports 
 ```shell
-sudo firewall-cmd --permanent --add-port={5772,5773}/tcp
+sudo firewall-cmd --permanent --add-port={5772}/tcp
 sudo firewall-cmd --reload
 sudo firewall-cmd --list-all
 ```
