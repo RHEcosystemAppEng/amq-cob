@@ -1,0 +1,47 @@
+---
+- hosts: broker
+  gather_facts: yes
+  vars:
+    AMQ_USER: amq_runner
+    ansible_become: yes
+    ansible_become_user: "{{AMQ_USER}}"
+    ansible_become_password: redhat
+    BROKER_CONFIG_DIR: '/var/opt/amq-broker/broker-01/etc/'
+  tasks:
+    - name: Copy broker.xml file
+      ansible.builtin.copy:
+        src: ./input-files/broker.xml   
+        dest: "{{BROKER_CONFIG_DIR}}"
+        owner: "{{AMQ_USER}}"
+
+    - name: Copy broker-keystore.p12 file
+      ansible.builtin.copy:
+        src: ./input-files/broker-keystore.p12
+        dest: "{{BROKER_CONFIG_DIR}}"
+        owner: "{{AMQ_USER}}"
+
+    - name: Copy server-ca-truststore.p12 file
+      ansible.builtin.copy:
+        src: ./input-files/server-ca-truststore.p12
+        dest: "{{BROKER_CONFIG_DIR}}"
+        owner: "{{AMQ_USER}}"
+
+    - name: Copy login.config file
+      ansible.builtin.copy:
+        src: ./input-files/login.config
+        dest: "{{BROKER_CONFIG_DIR}}"
+        owner: "{{AMQ_USER}}"
+
+    - name: Copy artemis-roles.properties file
+      ansible.builtin.copy:
+        src: ./input-files/artemis-roles.properties
+        dest: "{{BROKER_CONFIG_DIR}}"
+        owner: "{{AMQ_USER}}"
+
+    - name: Copy artemis-users.properties file
+      ansible.builtin.copy:
+        src: ./input-files/artemis-users.properties
+        dest: "{{BROKER_CONFIG_DIR}}"
+        owner: "{{AMQ_USER}}"
+
+        

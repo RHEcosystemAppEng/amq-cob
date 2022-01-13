@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+  tasks:
+    - name: Remove CA Certificate
+      ansible.builtin.file:
+        path: ./server-ca.crt
+        state: absent    
+
+    - name: Remove CA Keystore
+      ansible.builtin.file:
+        path: ./server-ca-keystore.p12
+        state: absent    
+
+    - name: Remove Broker Trust Store
+      ansible.builtin.file:
+        path: ./server-ca-truststore.p12
+        state: absent
+
+    - name: Generate/export CA Certificate
+      command: "./gen-ca-cert.sh"

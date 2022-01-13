@@ -1,6 +1,11 @@
 downloads
 **/.DS_Store
 **/.vagrant
+**/certs
+**/support
+**/.vscode
+**/cert-generation
+#**/input-files
 
 # Binaries for programs and plugins
 *.exe
@@ -8,6 +13,14 @@ downloads
 *.dll
 *.so
 *.dylib
+
+# Certificate extensions
+*.crt
+*.jks
+*.p12
+*.key
+*.pem
+*.csr
 
 # Test binary, built with `go test -c`
 *.test

@@ -1,0 +1,15 @@
+---
+- hosts: router
+  gather_facts: yes
+  vars:
+    CONFIG_DIR: '/etc/qpid-dispatch/'
+  tasks:
+    - name: Copy qdrouterd.conf file
+      ansible.builtin.copy:
+        src: ./input-files/qdrouterd.conf
+        dest: "{{CONFIG_DIR}}"
+
+    - name: Copy server-ca.crt file
+      ansible.builtin.copy:
+        src: ./input-files/server-ca.crt
+        dest: "{{CONFIG_DIR}}"

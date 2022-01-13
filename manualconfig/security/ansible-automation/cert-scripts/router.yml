@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    ROUTER_HOST_NAME: 'rhkp-jira214-tor2-standalone-router'
+    ROUTER_IP: '10.249.64.12'
+    ROUTER_CERT_FILE_PREFIX: 'router'
+    ROUTER_DNS_NAME: 'www.rhkp.j214.router.redhat.com'  
+  tasks:
+    - name: Remove Router Keystore
+      ansible.builtin.file:
+        path: ./router-keystore.jks
+        state: absent    
+
+    - name: Remove Router Certificate
+      ansible.builtin.file:
+        path: ./router.crt
+        state: absent
+
+    - name: Remove Router Keystore p12
+      ansible.builtin.file:
+        path: ./router-keystore.p12
+        state: absent
+
+    - name: Remove Router Private Key
+      ansible.builtin.file:
+        path: ./router-private-key.key
+        state: absent
+
+    - name: Generate Router Certificate
+      command: "./gen-server-cert.sh \
+SERVER_HOST_NAME={{ROUTER_HOST_NAME}} \
+SERVER_IP={{ROUTER_IP}} \
+SERVER_DNS_NAME={{ROUTER_DNS_NAME}} \
+CERT_FILE_PREFIX={{ROUTER_CERT_FILE_PREFIX}}"
+
+    - name: Remove Router CSR
+      ansible.builtin.file:
+        path: ./router.csr
+        state: absent

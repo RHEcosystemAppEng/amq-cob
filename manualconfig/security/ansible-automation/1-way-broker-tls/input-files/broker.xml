@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+   <core xmlns="urn:activemq:core">
+
+      <bindings-directory>./data/messaging/bindings</bindings-directory>
+      <journal-directory>./data/messaging/journal</journal-directory>
+      <large-messages-directory>./data/messaging/largemessages</large-messages-directory>
+      <paging-directory>./data/messaging/paging</paging-directory>
+
+      <!-- Acceptors -->
+      <acceptors>
+         <!-- One way SSL -->
+         <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/broker-keystore.p12;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2,TLSv1.3;</acceptor> 
+     </acceptors>
+
+      <security-settings>
+         <security-setting match="#">
+            <permission type="createNonDurableQueue" roles="amq, guest"/>
+            <permission type="deleteNonDurableQueue" roles="amq, guest"/>
+            <permission type="createDurableQueue" roles="amq, guest"/>
+            <permission type="deleteDurableQueue" roles="amq, guest"/>
+            <permission type="createAddress" roles="amq, guest"/>
+            <permission type="deleteAddress" roles="amq, guest"/>
+            <permission type="consume" roles="amq, guest"/>
+            <permission type="browse" roles="amq, guest"/>
+            <permission type="send" roles="amq, guest"/>
+            <!-- we need this otherwise ./artemis data imp wouldn't work -->
+            <permission type="manage" roles="amq, guest"/>
+         </security-setting>
+      </security-settings>
+
+      <addresses>
+         <address name="SampleQueue">
+            <anycast>
+               <queue name="SampleQueue"/>
+            </anycast>
+         </address>
+      </addresses>
+   </core>
+</configuration>
