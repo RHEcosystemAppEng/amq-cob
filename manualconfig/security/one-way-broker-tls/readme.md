@@ -4,10 +4,13 @@
 * [Broker one way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc-br-configuring-one-way-TLS_configuring)
 * Java Keytool Commands in Broker Java samples under amq-broker-7.9.0/examples/features/standard/ssl-enabled/ 
 
+## Prerequisites
+* Initial installation Red Hat AMQ Broker and Interconnect Router on two different VMs is completed
+
 ## Generate Broker CA Certs and Server Certs
 * Note: this process can be completed on your Mac.
 
-* Set key environmet variables
+* Set key environment variables
 
 ```shell
 KEY_PASS=redhat STORE_PASS=redhat CA_VALIDITY=365000 VALIDITY=36500
@@ -53,7 +56,7 @@ openssl verify -verbose -CAfile server-ca.crt  server.crt
 scp server-keystore.jks root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/broker-01/etc
 ```
 
-* Copy the server-keystore.jks to the Router
+* Copy the server-ca.crt to the Router
 ```shell
 scp server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 ```
