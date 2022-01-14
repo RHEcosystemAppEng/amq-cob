@@ -29,7 +29,7 @@ keytool -keystore server-ca-truststore.p12 -storepass $STORE_PASS -keypass $KEY_
 ```
 * Generate Broker(  server-keystore.jks) Key Pair
 ```shell
-keytool -keystore server-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias server -genkey -keyalg "RSA" -keysize 2048 -dname "CN=ActiveMQ Artemis Server, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:10.249.64.11,dns:,ip:163.74.91.169
+keytool -keystore server-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias server -genkey -keyalg "RSA" -keysize 2048 -dname "CN=ActiveMQ Artemis Server, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:rh.cob.j214.com,ip:10.249.64.11
 ```
 * Create CSR(server.csr)
 ```shell
@@ -37,7 +37,7 @@ keytool -keystore server-keystore.jks -storepass $STORE_PASS -alias server -cert
 ```
 * Generate Server Certificate(server.crt)
 ```shell
-keytool -keystore server-ca-keystore.p12 -storepass $STORE_PASS -alias server-ca -gencert -rfc -infile server.csr -outfile server.crt -validity $VALIDITY -ext bc=ca:false -ext san=dns:localhost,ip:10.249.64.11
+keytool -keystore server-ca-keystore.p12 -storepass $STORE_PASS -alias server-ca -gencert -rfc -infile server.csr -outfile server.crt -validity $VALIDITY -ext bc=ca:false -ext san=dns:localhost,ip:127.0.0.1,dns:rh.cob.j214.com,ip:10.249.64.11
 ```
 * Import Server CA Certificate in Server Keystore (server-keystore.jks)
 ```shell
