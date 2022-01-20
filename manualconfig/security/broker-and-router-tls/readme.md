@@ -2,6 +2,7 @@
 
 ## References
 * [Broker one way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc-br-configuring-one-way-TLS_configuring)
+* [Broker two way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc_br-configuring-broker-certificate-based-authentication_configuring)
 * Java Keytool Commands in Broker Java samples under amq-broker-7.9.0/examples/features/standard/ssl-enabled/ 
 
 ## Prerequisites
@@ -207,6 +208,7 @@ qdrouterd
 ## Establish Two Way TLS between Broker and Router
 
 * Ensure the steps above to establishing one way TLS has been completed
+* Implementation of two way TLS makes use of cert usage by Broker and Router along with SASL PLAIN mechanism
 
 ### Generate the Router Certificate
 * Generate Broker(router-keystore.jks) Key Pair
@@ -300,6 +302,32 @@ vi broker.xml
 </configuration>
 ```
 
+* Replace the default configuration of login.config with following
+```text
+activemq {
+    org.apache.activemq.artemis.spi.core.security.jaas.TextFileCertificateLoginModule sufficient
+        debug=true
+        reload=true
+        org.apache.activemq.jaas.textfiledn.user="artemis-users.properties"
+        org.apache.activemq.jaas.textfiledn.role="artemis-roles.properties";
+
+   org.apache.activemq.artemis.spi.core.security.jaas.GuestLoginModule sufficient
+       debug=false
+       org.apache.activemq.jaas.guest.user="admin"
+       org.apache.activemq.jaas.guest.role="amq";
+};
+```
+
+* Add this line to the end of artemis-users.properties file for user router. This router user is identified by a TLS Certificate which has "CN=Interconn Router,O=ActiveMQ,C=AMQ"
+```text
+router=CN=Interconn Router,O=ActiveMQ,C=AMQ
+```
+
+* The artemis-roles.properties file should look as follows, where we are saying the user router belongs to role amq.
+```text
+amq = admin,router
+```
+
 * Start the broker and ensure no errors are thrown 
 ```shell
 "/var/opt/amq-broker/broker-01/bin/artemis" run
@@ -332,7 +360,9 @@ connector {
     port: 61616
     role: route-container
     sslProfile: broker-tls
-    saslMechanisms: EXTERNAL
+    saslMechanisms: PLAIN
+    saslUsername: admin
+    saslPassword: redhat
     verifyHostname: no
 }
 
