@@ -64,7 +64,7 @@ scp server-keystore.jks root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/broker-
 scp server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 ```
 
-### Configuration of AMQ Router: broker.xml 
+### Configuration of AMQ Broker: broker.xml 
 
 * Edit the broker.xml file
 ```shell
