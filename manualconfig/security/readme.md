@@ -23,7 +23,7 @@ hostname -s
 |rhkp-jira214-tor2-standalone-router|10.249.64.12|ROUTER01_HOST_NAME|
 |rhkp-jira214-tor2-standalone-router-01|10.249.64.5|ROUTER01_HOST_NAME|
 
-## Broker : One way TLS/SSL
+## Broker : One way TLS
 
 * Set key environment variables for your respective broker or router with the names identified above
 ```shell
@@ -208,8 +208,8 @@ address {
 qdrouterd
 ```
 
-## Broker : Two way TLS/SSL
-* Note: The two way broker tls/ssl is not fully working as expected but this is the closest possible solution
+## Broker : Two way TLS
+* Note: The two way broker tls is not fully working as expected but this is the closest possible solution
 * Ensure the steps above for establishing one way TLS has been completed
 * Implementation of two way TLS makes use of cert usage by Broker and Router along with SASL PLAIN mechanism
 
@@ -411,7 +411,7 @@ address {
 ```
 </details>
 
-* As the two way tls/ssl between the broker and the router makes use of SASL Plain mechanism, install the SASL Plain Plugin on router
+* As the two way tls between the broker and the router makes use of SASL Plain mechanism, install the SASL Plain Plugin on router
 ```shell
 yum search cyrus-sasl
 yum install cyrus-sasl-plain.x86_64
