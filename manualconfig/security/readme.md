@@ -5,22 +5,19 @@
 * [Broker two way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc_br-configuring-broker-certificate-based-authentication_configuring)
 * Java Keytool Commands in Broker Java samples under amq-broker-7.9.0/examples/features/standard/ssl-enabled/ 
 
-## Prerequisites
-* Initial installation Red Hat AMQ Broker and Interconnect Router on two different VMs is completed
-
 ## Topology details
 * The topology given here makes use of a simplified topology as follows:
     * Broker <-> Router <-> Router01
 
-* It is recommended to make use of a client computer such as Mac to generate all certificates, keys and trust stores in one directory and copy relevant files to appropriate servers
+* It is recommended to make use of a client computer such as Mac to generate all certificates, keys and trust stores in one directory and copy relevant files to appropriate servers, as needed
 
-* Identify host names from command line for a given broker or router and use them in certificate generation process 
+* To identify host names from command line for a given broker or router and use them in certificate generation process 
 ```shell
 hostname -s
 ```
 * The VM details used are as follows:
 
-|VM Name|Internal IP|Comment|
+|VM Name|Internal IP|Shell Variable Used|
 |---|---|---|
 |rhkp-jira214-tor2-standalone-broker|10.249.64.11|BROKER_HOST_NAME|
 |rhkp-jira214-tor2-standalone-router|10.249.64.12|ROUTER01_HOST_NAME|
@@ -123,7 +120,7 @@ scp server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 "/var/opt/amq-broker/broker-01/bin/artemis" run
 ```
 
-* Note: If you get permission errors for the key or certificate files change the ownership to the AMQ Runner user, which is used to run the broker using chown command.
+* Note: If you get permission errors for the key or certificate files change the ownership to the AMQ Runner user, which is used to run the broker, using chown command.
 
 * Red Hat AMQ Interconnect Configuration
 <details>
@@ -212,7 +209,8 @@ qdrouterd
 ```
 
 ## Broker : Two way TLS/SSL
-* Ensure the steps above to establishing one way TLS has been completed
+* Note: The two way broker tls/ssl is not fully working as expected but this is the closest possible solution
+* Ensure the steps above for establishing one way TLS has been completed
 * Implementation of two way TLS makes use of cert usage by Broker and Router along with SASL PLAIN mechanism
 
 * Generate router Certificates. Please replace ip and dns parameters accordingly
@@ -412,6 +410,12 @@ address {
 }
 ```
 </details>
+
+* As the two way tls/ssl between the broker and the router makes use of SASL Plain mechanism, install the SASL Plain Plugin on router
+```shell
+yum search cyrus-sasl
+yum install cyrus-sasl-plain.x86_64
+```
 
 * Start the router and ensure no errors are thrown 
 ```shell
