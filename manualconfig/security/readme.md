@@ -1,4 +1,4 @@
-# Establish SSL/TLS for Red Hat AMQ Brokers and Red Hat AMQ Interconnect Routers
+# Establish TLS for Red Hat AMQ Brokers and Red Hat AMQ Interconnect Routers
 
 ## References
 * [Broker one way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc-br-configuring-one-way-TLS_configuring)
@@ -240,7 +240,7 @@ scp server-ca-truststore.p12 root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/br
 scp router-private-key.key router.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 ```
 
-* Update broker.xml file acceptor element to support two way SSL/TLS
+* Update broker.xml file acceptor element to support two way TLS
 ```xml
     <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/server-keystore.jks;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;needClientAuth=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat</acceptor>
 ```
@@ -422,7 +422,7 @@ yum install cyrus-sasl-plain.x86_64
 qdrouterd
 ```
 
-## Securing Routers with SSL/TLS
+## Securing Routers with TLS
 * Use this procedure to establish a secure connection between two routers e.g. router and router01
 
 * Generate router certificates and be sure to replace alias, ip and dns accordingly
