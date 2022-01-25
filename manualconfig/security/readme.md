@@ -3,10 +3,11 @@
 ## References
 * [Broker one way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc-br-configuring-one-way-TLS_configuring)
 * [Broker two way TLS](https://access.redhat.com/documentation/en-us/red_hat_amq/2021.q3/html-single/configuring_amq_broker/index#proc_br-configuring-broker-certificate-based-authentication_configuring)
+* [Router - Securing outgoing connections](https://access.redhat.com/documentation/en-us/red_hat_amq/7.4/html-single/using_amq_interconnect/index#securing-outgoing-connections-router)
 * Java Keytool Commands in Broker Java samples under amq-broker-7.9.0/examples/features/standard/ssl-enabled/ 
 
 ## Topology details
-* The topology given here makes use of a simplified topology as follows:
+* The following simplified topology is used in this example:
     * Broker <-> Router <-> Router01
 
 * It is recommended to make use of a client computer such as Mac to generate all certificates, keys and trust stores in one directory and copy relevant files to appropriate servers, as needed
@@ -24,6 +25,7 @@ hostname -s
 |rhkp-jira214-tor2-standalone-router-01|10.249.64.5|ROUTER01_HOST_NAME|
 
 ## Broker : One way TLS
+* In this scenario only broker presents its certificate to the client and is the most common scenario. 
 
 * Set key environment variables for your respective broker or router with the names identified above
 ```shell
