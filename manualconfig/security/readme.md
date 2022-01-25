@@ -8,12 +8,25 @@
 ## Prerequisites
 * Initial installation Red Hat AMQ Broker and Interconnect Router on two different VMs is completed
 
-## Broker : One way TLS/SSL
+## Topology details
+* The topology given here makes use of a simplified topology as follows:
+    * Broker <-> Router <-> Router01
 
-* Identify host names from command line for a given broker or router
+* It is recommended to make use of a client computer such as Mac to generate all certificates, keys and trust stores in one directory and copy relevant files to appropriate servers
+
+* Identify host names from command line for a given broker or router and use them in certificate generation process 
 ```shell
 hostname -s
 ```
+* The VM details used are as follows:
+
+|VM Name|Internal IP|Comment|
+|---|---|---|
+|rhkp-jira214-tor2-standalone-broker|10.249.64.11|BROKER_HOST_NAME|
+|rhkp-jira214-tor2-standalone-router|10.249.64.12|ROUTER01_HOST_NAME|
+|rhkp-jira214-tor2-standalone-router-01|10.249.64.5|ROUTER01_HOST_NAME|
+
+## Broker : One way TLS/SSL
 
 * Set key environment variables for your respective broker or router with the names identified above
 ```shell
@@ -405,12 +418,247 @@ address {
 qdrouterd
 ```
 
-* 
+## Securing Routers with SSL/TLS
+* Use this procedure to establish a secure connection between two routers e.g. router and router01
+
+* Generate router certificates and be sure to replace alias, ip and dns accordingly
 ```shell
+keytool -keystore router01-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias router01 -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER01_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router01.rh.cob.j214.com,ip:10.249.64.5;
+
+keytool -keystore router01-keystore.jks -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias router01 -certreq -file router01.csr;
+
+keytool -keystore server-ca-keystore.p12 -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -storepass $STORE_PASS -alias server-ca -gencert -rfc -infile router01.csr -outfile router01.crt -validity $VALIDITY -ext bc=ca:false -ext san=dns:localhost,ip:127.0.0.1,dns:router01.rh.cob.j214.com,ip:10.249.64.5;
 ```
-* 
+
+* Convert router01 keystore jks to p12 format
 ```shell
+keytool -importkeystore -srckeystore router01-keystore.jks -srcstorepass $STORE_PASS -destkeystore router01-keystore.p12 -deststorepass $STORE_PASS -srcstoretype jks -deststoretype pkcs12;
 ```
-* 
+
+* Extract the private key
 ```shell
+openssl pkcs12 -passin pass:$STORE_PASS -in router01-keystore.p12 -out router01-private-key.key -nodes -nocerts;
+```
+
+* Copy the certificate, key and CA Certificate to the listening router
+```shell
+scp router.crt router-private-key.key server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
+```
+
+* Copy the certificate, key and CA Certificate to the connecting router
+```shell
+scp router01.crt router01-private-key.key server-ca.crt root@$J214_STANDALONE_ROUTER_01:/etc/qpid-dispatch
+```
+
+* Configure listening router
+
+<details>
+    <summary>qdrouterd.conf</summary>
+
+```text
+router {
+    mode: interior
+    id: Router.R
+}
+
+#SSL Profile for Router 01
+sslProfile {
+    name: inter-router-tls
+    certFile: /etc/qpid-dispatch/router.crt
+    privateKeyFile: /etc/qpid-dispatch/router-private-key.key
+    #privateKeyFile: /etc/qpid-dispatch/router-private-key.pem
+    #caCertFile: /etc/qpid-dispatch/server-ca.pem
+    caCertFile: /etc/qpid-dispatch/server-ca.crt
+    password: redhat
+}
+
+#Listener for Router 01
+listener {
+    host: 0.0.0.0
+    port: 5773
+    authenticatePeer: yes
+    sslProfile: inter-router-tls
+    requireSsl: yes
+    role: inter-router
+    saslMechanisms: EXTERNAL
+}
+
+#SSL Profile for Broker
+sslProfile {
+    name: broker-tls
+    caCertFile: /etc/qpid-dispatch/server-ca.crt
+    certFile: /etc/qpid-dispatch/router.crt
+    privateKeyFile: /etc/qpid-dispatch/router-private-key.key
+    password:  pass:redhat
+}
+
+connector {
+    name: broker-connector-1
+    host: 10.249.64.11
+    port: 61616
+    role: route-container
+    sslProfile: broker-tls
+    saslMechanisms: EXTERNAL
+    #saslUsername: admin
+    #saslPassword: redhat
+    verifyHostname: no
+}
+
+# Waypoint for the Broker Queue
+address {
+    prefix: SampleQueue
+    waypoint: yes
+}
+
+# Create Autolink to send messages to the broker 1
+autoLink {
+    address: SampleQueue
+    connection: broker-connector-1
+    direction: out
+}
+
+autoLink {
+    address: SampleQueue
+    connection: broker-connector-1
+    direction: in
+}
+
+listener {
+    host: 0.0.0.0
+    port: amqp
+    authenticatePeer: no
+    saslMechanisms: ANONYMOUS
+}
+
+listener {
+    host: 0.0.0.0
+    port: 8672
+    authenticatePeer: no
+    http: yes
+}
+
+address {
+    prefix: closest
+    distribution: closest
+}
+
+address {
+    prefix: multicast
+    distribution: multicast
+}
+
+address {
+    prefix: unicast
+    distribution: closest
+}
+
+address {
+    prefix: exclusive
+    distribution: closest
+}
+
+address {
+    prefix: broadcast
+    distribution: multicast
+}
+```
+</details>
+
+
+* Start the router and ensure no errors are thrown 
+```shell
+qdrouterd
+```
+
+* Configure connecting router
+
+<details>
+    <summary>qdrouterd.conf</summary>
+
+```text
+router {
+    mode: interior
+    id: router01
+}
+
+sslProfile {
+    name: inter-router-tls
+    certFile: /etc/qpid-dispatch/router01.crt
+    privateKeyFile: /etc/qpid-dispatch/router01-private-key.key
+    #privateKeyFile: /etc/qpid-dispatch/router01-private-key.pem
+    #caCertFile: /etc/qpid-dispatch/server-ca.pem
+    caCertFile: /etc/qpid-dispatch/server-ca.crt
+    password: redhat
+}
+
+# Connector to router
+connector {
+    name: router-connector-1
+    host: 10.249.64.12
+    port: 5773
+    role: inter-router
+    sslProfile: inter-router-tls
+    verifyHostname: false
+    saslMechanisms: EXTERNAL
+}
+
+listener {
+    host: 0.0.0.0
+    port: amqp
+    authenticatePeer: no
+    saslMechanisms: ANONYMOUS
+}
+
+listener {
+    host: 0.0.0.0
+    port: 8672
+    authenticatePeer: no
+    http: yes
+}
+
+listener {
+    host: 0.0.0.0
+    port: amqp
+    authenticatePeer: no
+    saslMechanisms: ANONYMOUS
+}
+
+listener {
+    host: 0.0.0.0
+    port: 8672
+    authenticatePeer: no
+    http: yes
+}
+
+address {
+    prefix: closest
+    distribution: closest
+}
+
+address {
+    prefix: multicast
+    distribution: multicast
+}
+
+address {
+    prefix: unicast
+    distribution: closest
+}
+
+address {
+    prefix: exclusive
+    distribution: closest
+}
+
+address {
+    prefix: broadcast
+    distribution: multicast
+}
+
+```
+</details>
+
+* Start the router and ensure no errors are thrown 
+```shell
+qdrouterd
 ```
