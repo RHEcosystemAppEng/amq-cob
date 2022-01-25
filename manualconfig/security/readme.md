@@ -454,7 +454,7 @@ scp router.crt router-private-key.key server-ca.crt root@$J214_STANDALONE_ROUTER
 scp router01.crt router01-private-key.key server-ca.crt root@$J214_STANDALONE_ROUTER_01:/etc/qpid-dispatch
 ```
 
-* Configure listening router
+* Configure listening router: router
 
 <details>
     <summary>qdrouterd.conf</summary>
@@ -470,8 +470,6 @@ sslProfile {
     name: inter-router-tls
     certFile: /etc/qpid-dispatch/router.crt
     privateKeyFile: /etc/qpid-dispatch/router-private-key.key
-    #privateKeyFile: /etc/qpid-dispatch/router-private-key.pem
-    #caCertFile: /etc/qpid-dispatch/server-ca.pem
     caCertFile: /etc/qpid-dispatch/server-ca.crt
     password: redhat
 }
@@ -502,9 +500,9 @@ connector {
     port: 61616
     role: route-container
     sslProfile: broker-tls
-    saslMechanisms: EXTERNAL
-    #saslUsername: admin
-    #saslPassword: redhat
+    saslMechanisms: PLAIN
+    saslUsername: admin
+    saslPassword: redhat
     verifyHostname: no
 }
 
@@ -574,7 +572,7 @@ address {
 qdrouterd
 ```
 
-* Configure connecting router
+* Configure connecting router: router01
 
 <details>
     <summary>qdrouterd.conf</summary>
@@ -589,8 +587,6 @@ sslProfile {
     name: inter-router-tls
     certFile: /etc/qpid-dispatch/router01.crt
     privateKeyFile: /etc/qpid-dispatch/router01-private-key.key
-    #privateKeyFile: /etc/qpid-dispatch/router01-private-key.pem
-    #caCertFile: /etc/qpid-dispatch/server-ca.pem
     caCertFile: /etc/qpid-dispatch/server-ca.crt
     password: redhat
 }
