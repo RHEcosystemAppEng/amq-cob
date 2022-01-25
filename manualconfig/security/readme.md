@@ -24,7 +24,7 @@ hostname -s
 |rhkp-jira214-tor2-standalone-router|10.249.64.12|ROUTER01_HOST_NAME|
 |rhkp-jira214-tor2-standalone-router-01|10.249.64.5|ROUTER01_HOST_NAME|
 
-## Broker : One way TLS
+## Broker : One way TLS (broker -> router)
 * In this scenario only broker presents its certificate to the client and is the most common scenario. 
 
 * Set key environment variables for your respective broker or router with the names identified above
@@ -71,7 +71,7 @@ scp server-keystore.jks root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/broker-
 scp server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 ```
 
-* Red Hat AMQ Broker Configuration
+### Red Hat AMQ Broker Configuration
 <details>
     <summary>broker.xml</summary>
 
@@ -124,7 +124,7 @@ scp server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 
 * Note: If you get permission errors for the key or certificate files change the ownership to the AMQ Runner user, which is used to run the broker, using chown command.
 
-* Red Hat AMQ Interconnect Configuration
+### Red Hat AMQ Interconnect Configuration
 <details>
     <summary>qdrouterd.conf</summary>
 
@@ -210,7 +210,7 @@ address {
 qdrouterd
 ```
 
-## Broker : Two way TLS
+## Broker : Two way TLS (broker <-> router)
 * Note: The two way broker tls is not fully working as expected but this is the closest possible solution
 * Ensure the steps above for establishing one way TLS has been completed
 * Implementation of two way TLS makes use of cert usage by Broker and Router along with SASL PLAIN mechanism
@@ -242,10 +242,8 @@ scp server-ca-truststore.p12 root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/br
 scp router-private-key.key router.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 ```
 
+### Red Hat AMQ Broker Configuration
 * Update broker.xml file acceptor element to support two way TLS
-```xml
-    <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/server-keystore.jks;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;needClientAuth=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat</acceptor>
-```
 
 <details>
     <summary>broker.xml</summary>
@@ -328,7 +326,7 @@ amq = admin,router
 "/var/opt/amq-broker/broker-01/bin/artemis" run
 ```
 
-* Red Hat AMQ Interconnect Configuration
+### Red Hat AMQ Interconnect Configuration
 <details>
     <summary>qdrouterd.conf</summary>
 
@@ -424,7 +422,7 @@ yum install cyrus-sasl-plain.x86_64
 qdrouterd
 ```
 
-## Securing Routers with TLS
+## Securing Routers with TLS (router <-> router01)
 * Use this procedure to establish a secure connection between two routers e.g. router and router01
 
 * Generate router certificates and be sure to replace alias, ip and dns accordingly
