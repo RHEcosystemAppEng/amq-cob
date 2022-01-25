@@ -425,7 +425,7 @@ qdrouterd
 ## Securing Routers with TLS (router <-> router01)
 * Use this procedure to establish a secure connection between two routers e.g. router and router01
 
-* Generate router certificates and be sure to replace alias, ip and dns accordingly
+* Generate router certificates for "router01" and be sure to replace alias, ip and dns accordingly
 ```shell
 keytool -keystore router01-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias router01 -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER01_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router01.rh.cob.j214.com,ip:10.249.64.5;
 
@@ -443,7 +443,6 @@ keytool -importkeystore -srckeystore router01-keystore.jks -srcstorepass $STORE_
 ```shell
 openssl pkcs12 -passin pass:$STORE_PASS -in router01-keystore.p12 -out router01-private-key.key -nodes -nocerts;
 ```
-
 
 * Copy the certificate, key and CA Certificate to the connecting router
 ```shell
