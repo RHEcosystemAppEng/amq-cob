@@ -1,4 +1,3 @@
-downloads
 **/.DS_Store
 **/.vagrant
 
@@ -15,5 +14,11 @@ downloads
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+**/.terraform/
+**/.terraform.OLD/
+.idea/
+**/terraform.tfvars
+**/terraform.tfstate
+*.backup
+**/amq-broker-7.9.0-bin.zip
+**/destroy.plan
