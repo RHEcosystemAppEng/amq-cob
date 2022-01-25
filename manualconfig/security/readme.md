@@ -21,7 +21,7 @@ hostname -s
 |VM Name|Internal IP|Shell Variable Used|
 |---|---|---|
 |rhkp-jira214-tor2-standalone-broker|10.249.64.11|BROKER_HOST_NAME|
-|rhkp-jira214-tor2-standalone-router|10.249.64.12|ROUTER01_HOST_NAME|
+|rhkp-jira214-tor2-standalone-router|10.249.64.12|ROUTER_HOST_NAME|
 |rhkp-jira214-tor2-standalone-router-01|10.249.64.5|ROUTER01_HOST_NAME|
 
 ## Broker : One way TLS (broker -> router)
@@ -239,7 +239,7 @@ scp server-ca-truststore.p12 root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/br
 
 * Copy the router-private-key.key & router.crt to the Router
 ```shell
-scp router-private-key.key router.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
+scp router.crt router-private-key.key root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 ```
 
 ### Red Hat AMQ Broker Configuration
@@ -444,10 +444,6 @@ keytool -importkeystore -srckeystore router01-keystore.jks -srcstorepass $STORE_
 openssl pkcs12 -passin pass:$STORE_PASS -in router01-keystore.p12 -out router01-private-key.key -nodes -nocerts;
 ```
 
-* Copy the certificate, key and CA Certificate to the listening router
-```shell
-scp router.crt router-private-key.key server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
-```
 
 * Copy the certificate, key and CA Certificate to the connecting router
 ```shell
