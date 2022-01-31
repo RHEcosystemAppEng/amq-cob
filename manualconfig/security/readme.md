@@ -211,10 +211,8 @@ qdrouterd
 ```
 
 ## Broker : Two way TLS (broker <-> router)
-* Note: The two way broker tls is not fully working as expected but this is the closest possible solution
-* Ensure the steps above for establishing one way TLS has been completed
-* Implementation of two way TLS makes use of cert usage by Broker and Router along with SASL PLAIN mechanism
-
+* Note: 2 way TLS between broker and router works only with SASL ANONYMOUS or PLAIN authentication mechanism
+* Ensure the steps above for establishing one way TLS has been completed between router and broker
 * Generate router Certificates. Please replace ip and dns parameters accordingly
 ```shell
 keytool -keystore router-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias router -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router.rh.cob.j214.com,ip:10.249.64.12;
@@ -350,11 +348,24 @@ connector {
     port: 61616
     role: route-container
     sslProfile: broker-tls
-    saslMechanisms: PLAIN
-    saslUsername: admin
-    saslPassword: redhat
     verifyHostname: no
+    # https://qpid.apache.org/releases/qpid-dispatch-1.7.0/user-guide/index.html#adding-ssl-authentication-to-outgoing-connection
+    # To specify multiple authentication mechanisms, separate each mechanism with a space.
+    saslMechanisms: EXTERNAL ANONYMOUS
 }
+
+# If using SASL PLAIN Mechanism uncomment following block and comment or delete SASL ANONYMOUS Block above
+#connector {
+#    name: broker-connector-1
+#    host: 10.249.64.11
+#    port: 61616
+#    role: route-container
+#    sslProfile: broker-tls
+#    verifyHostname: no
+#    saslMechanisms: EXTERNAL PLAIN
+#    saslUsername: admin
+#    saslPassword: redhat
+#}
 
 # Waypoint for the Broker Queue
 address {
@@ -411,7 +422,7 @@ address {
 ```
 </details>
 
-* As the two way tls between the broker and the router makes use of SASL Plain mechanism, install the SASL Plain Plugin on router
+* If the two way tls between the broker and the router makes use of SASL Plain mechanism, install the SASL Plain Plugin on router
 ```shell
 yum search cyrus-sasl
 yum install cyrus-sasl-plain.x86_64
