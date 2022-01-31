@@ -668,3 +668,90 @@ address {
 ```shell
 qdrouterd
 ```
+
+## Appendix 1 : Broker & Router two way tls negative tests and results
+<details>
+    <summary>Case 1 : Invalid Router Certificate ( signed by different CA Cert )</summary>
+    
+```text
+2022-01-28 18:31:38.521803 +0000 SERVER (error) SSL local certificate configuration failed for connection [C1] to 10.249.64.11:61616
+2022-01-28 18:31:38.522349 +0000 SERVER (error) [C1] Connection aborted due to internal setup error
+2022-01-28 18:31:38.522390 +0000 SERVER (info) [C1] Connection to 10.249.64.11:61616 failed: amqp:connection:framing-error Expected AMQP protocol header: no protocol header found (connection aborted)
+```    
+</details>
+<details>
+    <summary>Case 2 : Invalid or Different Router Private Key</summary>
+
+```text
+2022-01-28 18:31:38.521803 +0000 SERVER (error) SSL local certificate configuration failed for connection [C1] to 10.249.64.11:61616
+2022-01-28 18:31:38.522349 +0000 SERVER (error) [C1] Connection aborted due to internal setup error
+2022-01-28 18:31:38.522390 +0000 SERVER (info) [C1] Connection to 10.249.64.11:61616 failed: amqp:connection:framing-error Expected AMQP protocol header: no protocol header found (connection aborted)
+```
+
+</details>
+<details>
+    <summary>Case 3 : Use of invalid CA Cert</summary>
+
+```text
+2022-01-28 18:38:40.397443 +0000 SERVER (info) [C1] Connection to 10.249.64.11:61616 failed: amqp:connection:framing-error SSL Failure: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
+```
+</details>
+<details>
+    <summary>Case 4 : Enable Certificate Host NameVerification</summary>
+
+```text
+2022-01-28 18:38:40.397443 +0000 SERVER (info) [C1] Connection to 10.249.64.11:61616 failed: amqp:connection:framing-error SSL Failure: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
+```
+</details>
+<details>
+    <summary>Case 5 : Only specify sslProfile and exclude saslMechanisms altogether</summary>
+
+```text
+2022-01-28 19:05:45.738248 +0000 ROUTER_CORE (info) [C1] Connection Opened: dir=out host=10.249.64.11:61616 vhost= encrypted=TLSv1.3 auth=ANONYMOUS user=(null) container_id=localhost props={:product="apache-activemq-artemis", :version="2.18.0.redhat-00010"}
+2022-01-28 19:05:45.738323 +0000 ROUTER_CORE (info) Auto Link Activated 'autoLink/0' on connection broker-connector-1
+2022-01-28 19:05:45.738439 +0000 ROUTER_CORE (info) [C1][L9] Link attached: dir=out source={<none> expire:link} target={SampleQueue expire:link}
+2022-01-28 19:05:45.738454 +0000 ROUTER_CORE (info) Auto Link Activated 'autoLink/1' on connection broker-connector-1
+2022-01-28 19:05:45.738464 +0000 ROUTER_CORE (info) [C1][L10] Link attached: dir=in source={SampleQueue expire:link} target={<none> expire:link}
+```
+</details>
+<details>
+    <summary>Case 6 : Speify sslProfile and provide saslUsername/saslPassword</summary>
+
+```text
+2022-01-28 19:08:04.075581 +0000 ROUTER_CORE (info) [C1] Connection Opened: dir=out host=10.249.64.11:61616 vhost= encrypted=TLSv1.3 auth=PLAIN user=admin container_id=localhost props={:product="apache-activemq-artemis", :version="2.18.0.redhat-00010"}
+2022-01-28 19:08:04.075712 +0000 ROUTER_CORE (info) Auto Link Activated 'autoLink/0' on connection broker-connector-1
+2022-01-28 19:08:04.075821 +0000 ROUTER_CORE (info) [C1][L9] Link attached: dir=out source={<none> expire:link} target={SampleQueue expire:link}
+2022-01-28 19:08:04.075832 +0000 ROUTER_CORE (info) Auto Link Activated 'autoLink/1' on connection broker-connector-1
+2022-01-28 19:08:04.075838 +0000 ROUTER_CORE (info) [C1][L10] Link attached: dir=in source={SampleQueue expire:link} target={<none> expire:link}1
+```
+</details>
+
+## Appendix 2 : Successful 2 way tls trace level logs between router and broker
+<details>
+    <summary>Broker Logs</summary>
+
+```text
+​​2022-01-27 00:20:22,973 DEBUG [io.netty.handler.ssl.SslHandler] [id: 0xa692fad8, L:/10.249.64.11:61616 - R:/10.249.64.12:34558] HANDSHAKEN: protocol:TLSv1.3 cipher suite:TLS_AES_256_GCM_SHA384
+2022-01-27 00:20:23,138 DEBUG [org.apache.activemq.artemis.protocol.amqp.proton.handler.ProtonHandler] onSaslInit: SaslImpl [_outcome=PN_SASL_NONE, state=PN_SASL_STEP, done=false, role=SERVER]
+2022-01-27 00:20:23,139 DEBUG [org.apache.activemq.artemis.protocol.amqp.proton.handler.ProtonHandler] saslComplete: SaslImpl [_outcome=PN_SASL_NONE, state=PN_SASL_STEP, done=false, role=SERVER]
+2022-01-27 00:20:23,139 FINE  [org.apache.qpid.proton.engine.impl.SaslImpl] SASL negotiation done: SaslImpl [_outcome=PN_SASL_OK, state=PN_SASL_PASS, done=true, role=SERVER]
+2022-01-27 00:20:23,146 FINE  [proton.trace] IN: CH[0] : Open{ containerId='Router.R', hostname='10.249.64.11', maxFrameSize=16384, channelMax=32767, idleTimeOut=8000, outgoingLocales=null, incomingLocales=null, offeredCapabilities=[ANONYMOUS-RELAY, qd.streaming-links], desiredCapabilities=[ANONYMOUS-RELAY, qd.streaming-links], properties={product=qpid-dispatch-router, version=Red Hat Interconnect 2.0.0-TP3 (qpid-dispatch 1.17.1), qd.conn-id=4}}
+
+2022-01-27 00:20:23,151 FINE  [proton.trace] IN: CH[0] : Begin{remoteChannel=null, nextOutgoingId=0, incomingWindow=2147483647, outgoingWindow=2147483647, handleMax=4294967295, offeredCapabilities=null, desiredCapabilities=null, properties=null}
+2022-01-27 00:20:23,156 FINE  [proton.trace] IN: CH[0] : Attach{name='qdlink.zeTIZfqwYjha3WQ', handle=0, role=SENDER, sndSettleMode=MIXED, rcvSettleMode=FIRST, source=Source{address='null', durable=NONE, expiryPolicy=LINK_DETACH, timeout=0, dynamic=false, dynamicNodeProperties=null, distributionMode=null, filter=null, defaultOutcome=null, outcomes=null, capabilities=null}, target=Target{address='SampleQueue', durable=NONE, expiryPolicy=LINK_DETACH, timeout=0, dynamic=false, dynamicNodeProperties=null, capabilities=null}, unsettled=null, incompleteUnsettled=false, initialDeliveryCount=0, maxMessageSize=0, offeredCapabilities=null, desiredCapabilities=null, properties=null}
+2022-01-27 00:20:23,157 FINE  [proton.trace] IN: CH[0] : Attach{name='qdlink.2rHA1rWAvO_P+Sv', handle=1, role=RECEIVER, sndSettleMode=MIXED, rcvSettleMode=FIRST, source=Source{address='SampleQueue', durable=NONE, expiryPolicy=LINK_DETACH, timeout=0, dynamic=false, dynamicNodeProperties=null, distributionMode=null, filter=null, defaultOutcome=null, outcomes=null, capabilities=null}, target=Target{address='null', durable=NONE, expiryPolicy=LINK_DETACH, timeout=0, dynamic=false, dynamicNodeProperties=null, capabilities=null}, unsettled=null, incompleteUnsettled=false, initialDeliveryCount=0, maxMessageSize=0, offeredCapabilities=null, desiredCapabilities=null, properties=null}
+```
+
+</details>
+
+<details>
+    <summary>Router Logs</summary>
+    
+```text
+2022-01-27 00:20:23.151318 +0000 ROUTER_CORE (info) [C4] Connection Opened: dir=out host=10.249.64.11:61616 vhost= encrypted=TLSv1.3 auth=ANONYMOUS user=(null) container_id=localhost props={:product="apache-activemq-artemis", :version="2.18.0.redhat-00010"}
+2022-01-27 00:20:23.151393 +0000 ROUTER_CORE (info) Auto Link Activated 'autoLink/0' on connection broker-connector-1
+2022-01-27 00:20:23.151509 +0000 ROUTER_CORE (info) [C4][L9] Link attached: dir=out source={<none> expire:link} target={SampleQueue expire:link}
+2022-01-27 00:20:23.151519 +0000 ROUTER_CORE (info) Auto Link Activated 'autoLink/1' on connection broker-connector-1
+2022-01-27 00:20:23.151526 +0000 ROUTER_CORE (info) [C4][L10] Link attached: dir=in source={SampleQueue expire:link} target={<none> expire:link}
+```
+</details>
