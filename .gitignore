@@ -1,5 +1,8 @@
 **/.DS_Store
 **/.vagrant
+**/certs
+**/support
+**/.vscode
 
 # Binaries for programs and plugins
 *.exe
