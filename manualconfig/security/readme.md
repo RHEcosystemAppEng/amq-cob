@@ -41,16 +41,16 @@ keytool -storetype pkcs12 -keystore server-ca-keystore.p12 -storepass $STORE_PAS
 ```
 * Generate Broker Certificate, replace ip and dns parameters according to the environment that you are using
 ```shell
-keytool -keystore broker-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias broker -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$BROKER_HOST_NAME, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:rh.cob.j214.com,ip:10.249.64.11;
+keytool -keystore broker-keystore.p12 -storepass $STORE_PASS -keypass $KEY_PASS -alias broker -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$BROKER_HOST_NAME, OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:rh.cob.j214.com,ip:10.249.64.11;
 
-keytool -keystore broker-keystore.jks -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias broker -certreq -file broker.csr;
+keytool -keystore broker-keystore.p12 -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias broker -certreq -file broker.csr;
 
 keytool -keystore server-ca-keystore.p12 -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -storepass $STORE_PASS -alias server-ca -gencert -rfc -infile broker.csr -outfile broker.crt -validity $VALIDITY -ext bc=ca:false -ext san=dns:localhost,ip:127.0.0.1,dns:rh.cob.j214.com,ip:10.249.64.11;
 ```
 *  Import CA and Broker Certs into Broker Key Store
 ```shell
-keytool -keystore broker-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -importcert -alias server-ca -file server-ca.crt -noprompt;
-keytool -keystore broker-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -importcert -alias broker -file broker.crt;
+keytool -keystore broker-keystore.p12 -storepass $STORE_PASS -keypass $KEY_PASS -importcert -alias server-ca -file server-ca.crt -noprompt;
+keytool -keystore broker-keystore.p12 -storepass $STORE_PASS -keypass $KEY_PASS -importcert -alias broker -file broker.crt;
 ```
 * Create Trust Store with CA Cert for use by Broker
 ```shell
@@ -61,9 +61,9 @@ keytool -keystore server-ca-truststore.p12 -storepass $STORE_PASS -keypass $KEY_
 ```shell
 openssl verify -verbose -CAfile server-ca.crt  server.crt
 ```
-* Copy the server-keystore.jks to the Broker
+* Copy the broker-keystore.p12 to the Broker
 ```shell
-scp server-keystore.jks root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/broker-01/etc
+scp broker-keystore.p12 root@$J214_STANDALONE_BROKER:/var/opt/amq-broker/broker-01/etc
 ```
 
 * Copy the server-ca.crt to the Router
@@ -86,7 +86,7 @@ scp server-ca.crt root@$J214_STANDALONE_ROUTER:/etc/qpid-dispatch
 
         <!-- Acceptors -->
         <acceptors>
-            <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/server-keystore.jks;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;</acceptor>
+            <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/server-keystore.p12;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;</acceptor>
         </acceptors>
 
         <security-settings>
@@ -215,16 +215,13 @@ qdrouterd
 * Ensure the steps above for establishing one way TLS has been completed between router and broker
 * Generate router Certificates. Please replace ip and dns parameters accordingly
 ```shell
-keytool -keystore router-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias router -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router.rh.cob.j214.com,ip:10.249.64.12;
+keytool -keystore router-keystore.p12 -storepass $STORE_PASS -keypass $KEY_PASS -alias router -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router.rh.cob.j214.com,ip:10.249.64.12;
 
-keytool -keystore router-keystore.jks -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias router -certreq -file router.csr;
+keytool -keystore router-keystore.p12 -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias router -certreq -file router.csr;
 
 keytool -keystore server-ca-keystore.p12 -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -storepass $STORE_PASS -alias server-ca -gencert -rfc -infile router.csr -outfile router.crt -validity $VALIDITY -ext bc=ca:false -ext san=dns:localhost,ip:127.0.0.1,dns:router.rh.cob.j214.com,ip:10.249.64.12;
 ```
-* Convert router keystore jks to p12 format
-```shell
-keytool -importkeystore -srckeystore router-keystore.jks -srcstorepass $STORE_PASS -destkeystore router-keystore.p12 -deststorepass $STORE_PASS -srcstoretype jks -deststoretype pkcs12;
-```
+
 * Extract the private key
 ```shell
 openssl pkcs12 -passin pass:$STORE_PASS -in router-keystore.p12 -out router-private-key.key -nodes -nocerts
@@ -257,7 +254,7 @@ scp router.crt router-private-key.key root@$J214_STANDALONE_ROUTER:/etc/qpid-dis
 
       <!-- Acceptors -->
       <acceptors>
-         <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/server-keystore.jks;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;needClientAuth=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat</acceptor>
+         <acceptor name="netty-ssl-acceptor">tcp://10.249.64.11:61616?sslEnabled=true;keyStorePath=../etc/broker-keystore.p12;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;needClientAuth=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat</acceptor>
       </acceptors>
 
       <security-settings>
@@ -309,9 +306,9 @@ activemq {
 ```
 </details>
 
-* Add this line to the end of artemis-users.properties file for user router. This router user is identified by a TLS Certificate which has "CN=Interconn Router,O=ActiveMQ,C=AMQ"
+* Add this line to the end of artemis-users.properties file for user router. This router user is identified by a TLS Certificate which has "CN=rhkp-jira214-tor2-standalone-router,O=ActiveMQ,C=AMQ"
 ```text
-router=CN=Interconn Router,O=ActiveMQ,C=AMQ
+router=CN=rhkp-jira214-tor2-standalone-router,O=ActiveMQ,C=AMQ
 ```
 
 * The artemis-roles.properties file should look as follows, where we are saying the user router belongs to role amq.
@@ -438,16 +435,11 @@ qdrouterd
 
 * Generate router certificates for "router01" and be sure to replace alias, ip and dns accordingly
 ```shell
-keytool -keystore router01-keystore.jks -storepass $STORE_PASS -keypass $KEY_PASS -alias router01 -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER01_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router01.rh.cob.j214.com,ip:10.249.64.5;
+keytool -keystore router01-keystore.p12 -storepass $STORE_PASS -keypass $KEY_PASS -alias router01 -genkey -keyalg "RSA" -keysize 2048 -sigalg sha384WithRSA -dname "CN=$ROUTER01_HOST_NAME OU=Artemis, O=ActiveMQ, L=AMQ, S=AMQ, C=AMQ" -validity $VALIDITY -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:router01.rh.cob.j214.com,ip:10.249.64.5;
 
-keytool -keystore router01-keystore.jks -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias router01 -certreq -file router01.csr;
+keytool -keystore router01-keystore.p12 -storepass $STORE_PASS -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -alias router01 -certreq -file router01.csr;
 
 keytool -keystore server-ca-keystore.p12 -keyalg RSA -keysize 2048 -sigalg sha384WithRSA -storepass $STORE_PASS -alias server-ca -gencert -rfc -infile router01.csr -outfile router01.crt -validity $VALIDITY -ext bc=ca:false -ext san=dns:localhost,ip:127.0.0.1,dns:router01.rh.cob.j214.com,ip:10.249.64.5;
-```
-
-* Convert router01 keystore jks to p12 format
-```shell
-keytool -importkeystore -srckeystore router01-keystore.jks -srcstorepass $STORE_PASS -destkeystore router01-keystore.p12 -deststorepass $STORE_PASS -srcstoretype jks -deststoretype pkcs12;
 ```
 
 * Extract the private key
