@@ -1,0 +1,33 @@
+---
+# Adds SSH key for all the hosts except the ones defined in r2_nfs_servers group
+# as all these hosts
+- name: Add SSH public key
+  when: inventory_hostname not in groups['r2_nfs_servers']
+  authorized_key:
+    user: "{{ user_amq }}"
+    state: present
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+  register: add_ssh_key_output
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+  register: hostname_output
+
+- name: Ensure the packages needed are installed on the Broker(s)
+  when: inventory_hostname in groups['r2_brokers']
+  dnf:
+    name: "{{ broker_packages }}"
+    state: latest
+    update_cache: yes
+  register: dnf_output
+
+- name: Show the setting of hostname output for each of the host
+  when: hostname_output.changed is true
+  debug:
+    msg: "Hostname changed to [{{ hostname_output.name }}]"
+
+- name: All done!!!
+  when: (add_ssh_key_output.changed is true) or (dnf_output.changed is true) or (hostname_output.changed is true)
+  debug:
+    msg: "Common setup complete..."

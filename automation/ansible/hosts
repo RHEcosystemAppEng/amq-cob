@@ -1,0 +1,12 @@
+[r2_brokers]
+r2-broker05-live
+
+[r2_nfs_servers]
+r2-vpc2-nfs-server
+
+[routers]
+r2-router03-spoke
+
+[all:vars]
+ansible_connection = ssh
+ansible_user = root
