@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - common
+
+- hosts: r2_nfs_servers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - nfs_server

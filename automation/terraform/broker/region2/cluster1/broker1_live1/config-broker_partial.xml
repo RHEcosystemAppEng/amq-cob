@@ -23,10 +23,10 @@
 
         <acceptors>
             <!-- Acceptor for every supported protocol -->
-            <acceptor name="artemis">tcp://10.75.0.51:61616?sslEnabled=true;keyStorePath=../etc/r2-broker01-live1-keystore.jks;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpMinLargeMessageSize=102400;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpDuplicateDetection=true;supportAdvisory=false;suppressInternalManagementObjects=false</acceptor>
+            <acceptor name="artemis">tcp://10.75.0.51:61616?sslEnabled=true;keyStorePath=../etc/r2-broker01-live1-keystore.p12;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;needClientAuth=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpMinLargeMessageSize=102400;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpDuplicateDetection=true;supportAdvisory=false;suppressInternalManagementObjects=false</acceptor>
 
             <!-- AMQP Acceptor.  Listens on default AMQP port for AMQP traffic.-->
-            <acceptor name="amqp">tcp://10.75.0.51:5672?sslEnabled=true;keyStorePath=../etc/r2-broker01-live1-keystore.jks;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true</acceptor>
+            <acceptor name="amqp">tcp://10.75.0.51:5672?sslEnabled=true;keyStorePath=../etc/r2-broker01-live1-keystore.p12;keyStorePassword=redhat;enabledProtocols=TLSv1,TLSv1.1,TLSv1.2;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true</acceptor>
         </acceptors>
 
         <cluster-user>amq_cluster_user</cluster-user>

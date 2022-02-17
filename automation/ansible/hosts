@@ -1,0 +1,16 @@
+[r2_brokers]
+r2-broker05-live
+
+[r2_nfs_servers]
+r2-vpc2-nfs-server zone1_cidr=10.76.0.0/24 zone2_cidr=10.76.64.0/24 zone3_cidr=10.76.128.0/24
+
+[routers]
+r2-router03-spoke
+
+[r2_nfs_servers:vars]
+user_nobody="nobody"
+
+[all:vars]
+ansible_connection = ssh
+ansible_user = root
+user_amq = "amq_runner"
