@@ -32,9 +32,9 @@
     path: /etc/exports
     block: |
       ### For zone1 / zone2 / zone3
-      {{ nfs_mount_point }} 10.76.0.0/24{{nfs_options}} \
-                            10.76.64.0/24{{nfs_options}} \
-                            10.76.128.0/24{{nfs_options}}
+      {{ nfs_mount_point }} {{zone1_cidr}}{{nfs_options}} \
+                            {{zone2_cidr}}{{nfs_options}} \
+                            {{zone3_cidr}}{{nfs_options}}
   register: nfs_add_exports_output
 
 - name: Get exports entries

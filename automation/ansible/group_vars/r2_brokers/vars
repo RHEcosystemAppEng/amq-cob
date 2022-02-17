@@ -1,0 +1,2 @@
+---
+amq_user_password: "{{ vault_amq_user_password }}"

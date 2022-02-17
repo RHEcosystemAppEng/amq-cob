@@ -1,5 +1,4 @@
 ---
-user_nobody: "nobody"
 packages:
   - nfs-utils
 nfs_service: "nfs-server.service"

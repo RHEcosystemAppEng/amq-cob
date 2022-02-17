@@ -1,4 +1,21 @@
 ---
+# Plain text password needs to be hashed for it to succeed when creating the "amq" user
+- name: Hash AMQ password
+  become: no
+  when: inventory_hostname not in groups['r2_nfs_servers']
+  local_action: shell command echo {{ amq_user_password }} | openssl passwd -1 -stdin
+  register: amq_password_hash_output
+
+# Create amq_runner user and add to the sudo group
+- name: Create AMQ user as a sudoer
+  when: inventory_hostname not in groups['r2_nfs_servers']
+  ansible.builtin.user:
+    name: "{{ user_amq }}"
+    password: "{{ amq_password_hash_output.stdout }}"
+    comment: AMQ primary user
+    group: wheel
+  register: create_amq_user_output
+
 # Adds SSH key for all the hosts except the ones defined in r2_nfs_servers group
 # as all these hosts
 - name: Add SSH public key
@@ -21,6 +38,11 @@
     state: latest
     update_cache: yes
   register: dnf_output
+
+- name: SSH public key added
+  when: add_ssh_key_output.changed is true
+  debug:
+    msg: "SSH key for user [{{ add_ssh_key_output.user }}] added to [{{ add_ssh_key_output.keyfile }}]"
 
 - name: Show the setting of hostname output for each of the host
   when: hostname_output.changed is true
