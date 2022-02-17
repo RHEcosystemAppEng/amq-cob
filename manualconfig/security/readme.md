@@ -463,7 +463,7 @@ router {
     id: Router.R
 }
 
-#SSL Profile for Router 01
+#SSL Profile for Router
 sslProfile {
     name: inter-router-tls
     certFile: /etc/qpid-dispatch/router.crt
