@@ -3,6 +3,9 @@
 **/certs
 **/support
 **/.vscode
+**/target
+**/.idea
+
 **/cert-generation
 #**/input-files
 

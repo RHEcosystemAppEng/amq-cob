@@ -3,7 +3,8 @@
   gather_facts: no
   vars:
     BROKER_HOST_NAME: 'rhkp-jira214-tor2-standalone-broker'
-    BROKER_IP: '10.249.64.11'
+    BROKER_INTERNAL_IP: '10.249.64.11'
+    BROKER_EXTERNAL_IP: '163.74.91.169'
     BROKER_CERT_FILE_PREFIX: 'broker'
     BROKER_DNS_NAME: 'www.rhkp.j214.broker.redhat.com'
   tasks:
@@ -20,7 +21,8 @@
     - name: Generate/export Broker Certificate
       command: "./gen-server-cert.sh \
 SERVER_HOST_NAME={{BROKER_HOST_NAME}} \
-SERVER_IP={{BROKER_IP}} \
+SERVER_INTERNAL_IP={{BROKER_INTERNAL_IP}} \
+SERVER_EXTERNAL_IP={{BROKER_EXTERNAL_IP}} \
 SERVER_DNS_NAME={{BROKER_DNS_NAME}} \
 CERT_FILE_PREFIX={{BROKER_CERT_FILE_PREFIX}} \
 IMPORT_CERT_CHAIN_IN_JKS=yes \

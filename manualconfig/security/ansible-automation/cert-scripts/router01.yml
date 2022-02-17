@@ -3,7 +3,8 @@
   gather_facts: no
   vars:
     ROUTER_HOST_NAME: 'rhkp-jira214-tor2-standalone-router-01'
-    ROUTER_IP: '10.249.64.5'
+    ROUTER_INTERNAL_IP: '10.249.64.5'
+    ROUTER_EXTERNAL_IP: '163.74.88.146'
     ROUTER_CERT_FILE_PREFIX: 'router01'
     ROUTER_DNS_NAME: 'www.rhkp.j214.router01.redhat.com'  
 
@@ -31,7 +32,8 @@
     - name: Generate Router01 Certificate
       command: "./gen-server-cert.sh \
 SERVER_HOST_NAME={{ROUTER_HOST_NAME}} \
-SERVER_IP={{ROUTER_IP}} \
+SERVER_INTERNAL_IP={{ROUTER_INTERNAL_IP}} \
+SERVER_EXTERNAL_IP={{ROUTER_EXTERNAL_IP}} \
 SERVER_DNS_NAME={{ROUTER_DNS_NAME}} \
 CERT_FILE_PREFIX={{ROUTER_CERT_FILE_PREFIX}}"
 
