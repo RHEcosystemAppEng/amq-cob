@@ -1,0 +1,49 @@
+---
+
+- hosts:
+    - nfs_servers
+    - brokers
+    - routers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - setup_common
+
+- hosts:
+    - nfs_servers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - setup_nfs_server
+
+- hosts:
+    - brokers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - setup_broker-common
+    # Add "amq_user" to sudoers to allow invoking "sudo" without password prompt
+    - setup_broker-sudoer-add
+
+- hosts:
+    - brokers
+  become: 'yes'
+  become_user: "{{ user_amq }}"
+  become_method: sudo
+  roles:
+    - setup_broker
+
+- hosts:
+    - brokers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    # Remove "amq_user" from sudoers so that password prompt is shown when invoking "sudo"
+    - setup_broker-sudoer-remove
+
+- hosts:
+    - routers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - setup_router

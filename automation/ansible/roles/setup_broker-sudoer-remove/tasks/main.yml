@@ -1,0 +1,13 @@
+---
+
+- name: Enable password prompt for "sudo"
+  blockinfile:
+    path: /etc/sudoers
+    state: absent
+    validate: "visudo -cf %s"
+  register: visudo_output
+
+- name: visudo output
+  when: visudo_output.changed is true
+  debug:
+    msg: "User '{{user_amq}}' will be prompted for password when running 'sudo'..."

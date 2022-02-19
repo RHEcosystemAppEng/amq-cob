@@ -1,0 +1,10 @@
+#!/bin/sh
+
+pid=`pgrep -f "{{ amq_router_start_command }}"`
+
+if [ -z "$pid" ]; then
+  echo "Starting router [{{ router_id }}] as a daemon ..."
+  {{ amq_router_start_command }}
+else
+  echo "Router [{{ router_id }}] already running with process id [$pid]"
+fi

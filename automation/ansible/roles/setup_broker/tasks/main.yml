@@ -1,0 +1,48 @@
+---
+
+- name: Copy "amq" setup script
+  template:
+    src: install_amq.sh.j2
+    dest: "{{amq_install_script}}"
+    mode: 0755
+  register: copy_amq_setup_output
+
+- name: Copy amq setup output
+  when: copy_amq_setup_output.changed is true
+  debug:
+    msg: "AMQ setup script copied..."
+
+- name: Execute the "amq" setup script
+  when: copy_amq_setup_output.changed is true
+  shell:
+    "{{ amq_install_script }}"
+  register: amq_install_script_output
+
+- name: Execute amq setup output
+  when: amq_install_script_output.changed is true
+  debug:
+    msg:
+      - "Broker installed at {{ amq_broker_dir }}/{{ broker_name }}."
+      - "*** Setup script might have created backup directories for AMQ and broker ***"
+
+- name: Copy amq config files - broker/jgroup/bootstrap
+  template:
+    src: "{{ item }}.j2"    # iterate over all the template files specified in the loop
+    dest: "{{ amq_config_dir }}/{{ item }}"
+    mode: 0644
+  loop:
+    - broker.xml
+    - jgroups-ping.xml
+    - bootstrap.xml
+  register: copy_amq_config_output
+
+- name: Copy amq config files output
+  when: copy_amq_config_output.changed is true
+  debug:
+    msg: "AMQ config files copied to {{ amq_config_dir }} ..."
+
+- name: All done!!!
+  when: (copy_amq_setup_output.changed is true) or (amq_install_script_output.changed is true) or (copy_amq_jgroups_output.changed is true)
+  debug:
+    msg: "Broker custom setup complete..."
+

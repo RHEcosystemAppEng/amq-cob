@@ -21,7 +21,7 @@ variable "CLUSTER2_PRIVATE_IP_PREFIX" {
 variable "tags" {
   type        = list(any)
   default     = [
-    "jira:appeng-300",
+    "jira:appeng-94",
     "dev:appeng-amq_cob_team",
     "created_by:terraform"
   ]

@@ -17,7 +17,7 @@ variable "REGION_2" {
 variable "tags" {
   type        = list(any)
   default     = [
-    "jira:appeng-300",
+    "jira:appeng-94",
     "dev:appeng-amq_cob_team",
     "type:interconnect",
     "created_by:terraform"

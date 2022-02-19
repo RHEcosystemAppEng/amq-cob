@@ -1,6 +1,0 @@
----
-packages:
-  - nfs-utils
-nfs_service: "nfs-server.service"
-nfs_options: "(rw,insecure,sync,no_all_squash,root_squash)"
-nfs_mount_point: "/mnt/nfs_shares/amq"

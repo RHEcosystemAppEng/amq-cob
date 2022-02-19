@@ -27,9 +27,6 @@ resource "ibm_is_instance" "amq_broker" {
 
   tags = local.tags
 
-  # the path starts from where terraform is run (cluster2)
-  user_data = file(var.USER_DATA_FILE)
-
   timeouts {
     create = "3m"
   }

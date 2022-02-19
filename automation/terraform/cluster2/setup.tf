@@ -50,8 +50,6 @@ module "nfs-server" {
   MAIN_SECURITY_GROUP_ID = module.common.custom_sg_1_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
 
-  USER_DATA_FILE = var.NFS_SERVER_USER_DATA_FILE
-
   tags = var.tags
 }
 
@@ -77,8 +75,6 @@ module "broker-05-live" {
   SECURITY_GROUP_1_ID    = module.common.custom_sg_1_id
   SECURITY_GROUP_2_ID    = module.common.custom_sg_2_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
-
-  USER_DATA_FILE = var.BROKER_05_USER_DATA_FILE
 
   tags = concat(var.tags, [
     "broker: 05",
@@ -109,8 +105,6 @@ module "broker-06-bak" {
   SECURITY_GROUP_2_ID    = module.common.custom_sg_2_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
 
-  USER_DATA_FILE = var.BROKER_06_USER_DATA_FILE
-
   tags = concat(var.tags, [
     "broker: 06",
     "setup: amq_broker"
@@ -140,8 +134,6 @@ module "broker-07-live" {
   SECURITY_GROUP_2_ID    = module.common.custom_sg_2_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
 
-  USER_DATA_FILE = var.BROKER_07_USER_DATA_FILE
-
   tags = concat(var.tags, [
     "broker: 07",
     "setup: amq_broker"
@@ -170,8 +162,6 @@ module "broker-08-bak" {
   SECURITY_GROUP_1_ID    = module.common.custom_sg_1_id
   SECURITY_GROUP_2_ID    = module.common.custom_sg_2_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
-
-  USER_DATA_FILE = var.BROKER_08_USER_DATA_FILE
 
   tags = concat(var.tags, [
     "broker: 08",

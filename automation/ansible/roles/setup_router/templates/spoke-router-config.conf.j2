@@ -1,0 +1,202 @@
+##
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License
+##
+
+# See the qdrouterd.conf (5) manual page for information about this
+# file's format and options.
+
+listener {
+    host: 0.0.0.0
+    port: amqp
+    authenticatePeer: no
+    saslMechanisms: ANONYMOUS
+}
+
+listener {
+    host: 0.0.0.0
+    port: 8672
+    authenticatePeer: no
+    http: yes
+}
+
+address {
+    prefix: closest
+    distribution: closest
+}
+
+address {
+    prefix: multicast
+    distribution: multicast
+}
+
+address {
+    prefix: unicast
+    distribution: closest
+}
+
+address {
+    prefix: exclusive
+    distribution: closest
+}
+
+address {
+    prefix: broadcast
+    distribution: multicast
+}
+
+
+### ----------------------------------------------------------------
+### [START] Custom section for spoke
+### ----------------------------------------------------------------
+
+
+router {
+    mode: interior
+    id: {{ router_id }}
+}
+
+
+# ----------------------------------------------------------------
+# For 1-way SSL [start]
+# ----------------------------------------------------------------
+
+#sslProfile {
+#    name: hub-n-broker-tls
+#    caCertFile: /etc/qpid-dispatch/server-ca.crt
+#    password: redhat
+#}
+
+# Connection to the broker
+#connector {
+#    name: {{ live_broker_01_host }}
+#    # substitute this with actual hostname (or ip address) of live broker 1
+#    host: amq-{{ live_broker_01_host }}
+#    port: 61616
+#    role: route-container
+#    saslMechanisms: EXTERNAL ANONYMOUS
+#    sslProfile: hub-n-broker-tls
+#    verifyHostname: no
+#}
+
+# ----------------------------------------------------------------
+# For 1-way SSL [end]
+# ----------------------------------------------------------------
+
+
+
+# ----------------------------------------------------------------
+# For 2-way SSL [start]
+# ----------------------------------------------------------------
+
+#### Profile for 2-way SSL - for Hub and brokers
+#sslProfile {
+#    name: hub-n-broker-tls
+#    caCertFile: /etc/qpid-dispatch/server-ca.crt
+#    certFile: /etc/qpid-dispatch/r2-spoke-router2.crt
+#    privateKeyFile: /etc/qpid-dispatch/r2-spoke-router2-private.pem
+#    password: redhat
+#}
+
+# Connection to the hub
+connector {
+    name: {{ hub_router_id }}
+    # substitute with actual hostname (or ip address) of the hub router
+    host: amq-{{ hub_router_id }}
+    port: 5773
+    role: inter-router
+#    sslProfile: hub-n-broker-tls
+#    verifyHostname: no
+#    saslMechanisms: EXTERNAL PLAIN
+}
+
+# Connection to the broker (01)
+connector {
+    name: {{ live_broker_01_host }}
+    # substitute this with actual hostname (or ip address) of live broker 1
+    host: amq-{{ live_broker_01_host }}
+    port: 61616
+    role: route-container
+ #   sslProfile: hub-n-broker-tls
+ #   verifyHostname: no
+ #   saslMechanisms: PLAIN
+ #   #saslMechanisms: EXTERNAL PLAIN
+ #   saslUsername: amq_user
+ #   saslPassword: redhat
+}
+
+# Connection to the broker (02)
+connector {
+    name: {{ live_broker_02_host }}
+    # substitute this with actual hostname (or ip address) of live broker 2
+    host: amq-{{ live_broker_02_host }}
+    port: 61616
+    role: route-container
+ #   sslProfile: hub-n-broker-tls
+ #   verifyHostname: no
+ #   saslMechanisms: PLAIN
+ #   #saslMechanisms: EXTERNAL PLAIN
+ #   saslUsername: amq_user
+ #   saslPassword: redhat
+}
+
+# ----------------------------------------------------------------
+# For 2-way SSL [end]
+# ----------------------------------------------------------------
+
+
+# router will use the queue specified in prefix
+address {
+    prefix: exampleQueue
+    # waypoint address ensures the queue is identified on the broker
+    waypoint: yes
+}
+
+# connect router to broker using autoLink
+# inbound link => message(s) will flow into the router (broker queue -> router)
+autoLink {
+    address: exampleQueue
+    connection: {{ live_broker_01_host }}
+    direction: in
+}
+
+# outbound link => message(s) will flow out of the router (router -> broker queue)
+autoLink {
+    address: exampleQueue
+    connection: {{ live_broker_01_host }}
+    direction: out
+}
+
+# connect router to broker using autoLink
+# inbound link => message(s) will flow into the router (broker queue -> router)
+autoLink {
+    address: exampleQueue
+    connection: {{ live_broker_02_host }}
+    direction: in
+}
+
+# outbound link => message(s) will flow out of the router (router -> broker queue)
+autoLink {
+    address: exampleQueue
+    connection: {{ live_broker_02_host }}
+    direction: out
+}
+
+
+### ----------------------------------------------------------------
+### [END] Custom section for spoke
+### ----------------------------------------------------------------

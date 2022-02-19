@@ -1,0 +1,16 @@
+---
+
+- name: Give password less permission for "sudo"
+  blockinfile:
+    path: /etc/sudoers
+    block: |
+      # Allow "{{user_amq}}" to run sudo without password
+      {{user_amq}}  ALL=(ALL) NOPASSWD:ALL
+    backup: yes
+    validate: "visudo -cf %s"
+  register: visudo_output
+
+- name: visudo output
+  when: visudo_output.changed is true
+  debug:
+    msg: "User '{{user_amq}}' is allowed to perform sudo without password..."

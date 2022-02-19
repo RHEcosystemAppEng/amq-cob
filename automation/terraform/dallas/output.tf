@@ -316,19 +316,19 @@ output "vpc2-broker08-bak-floating_ip_name" {
 #
 # Router 01 (hub router) section
 #
-output "vpc1-router-01-hub-private_ip" {
+output "vpc1-router01-hub-private_ip" {
   value = module.dallas-cluster1.router-01-hub-private_ip
 }
 
-output "vpc1-router-01-hub-public_ip" {
+output "vpc1-router01-hub-public_ip" {
   value = module.dallas-cluster1.router-01-hub-public_ip
 }
 
-output "vpc1-router-01-hub-instance_name" {
+output "vpc1-router01-hub-instance_name" {
   value = module.dallas-cluster1.router-01-hub-instance_name
 }
 
-output "vpc1-router-01-hub-floating_ip_name" {
+output "vpc1-router01-hub-floating_ip_name" {
   value = module.dallas-cluster1.router-01-hub-floating_ip_name
 }
 
@@ -336,19 +336,19 @@ output "vpc1-router-01-hub-floating_ip_name" {
 #
 # Router 02 (spoke router) section
 #
-output "vpc1-router-02-spoke-private_ip" {
+output "vpc1-router02-spoke-private_ip" {
   value = module.dallas-cluster1.router-02-spoke-private_ip
 }
 
-output "vpc1-router-02-spoke-public_ip" {
+output "vpc1-router02-spoke-public_ip" {
   value = module.dallas-cluster1.router-02-spoke-public_ip
 }
 
-output "vpc1-router-02-spoke-instance_name" {
+output "vpc1-router02-spoke-instance_name" {
   value = module.dallas-cluster1.router-02-spoke-instance_name
 }
 
-output "vpc1-router-02-spoke-floating_ip_name" {
+output "vpc1-router02-spoke-floating_ip_name" {
   value = module.dallas-cluster1.router-02-spoke-floating_ip_name
 }
 
@@ -356,19 +356,19 @@ output "vpc1-router-02-spoke-floating_ip_name" {
 #
 # Router 03 (spoke router) section
 #
-output "vpc2-router-03-spoke-private_ip" {
+output "vpc2-router03-spoke-private_ip" {
   value = module.dallas-cluster2.router-03-spoke-private_ip
 }
 
-output "vpc2-router-03-spoke-public_ip" {
+output "vpc2-router03-spoke-public_ip" {
   value = module.dallas-cluster2.router-03-spoke-public_ip
 }
 
-output "vpc2-router-03-spoke-instance_name" {
+output "vpc2-router03-spoke-instance_name" {
   value = module.dallas-cluster2.router-03-spoke-instance_name
 }
 
-output "vpc2-router-03-spoke-floating_ip_name" {
+output "vpc2-router03-spoke-floating_ip_name" {
   value = module.dallas-cluster2.router-03-spoke-floating_ip_name
 }
 
@@ -377,22 +377,22 @@ output "vpc2-router-03-spoke-floating_ip_name" {
 #
 # Local Transit Gateway section
 #
-#output "local-gateway" {
-#  value = module.transit-gateway-local-dallas.gateway
-#}
-#
-#output "local-gateway-connection_1" {
-#  value = module.transit-gateway-local-dallas.connection_1
-#}
-#
-#output "local-gateway-connection_2" {
-#  value = module.transit-gateway-local-dallas.connection_2
-#}
-#
-#output "local-gateway-vpc_1_name" {
-#  value = module.transit-gateway-local-dallas.vpc_1_name
-#}
-#
-#output "local-gateway-vpc_2_name" {
-#  value = module.transit-gateway-local-dallas.vpc_2_name
-#}
+output "local-gateway" {
+  value = module.transit-gateway-local-dallas.gateway
+}
+
+output "local-gateway-connection_1" {
+  value = module.transit-gateway-local-dallas.connection_1
+}
+
+output "local-gateway-connection_2" {
+  value = module.transit-gateway-local-dallas.connection_2
+}
+
+output "local-gateway-vpc_1_name" {
+  value = module.transit-gateway-local-dallas.vpc_1_name
+}
+
+output "local-gateway-vpc_2_name" {
+  value = module.transit-gateway-local-dallas.vpc_2_name
+}
