@@ -1,0 +1,98 @@
+---
+
+- name: Ensure the packages needed are installed on the Broker(s)
+  dnf:
+    name: "{{ broker_packages }}"
+    state: latest
+    update_cache: yes
+  register: dnf_output
+
+# Unmount NFS (in case it's mounted) as this gives error on checking the mount dir sometimes
+- name: Unmount NFS volume
+  ansible.posix.mount:
+    path: "{{broker_mount_dir}}"
+    state: unmounted
+
+# May want to uncomment "Unmount NFS volume" task if this fails due to the dir already in existence and is used as mount point
+- name: Check if "amq" mount directory exists
+  stat:
+    path: "{{broker_mount_dir}}"
+  register: mount_dir_output
+
+- name: Create "amq" mount directory and chgrp on its parent recursively
+  shell: |
+    if [ ! -d "{{broker_mount_dir}}" ]; then
+      mkdir -p "{{broker_mount_dir}}"
+    fi
+    sudo chown -R "{{ user_amq }}":"{{ user_amq }}" "{{broker_mount_base_dir}}"
+  register: create_mount_dir_output
+
+#- name: Create "amq" mount directory
+##  when: mount_dir_output.stat.exists == false
+#  ansible.builtin.file:
+#    path: "{{broker_mount_dir}}"
+#    state: directory
+#    recurse: yes
+#    owner: "{{ user_amq }}"
+#    group: "{{ user_amq }}"
+#
+#- name: Change ownership recursively for one level above mount dir
+##  when: mount_dir_output.stat.exists == false
+#  ansible.builtin.file:
+#    path: "{{broker_mount_base_dir}}"
+#    state: directory
+#    recurse: yes
+#    owner: "{{ user_amq }}"
+#    group: "{{ user_amq }}"
+#
+#- name: Create amq mount dir output
+#  debug:
+#    var: create_mount_dir_output
+
+- name: Add NFS server to hosts
+  when: (mount_dir_output.stat.exists is true) or (create_mount_dir_output.changed is true)
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ nfs_server_ip }} {{ nfs_server_host }}
+  register: etc_hosts_output
+
+- name: Mount NFS volume
+#  when: (mount_dir_output.stat.exists is true) or (create_mount_dir_output.changed is true)
+  ansible.posix.mount:
+    src: "{{nfs_server_host}}:{{nfs_mount_point}}"
+    path: "{{broker_mount_dir}}"
+    opts: defaults
+    fstype: nfs
+    state: mounted
+  register: mount_nfs_output
+
+- name: Run mount command
+  when: mount_nfs_output.changed is true
+  ansible.builtin.command: mount -a
+  register: run_mount_output
+
+- name: Show the dnf output
+  when: dnf_output.changed is true
+  debug:
+    msg: "Broker packages {{ broker_packages }} installed successfully..."
+
+- name: Show NFS server addition to hosts
+  when: etc_hosts_output.changed is true
+  debug:
+    msg: "Host entry inserted: {{ nfs_server_ip }} {{ nfs_server_host }}"
+
+- name: Show mount point entries to fstab
+  when: mount_nfs_output.changed is true
+  debug:
+    msg: "Mount entry inserted: {{nfs_server_host}}:{{nfs_mount_point}} {{broker_mount_dir}}"
+
+- name: Show mount command output
+  when: run_mount_output.changed is true
+  debug:
+    msg: "Mount points successfully created against NFS server"
+
+- name: All done!!!
+  when: (dnf_output.changed is true) or (create_mount_dir_output.changed is true) or (mount_nfs_output.changed is true) or (etc_hosts_output.changed is true)
+  debug:
+    msg: "Broker common setup complete..."

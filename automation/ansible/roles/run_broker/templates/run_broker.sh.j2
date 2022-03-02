@@ -1,0 +1,10 @@
+#!/bin/sh
+
+pid=`pgrep -f "java .*Artemis run"`
+
+if [ -z "$pid" ]; then
+  echo "Starting broker {{ broker_name }} ..."
+  {{ amq_broker_start_command }}
+else
+  echo "Broker [{{ broker_name }}] already running with process id [$pid]"
+fi

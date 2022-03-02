@@ -1,0 +1,42 @@
+---
+
+- name: Copy "amq" broker run script
+  template:
+    src: run_broker.sh.j2
+    dest: "{{amq_broker_run_script}}"
+    mode: 0755
+  register: copy_run_broker_script_output
+
+- name: Copy "amq" broker run script - output
+  when: copy_run_broker_script_output.changed is true
+  debug:
+    msg: "AMQ {{ broker_name }} run script copied..."
+
+- name: Execute the "amq" broker run script
+  shell:
+    "{{amq_broker_run_script}}"
+#  async: "{{ broker_run_time_in_days * seconds_in_day }}"   # Will wait for these many days before it times out
+#  poll: 0
+  register: amq_broker_run_script_output
+
+#- name: Run AMQ broker instance
+#  when: inventory_hostname in groups['brokers']
+#  shell: |
+#    pid=`pgrep -f "java .*Artemis run"`
+#    echo "$pid"
+#
+#    if [ -z "$pid" ]; then
+#      echo "Starting broker {{ broker_name }} ..."
+#      "{{ amq_broker_run_command }}"
+#    else
+#      echo "Broker [{{ broker_name }}] already running with process id [$pid]"
+#    fi
+##  async: "{{ broker_run_time_in_days * seconds_in_day }}"   # Will wait for these many days before it times out
+##  poll: 0
+#  register: amq_broker_run_command_output
+
+- name: Execute the "amq" broker run script - output
+  when: amq_broker_run_script_output.changed is true
+  debug:
+    var: amq_broker_run_script_output.stdout_lines
+

@@ -26,7 +26,6 @@ resource "ibm_is_instance" "amq_nfs_server" {
   }
 
   tags      = local.tags
-  user_data = file(var.USER_DATA_FILE)
 
   timeouts {
     create = "3m"

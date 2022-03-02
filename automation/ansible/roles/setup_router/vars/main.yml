@@ -1,0 +1,27 @@
+---
+router_packages:
+  - qpid-dispatch-router
+  - qpid-dispatch-tools
+  - qpid-dispatch-console
+redhat_subscription_config_dir: /etc/rhsm
+router_config_dir: /etc/qpid-dispatch
+
+#r2_routers:
+#  hosts:
+#    r2-router01-hub:
+#      router_id: router.hub-01
+#      router_private_ip: 10.75.128.100
+#
+#
+
+hub_router_id: "{{ hostvars[groups[router_group][0]]['router_id'] }}"
+
+# hub router private IP
+hub_router_ip: "{{ hostvars[groups[router_group][0]]['router_private_ip'] }}"
+
+# First live Broker private IP
+first_live_broker_ip: "{{ hostvars[groups[broker_group][live_broker_01_host_idx]]['broker_private_ip'] }}"
+
+# Second live Broker private IP
+second_live_broker_ip: "{{ hostvars[groups[broker_group][live_broker_02_host_idx]]['broker_private_ip'] }}"
+

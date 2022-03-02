@@ -1,0 +1,78 @@
+---
+- name: Ensure the packages needed are installed
+  dnf:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  notify:
+    - Start NFS service
+    - Enable NFS service
+  register: dnf_output
+
+#- name: Check if "files" mount directory exists
+#  stat:
+#    path: "{{nfs_files_mount}}"
+#  register: mount_dir_output
+#
+#- name: Create "files" directory and change ownership recursively
+#  when: mount_dir_output.stat.exists == false
+#  ansible.builtin.file:
+#    path: "{{nfs_files_mount}}"
+#    state: directory
+#    recurse: yes
+#    owner: "{{ user_nobody }}"
+#    group: "{{ user_nobody }}"
+#
+
+- name: Create "files" directory and change ownership recursively
+  shell: |
+    if [ ! -d "{{nfs_files_mount}}" ]; then
+      mkdir -p "{{nfs_files_mount}}"
+    fi
+    sudo chown -R nobody: "{{nfs_mount_point}}"
+    sudo chmod -R 777 "{{nfs_mount_point}}"
+  register: create_mount_dir_output
+
+- name: Copy AMQ binary to NFS server
+#  when: (main_config_dir | length > 0)
+  copy:
+    src: "amq-broker-7.9.0-bin.zip"
+    dest: "{{nfs_files_mount}}"
+    owner: "{{ user_nobody }}"
+    group: "{{ user_nobody }}"
+    mode: 0644
+  register: cp_amq_binary_output
+
+- name: Add broker entries to the /etc/exportfs on the NFS server
+  blockinfile:
+    path: /etc/exports
+    block: |
+      ### For zone1 / zone2 / zone3
+      {{ nfs_mount_point }} {{zone1_cidr}}{{nfs_options}} \
+                            {{zone2_cidr}}{{nfs_options}} \
+                            {{zone3_cidr}}{{nfs_options}}
+  register: nfs_add_exports_output
+
+- name: Get exports entries
+  when: nfs_add_exports_output.changed is true
+  ansible.builtin.command: exportfs -arv
+  register: exports_output
+
+- name: Show the dnf output
+  when: dnf_output.changed is true
+  debug:
+    msg: "NFS packages {{ packages }} installed successfully..."
+
+- name: Show the copy AMQ binary output
+  when: cp_amq_binary_output.changed is true
+  debug:
+    msg: "AMQ binary uploaded to {{ cp_amq_binary_output.dest }}"
+
+- name: Directories exported for mount
+  when: nfs_add_exports_output.changed is true
+  debug:
+    var: exports_output.stdout_lines
+
+- name: All done!!!
+  debug:
+    msg: NFS server setup is complete...

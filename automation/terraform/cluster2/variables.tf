@@ -23,11 +23,6 @@ variable "INSTANCE_PROFILE" {}
 
 variable "PRIVATE_IP_PREFIX" {}
 
-variable "NFS_SERVER_USER_DATA_FILE" {}
-variable "BROKER_05_USER_DATA_FILE" {}
-variable "BROKER_06_USER_DATA_FILE" {}
-variable "BROKER_07_USER_DATA_FILE" {}
-variable "BROKER_08_USER_DATA_FILE" {}
 variable "ROUTER_03_SPOKE_USER_DATA_FILE" {}
 
 variable "tags" {}
