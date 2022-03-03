@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 #============================================================================
@@ -20,10 +20,12 @@ function USAGE() {
     fi
 
     cat <<- USAGE_INFO
-      Usage: $0 -r <region> -d <region_dir>
+      Usage: $0 -r <region> -d <region_dir> -a -s <suffix>
         where
           region is one of r1 or r2
           region_dir is the directory for the specified region
+          -a is for ansible yaml format. The output will be in ansible yaml format
+          -s allows a suffix to be passed on, which will be added at the end of each hostname
 
         e.g: $0 -r r1 -d toronto
              This will extract hostname and public ip addresses from terraform config in "toronto" directory,
@@ -31,6 +33,11 @@ function USAGE() {
         e.g: $0 -r r2 -d dallas
              This will extract hostname and public ip addresses from terraform config in "dallas" directory,
              for the servers running in region 2 and display them on the stdout
+        e.g: $0 -r r2 -d dallas -s ".ip" -a
+             This will extract hostname and public ip addresses from terraform config in "dallas" directory,
+             for the servers running in region 2 and display them on the stdout.
+             The output will be in ansible yaml format:
+                <hostname+prefix>: <ip_address>
 USAGE_INFO
 
     exit 1
@@ -44,13 +51,21 @@ USAGE_INFO
 function print_ip_and_hostname() {
   local region="$1"
   local region_dir="$2"
+  local ansible_yaml_format="$3"
+  local suffix="$4"
   local instance_name
+  local host_file="/etc/hosts"
+  local hosts_ip_not_found
 
   local curr_dir=`pwd`
   cd "$region_dir"
 
+  if [ "$ansible_yaml_format" == "yes" ]; then
+    host_file="hosts.yml under global vars"
+  fi
+
   echo "Running terraform output for getting public_ip in [$region_dir]..."
-  printf "\nPaste the ip + hostname given below (between START and END tags) to /etc/hosts\n[START] Copy from next line -->>\n\n"
+  printf "\nPaste the ip + hostname given below (between START and END tags) to ${host_file}\n[START] Copy from next line -->>\n\n"
 
   for i in vpc1-broker01-live-public_ip vpc1-broker02-bak-public_ip vpc1-broker03-live-public_ip \
            vpc1-broker04-bak-public_ip vpc1-nfs-server-public_ip vpc1-router01-hub-public_ip \
@@ -58,23 +73,44 @@ function print_ip_and_hostname() {
            vpc2-broker07-live-public_ip vpc2-broker08-bak-public_ip vpc2-nfs-server-public_ip \
            vpc2-router03-spoke-public_ip
   do
-      ip=`terraform output $i | sed 's/"//g'`
+      ip=`terraform output $i 2>&1 | sed 's/"//g'`
       if [ ! -z "$ip" ]; then
         instance_name=`echo $i | sed 's/-public_ip//'`   # remove "-public_ip" from the instance name
-        case $instance_name in
-          "vpc1-nfs-server"|"vpc2-nfs-server")
-            instance_name="$region-$instance_name"
-            ;;
+        case $ip in
+          *"No outputs found"*|*"not found"*)
+            # Warning or error on output not found. Ignore it
+            if [ -z "$hosts_ip_not_found" ]; then
+              hosts_ip_not_found=$instance_name
+            else
+              hosts_ip_not_found="$hosts_ip_not_found, $instance_name"
+            fi
+           ;;
           *)
-            instance_name="$region-`echo $instance_name | sed 's/vpc[12]-//'`"  # remove vpc info from instance name
+            case $instance_name in
+              "vpc1-nfs-server"|"vpc2-nfs-server")
+                instance_name="$region-$instance_name"
+                ;;
+              *)
+                instance_name="$region-`echo $instance_name | sed 's/vpc[12]-//'`"  # remove vpc info from instance name
+            esac
+
+            if [ "$ansible_yaml_format" == "yes" ]; then
+              printf "%-25s %s\n" "${instance_name}${suffix}:" "$ip" | tr '-' '_'
+            else
+              printf "%-18s %s\n" "$ip"  "${instance_name}${suffix}"
+            fi
         esac
 
-        printf "%-18s %s\n" "$ip"  "$instance_name"
       else
-        echo "Unable to find the IP"
+        echo "error: Unable to find the IP for $i"
       fi
   done
+
   printf "\n<<-- [END] Select till previous line\n"
+
+  if [ ! -z "$hosts_ip_not_found" ]; then
+    printf "\n IP not found for %s\n" "$hosts_ip_not_found"
+  fi
 
   cd "$curr_dir"
 }
@@ -96,9 +132,11 @@ function process_cmd_args() {
 
     local region
     local region_dir
+    local suffix
+    local ansible_format="no"
     local incorrectUsageMessage
 
-    while getopts r:R:d:D: arg
+    while getopts r:R:d:D:s:S:aA arg
     do
         case $arg in
           r|R)
@@ -116,8 +154,14 @@ function process_cmd_args() {
               incorrectUsageMessage="Region directory [$region_dir] does not exist. Please provide a valid region directory..."
             fi
             ;;
+          s|S)
+            suffix="${OPTARG}"
+            ;;
+          a|A)
+            ansible_format="yes"
+            ;;
           *)
-            incorrectUsageMessage="** INVALID option: [$arg]. Only r|R is valid option";;
+            incorrectUsageMessage="** INVALID option: [$arg]. Valid options are: r|R, d|D and s|S";;
         esac
     done
 
@@ -125,7 +169,7 @@ function process_cmd_args() {
         USAGE "${incorrectUsageMessage}"
     fi
 
-    print_ip_and_hostname $region $region_dir
+    print_ip_and_hostname $region $region_dir $ansible_format $suffix
 }
 
 process_cmd_args "$@"

@@ -1,13 +1,21 @@
 ---
 
 - hosts:
-    - nfs_servers
     - brokers
     - routers
   become: 'yes'
   become_method: sudo
   roles:
     - setup_common
+
+- hosts:
+    - nfs_servers
+    - brokers
+    - routers
+  become: 'yes'
+  become_method: sudo
+  roles:
+    - setup_hostname
 
 - hosts:
     - nfs_servers

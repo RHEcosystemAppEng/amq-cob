@@ -15,25 +15,7 @@
 - name: Execute the "amq" broker run script
   shell:
     "{{amq_broker_run_script}}"
-#  async: "{{ broker_run_time_in_days * seconds_in_day }}"   # Will wait for these many days before it times out
-#  poll: 0
   register: amq_broker_run_script_output
-
-#- name: Run AMQ broker instance
-#  when: inventory_hostname in groups['brokers']
-#  shell: |
-#    pid=`pgrep -f "java .*Artemis run"`
-#    echo "$pid"
-#
-#    if [ -z "$pid" ]; then
-#      echo "Starting broker {{ broker_name }} ..."
-#      "{{ amq_broker_run_command }}"
-#    else
-#      echo "Broker [{{ broker_name }}] already running with process id [$pid]"
-#    fi
-##  async: "{{ broker_run_time_in_days * seconds_in_day }}"   # Will wait for these many days before it times out
-##  poll: 0
-#  register: amq_broker_run_command_output
 
 - name: Execute the "amq" broker run script - output
   when: amq_broker_run_script_output.changed is true

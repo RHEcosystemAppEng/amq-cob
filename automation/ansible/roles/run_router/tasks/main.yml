@@ -1,19 +1,5 @@
 ---
 
-#- name: Run AMQ router instance
-#  when: inventory_hostname in groups['routers']
-#  shell: |
-#    router_daemon_cmd="qdrouterd -d"
-#    pid=`pgrep -f "$router_daemon_cmd"`
-#
-#    if [ -z "$pid" ]; then
-#      echo "Starting router [{{ router_id }}] as a daemon ..."
-#      $router_daemon_cmd
-#    else
-#      echo "Router [{{ router_id }}] already running with process id [$pid]"
-#    fi
-#  register: amq_router_run_command_output
-
 - name: Copy "amq" router run script
   template:
     src: run_router.sh.j2
@@ -28,7 +14,7 @@
 
 - name: Execute the "amq" router run script
   shell:
-    "{{amq_router_run_script}}"
+    "{{ amq_router_run_script }}"
   register: amq_router_run_script_output
 
 - name: Run AMQ router instance - result - 2

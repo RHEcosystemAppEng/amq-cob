@@ -1,0 +1,17 @@
+---
+
+# Adds SSH key for all the hosts except the ones defined in nfs_servers group
+# as all these hosts
+- name: Add SSH public key
+  when: inventory_hostname not in groups['nfs_servers']
+  authorized_key:
+    user: "{{ user_amq }}"
+    state: present
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+  register: add_ssh_key_output
+
+- name: SSH public key added
+  when: add_ssh_key_output.changed is true
+  debug:
+    msg: "SSH key for user [{{ add_ssh_key_output.user }}] added to [{{ add_ssh_key_output.keyfile }}]"
+

@@ -29,6 +29,22 @@
   * [Region 1](#destroy-resources---region-1)
   * [Region 2](#destroy-resources---region-2)
 * [Instance info](#instance-info)
+
+<details>
+<summary>TMP section for setting up cluster 1 in Toronto region</summary>
+
+* [TMP - Setup Region 1](#setup-region-1---tmp)
+  * [TMP - Prerequisites](#prerequisites---region-1---tmp)
+  * [TMP - Setup API key config](#setup-config-for-ibm-api-key---tmp)
+  * [TMP - Setup Region 1 infrastructure](#setup-region-1-infrastructure---tmp)
+* [TMP - Configure Region 1 with Ansible](#configure-region-1---ansible---tmp)
+  * [TMP - Create vault password](#create-vault-password---tmp)
+  * [TMP - Configure region](#configure-region---tmp)
+* [TMP - Destroy the resources](#destroy-the-resources---tmp)
+  * [TMP - Region 1](#destroy-resources---region-1---tmp)
+
+</details>
+
 * [References](#references)
 
 Configuring AMQ advanced topology for DR, in **IBM Cloud**, following setup was used:
@@ -205,8 +221,6 @@ As part of cluster2 config, following interconnect router is also created and se
       * Facilitates communications between Hub router (router 1) and Spoke routers (router 2 and 3).
         Spoke router (router 3) is running in a different VPC than the Hub router
     * _Purpose of the Local Transit Gateway is to allow communications between the Hub router and spoke routers, within same region_
-* _Setting up of a NFS server/brokers/routers involves an automated as well as some manual steps. Automated part is
-  already performed by the Terraform config scripts executed in above step. Manual setup will still need to be performed_
 
 <br>
 
@@ -304,8 +318,6 @@ As part of cluster2 config, following interconnect router is also created and se
       * Facilitates communications between Hub router (router 1) and Spoke routers (router 2 and 3).
         Spoke router (router 3) is running in a different VPC than the Hub router
     * _Purpose of the Local Transit Gateway is to allow communications between the Hub router and spoke routers, within same region_
-* _Setting up of a NFS server/brokers/routers involves an automated as well as some manual steps. Automated part is
-  already performed by the Terraform config scripts executed in above step. Manual setup will still need to be performed_
 
 <br>
 
@@ -454,6 +466,125 @@ This section provides region / zone / private IP address for each of the instanc
 |         |          |                               | Router-03     | `10.76.0.100`  | us-south-2 | Spoke router in Dallas zone 1 - connecting to Cluster4 |
 
 
+
+## Setup Region 1 - tmp
+Region 1 is setup in **Toronto** that has two clusters:
+* **Cluster1** - consisting of following four brokers:
+  * `broker01` - live/primary
+  * `broker02` - backup of broker01
+  * `broker03` - live/primary
+  * `broker04` - backup of broker03
+
+As part of cluster1 config, following interconnect routers are also created and setup (in the same VPC):
+* router01 - Hub router - accepts connections from consumers/producers
+* router02 - Spoke router - connects to live brokers in Cluster1 and also to Hub router (router01)
+
+### Prerequisites - Region 1 - tmp
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
+
+<br>
+
+### Setup config for IBM API key - tmp
+* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform/toronto-vpc1` directory_, with following content:
+  ```shell
+  ibmcloud_api_key = "<YOUR_IBM_CLOUD_API_KEY>"
+  ssh_key = "<NAME_OF_YOUR_SSH_KEY>"
+  ```
+  _Substitute with your actual IBM Cloud API key here_
+
+<br>
+
+### Setup Region 1 infrastructure - tmp
+* Terraform is used to setup the infrastructure for region1. Perform infrastructure setup of region 1
+  (cluster1/cluster2) by running following commands
+  ```shell
+  cd $MAIN_CONFIG_DIR/terraform/toronto-vpc1
+  terraform init
+  terraform apply -auto-approve \
+    -var PREFIX="appeng-381" \
+    -var CLUSTER1_PRIVATE_IP_PREFIX="10.101" \
+    -var CLUSTER2_PRIVATE_IP_PREFIX="10.102"
+  ```
+  * _All resources created will have the PREFIX provided in the last command_
+* Above command will take around 5-7 minutes and should create following resources:
+  * **VPC**: `appeng-381-amq-vpc-ca-tor-1`
+    * Subnets:
+      * `appeng-381-vpc-ca-tor-subnet-01-ca-tor-1`
+      * `appeng-381-vpc-ca-tor-subnet-02-ca-tor-2`
+      * `appeng-381-vpc-ca-tor-subnet-03-ca-tor-3`
+    * Security groups named:
+      * `appeng-381-vpc-ca-tor-sec-grp-01`
+        * This security group adds an inbound rule for ssh and ping
+      * `appeng-381-vpc-ca-tor-sec-grp-02`
+        * This security group adds inbound rules to allow access to following ports:
+          * `5672`  - AMQP broker amqp accepts connection on this port
+          * `8161`  - AMQ console listens on this port
+          * `61616` - AMQ broker artemis accepts connection on this port
+      * `appeng-381-vpc-ca-tor-sec-grp-03`
+        * Adds an inbound rule on port `5773` that will be used by the Hub router to listen for incoming connections
+    * VSIs (Virtual Server Instance):
+      * NFS server: `appeng-381-ca-tor-1-nfs-server-01`
+      * Broker01: `appeng-381-broker01-live1`
+      * Broker02: `appeng-381-broker02-bak1`
+      * Broker03: `appeng-381-broker03-live2`
+      * Broker04: `appeng-381-broker04-bak2`
+      * Router01 (hub): `appeng-381-hub-router1`
+      * Router02 (spoke): `appeng-381-spoke-router2`
+    * Floating IPs (Public IPs) for each of the above VSI (Virtual Server Instance)
+
+<br>
+
+
+
+### Configure Region 1 - ansible - tmp
+Ansible is used to configure brokers/routers and NFS server to install required packages as well as running
+them.
+
+#### Create vault password - tmp
+* Follow the steps given in [Create vault password](#create-vault-password)
+
+#### Configure region - tmp
+* Perform configuration setup of cluster1 in region 1 by running following commands
+  ```shell
+  cd $MAIN_CONFIG_DIR/terraform
+
+  # Command given below will extract the public IP for all the instances running in VPC1 (cluster1)
+  ./capture_ip_host.sh -r r1 -d toronto-vpc1 -s "_ip" -a
+  ```
+  Copy the `<hostname>: <ip_address>` output (_between START and END tags_) to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
+* Perform configuration setup of cluster1 in region 1 by running following commands
+  ```shell
+  cd $MAIN_CONFIG_DIR/ansible
+
+  # Below commands will NOT setup mirroring between the two regions
+  ansible-playbook -i hosts-r1_vpc1.yml setup_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts-r1_vpc1.yml run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
+  ```
+* Above command(s) will configure following resources:
+  * `amq_runner` user will be created in all the instances of brokers and routers
+  * Necessary packages will be installed in the NFS server, brokers and routers
+  * NFS mount points will be created between brokers and NFS server
+  * Host entries will be added to the brokers (for NFS server) and spoke routers (for hub router and brokers)
+  * All the brokers will start
+  * All the routers will start
+
+<br>
+<br>
+
+## Destroy the resources - tmp
+This section provides information on how to cleanup / delete the resources that were setup for all the clusters in
+the Toronto region (cluster 1)
+
+### Destroy resources - Region 1 - tmp
+* To delete resources setup in region 1 (cluster 1), use following commands:
+  ```shell
+    cd $MAIN_CONFIG_DIR/terraform/toronto-vpc1
+    terraform plan -destroy -out=destroy.plan \
+      -var PREFIX="appeng-381" \
+      -var CLUSTER1_PRIVATE_IP_PREFIX="10.101" \
+      -var CLUSTER2_PRIVATE_IP_PREFIX="10.102"
+    terraform apply destroy.plan
+  ```
 
 ## References
 * [Hub and spoke router topology setup](https://github.com/RHEcosystemAppEng/amq-cob/tree/master/manualconfig/routertopology/fanout)

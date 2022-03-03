@@ -1,0 +1,11 @@
+---
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+  register: hostname_output
+
+- name: Show the setting of hostname output for each of the host
+  when: hostname_output.changed is true
+  debug:
+    msg: "Hostname changed to [{{ hostname_output.name }}]"
