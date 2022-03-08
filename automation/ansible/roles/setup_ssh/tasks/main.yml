@@ -3,7 +3,6 @@
 # Adds SSH key for all the hosts except the ones defined in nfs_servers group
 # as all these hosts
 - name: Add SSH public key
-  when: inventory_hostname not in groups['nfs_servers']
   authorized_key:
     user: "{{ user_amq }}"
     state: present

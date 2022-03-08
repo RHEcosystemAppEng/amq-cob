@@ -1,17 +1,16 @@
 ---
 
+# Tasks listed here have to be run as "root"
+
 - name: Ensure the packages needed are installed on the Broker(s)
   dnf:
-    name: "{{ broker_packages }}"
+    name: "{{ packages }}"
     state: latest
     update_cache: yes
   register: dnf_output
 
-# Unmount NFS (in case it's mounted) as this gives error on checking the mount dir sometimes
-- name: Unmount NFS volume
-  ansible.posix.mount:
-    path: "{{broker_mount_dir}}"
-    state: unmounted
+- include_role:
+    name: unmount_nfs
 
 # May want to uncomment "Unmount NFS volume" task if this fails due to the dir already in existence and is used as mount point
 - name: Check if "amq" mount directory exists
@@ -26,28 +25,6 @@
     fi
     sudo chown -R "{{ user_amq }}":"{{ user_amq }}" "{{broker_mount_base_dir}}"
   register: create_mount_dir_output
-
-#- name: Create "amq" mount directory
-##  when: mount_dir_output.stat.exists == false
-#  ansible.builtin.file:
-#    path: "{{broker_mount_dir}}"
-#    state: directory
-#    recurse: yes
-#    owner: "{{ user_amq }}"
-#    group: "{{ user_amq }}"
-#
-#- name: Change ownership recursively for one level above mount dir
-##  when: mount_dir_output.stat.exists == false
-#  ansible.builtin.file:
-#    path: "{{broker_mount_base_dir}}"
-#    state: directory
-#    recurse: yes
-#    owner: "{{ user_amq }}"
-#    group: "{{ user_amq }}"
-#
-#- name: Create amq mount dir output
-#  debug:
-#    var: create_mount_dir_output
 
 - name: Add NFS server to hosts
   when: (mount_dir_output.stat.exists is true) or (create_mount_dir_output.changed is true)
@@ -75,7 +52,7 @@
 - name: Show the dnf output
   when: dnf_output.changed is true
   debug:
-    msg: "Broker packages {{ broker_packages }} installed successfully..."
+    msg: "Broker packages {{ packages }} installed successfully..."
 
 - name: Show NFS server addition to hosts
   when: etc_hosts_output.changed is true

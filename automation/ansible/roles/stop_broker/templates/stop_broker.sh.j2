@@ -1,0 +1,28 @@
+#!/bin/sh
+
+function find_and_stop_broker() {
+    local USE_FORCE=$1
+    local PID=`pgrep -f "java .*Artemis run"`
+
+    # Found process
+    if [ ! -z "$PID" ]; then
+        # whether to use force to kill the process or not
+        if [ ! -z "$USE_FORCE" ]; then
+            printf "Graceful shutdown did not work.\n Stopping broker {{ broker_name }} by force - (pid=$PID)...\n"
+            kill -9 $PID
+        else
+            printf "Stopping broker {{ broker_name }} - (pid=$PID)...\n"
+            # stop broker gracefully
+            {{ amq_broker_stop_command }}
+        fi
+    elif [ -z "$USE_FORCE" ]; then
+        echo "Broker [{{ broker_name }}] is not running"
+    fi
+
+    return 0
+}
+
+
+find_and_stop_broker
+sleep 2
+find_and_stop_broker "yes"

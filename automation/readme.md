@@ -25,6 +25,10 @@
 * [Configure Region 1/2 with Ansible](#configure-region-12---ansible)
   * [Create vault password](#create-vault-password)
   * [Configure regions](#configure-regions)
+* [Other Ansible plays](#other-ansible-plays)
+  * [Reset regions](#reset-regions)
+  * [Stop brokers and routers](#stop-brokersrouters)
+  * [Run brokers and routers](#run-brokersrouters)
 * [Destroy the resources](#destroy-the-resources)
   * [Region 1](#destroy-resources---region-1)
   * [Region 2](#destroy-resources---region-2)
@@ -384,6 +388,18 @@ them.
     * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
 
 #### Configure regions
+* Execute following commands to retrieve public ip for region 1 and 2:
+  ```shell
+  cd $MAIN_CONFIG_DIR/terraform
+
+  # Command given below will extract the public IP for all the instances running in region 1
+  ./capture_ip_host.sh -r r1 -d toronto -s "_ip" -a
+
+  # Command given below will extract the public IP for all the instances running in region 2
+  ./capture_ip_host.sh -r r2 -d dallas -s "_ip" -a
+  ```
+  Copy the `<hostname>: <ip_address>` output (_between START and END tags_), for each of the above commands,
+  to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
 * Perform configuration setup of cluster1 and cluster2 in region 1/2 by running following commands
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
@@ -400,6 +416,43 @@ them.
   * All the brokers will start
   * All the routers will start
 
+### Other ansible plays
+Ansible can be used to perform other tasks, e.g. reset the config, stop, run the brokers/routers
+
+#### Reset regions
+* One can reset the brokers/routers/nfs server to bring them to the initial state by running following commands: 
+  ```shell
+  cd $MAIN_CONFIG_DIR/ansible
+  ansible-playbook reset_playbook.yml --extra-vars "@variable_override.yml"
+  ```
+* Above command(s) will perform following tasks:
+  * Stop broker instances
+  * Stop router instances
+  * Remove installed packages for brokers/routers/nfs server
+  * Remove host entries
+  * Remove user/groups that were setup by ansible
+  * Remove all the user directories and any other directories created as part of ansible setup
+
+#### Stop brokers/routers
+* To stop the running brokers/routers, execute following commands 
+  ```shell
+  cd $MAIN_CONFIG_DIR/ansible
+  ansible-playbook stop_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
+  ```
+* Above command(s) will perform following tasks:
+  * Stop broker instances
+  * Stop router instances
+
+#### Run brokers/routers
+* To stop the running brokers/routers, execute following commands 
+  ```shell
+  cd $MAIN_CONFIG_DIR/ansible
+  ansible-playbook run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
+  ```
+* Above command(s) will perform following tasks:
+  * Run broker instances
+  * Run router instances
+
 <br>
 <br>
 
@@ -413,8 +466,8 @@ the two regions
     cd $MAIN_CONFIG_DIR/terraform/toronto
     terraform plan -destroy -out=destroy.plan \
       -var PREFIX="cob-test" \
-      -var CLUSTER1_PRIVATE_IP_PREFIX="10.75" \
-      -var CLUSTER2_PRIVATE_IP_PREFIX="10.76"
+      -var CLUSTER1_PRIVATE_IP_PREFIX="10.70" \
+      -var CLUSTER2_PRIVATE_IP_PREFIX="10.71"
     terraform apply destroy.plan
   ```
 
@@ -422,7 +475,10 @@ the two regions
 * To delete resources setup in region 2 (cluster 1/2), use following commands:
   ```shell
     cd $MAIN_CONFIG_DIR/terraform/dallas
-    terraform plan -destroy -out=destroy.plan
+    terraform plan -destroy -out=destroy.plan \
+      -var PREFIX="cob-test" \
+      -var CLUSTER1_PRIVATE_IP_PREFIX="10.75" \
+      -var CLUSTER2_PRIVATE_IP_PREFIX="10.76"
     terraform apply destroy.plan
   ```
 

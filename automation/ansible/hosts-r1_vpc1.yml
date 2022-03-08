@@ -108,16 +108,30 @@ r1_routers:
 brokers:
   children:
     r1_vpc1_brokers:
+  vars:
+    packages:
+      - nfs-utils
+      - java-11-openjdk
+      - zip
+      - unzip
 
 nfs_servers:
   children:
     r1_nfs_servers:
   vars:
     user_nobody: "nobody"
+    nfs_service: "nfs-server.service"
+    packages:
+      - nfs-utils
 
 routers:
   children:
     r1_routers:
+  vars:
+    packages:
+      - qpid-dispatch-router
+      - qpid-dispatch-tools
+      - qpid-dispatch-console
 
 all:
   vars:

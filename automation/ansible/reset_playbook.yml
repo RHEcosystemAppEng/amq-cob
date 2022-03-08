@@ -1,0 +1,28 @@
+---
+
+- hosts:
+    - brokers
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: reset_broker
+      tags: reset_broker
+
+- hosts:
+    - routers
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: reset_router
+      tags: reset_router
+
+- hosts:
+    - nfs_servers
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: reset_nfs
+      tags: reset_nfs

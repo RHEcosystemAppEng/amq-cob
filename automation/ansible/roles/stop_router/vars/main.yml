@@ -1,0 +1,3 @@
+---
+amq_router_stop_script: "/home/{{ user_amq }}/stop_router.sh"
+amq_router_start_command: "qdrouterd -d"

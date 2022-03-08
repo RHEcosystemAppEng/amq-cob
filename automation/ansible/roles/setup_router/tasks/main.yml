@@ -1,58 +1,59 @@
 ---
 
-- name: Unregister system
-  community.general.redhat_subscription:
-    state: absent
-  register: unregister_output
+- name: Copy router setup script
+  template:
+    src: "{{ router_install_script_basename }}.j2"
+    dest: "{{ router_install_script }}"
+    mode: 0755
+  register: copy_router_setup_output
 
-- name: Unregister system result
-  when: unregister_output.changed is true
+- name: Copy router setup script output
+  when: copy_router_setup_output.changed is true
   debug:
-    msg: "System successfully unregistered..."
+    msg: "Router setup script copied..."
 
-- name: Backup rhsm config
-  copy:
-    src: "{{ redhat_subscription_config_dir }}/{{ item.src }}"    # iterate over all the names specified in the loop
-    dest: "{{ redhat_subscription_config_dir }}/{{ item.dest }}"
-    backup: yes
-    remote_src: yes
-  with_items:
-    - { src: 'rhsm.conf', dest: 'rhsm.conf.ORG' }
-    - { src: 'rhsm.conf.kat-backup', dest: 'rhsm.conf.kat-backup.ORG' }
-    - { src: 'rhsm.conf.kat-backup', dest: 'rhsm.conf' }
-  register: cp_rhsm_config_output
+#- name: Backup rhsm config
+#  copy:
+#    src: "{{ redhat_subscription_config_dir }}/{{ item.src }}"    # iterate over all the names specified in the loop
+#    dest: "{{ redhat_subscription_config_dir }}/{{ item.dest }}"
+#    backup: yes
+#    remote_src: yes
+#  loop:
+#    - { src: 'rhsm.conf', dest: 'rhsm.conf.ORG' }
+#    - { src: 'rhsm.conf.kat-backup', dest: 'rhsm.conf.kat-backup.ORG' }
+#    - { src: 'rhsm.conf.kat-backup', dest: 'rhsm.conf' }
+#  register: cp_rhsm_config_output
+#
+#- name: Show cp_rhsm_config_output
+#  when: cp_rhsm_config_output.changed is true
+#  debug:
+#    msg: "All rhsm config files in {{ redhat_subscription_config_dir }} are backed up and copied over for subscription to work properly..."
 
-- name: Show cp_rhsm_config_output
-  when: cp_rhsm_config_output.changed is true
+- name: Execute the router setup script
+#  when: (copy_router_setup_output.changed is true) or (force_router_install_script is true)
+  shell:
+    "{{ router_install_script }}"
+  register: router_install_script_output
+
+- name: Execute router setup output
+  when: router_install_script_output.changed is true
   debug:
-    msg: "All rhsm config files in {{ redhat_subscription_config_dir }} are backed up and copied over correctly..."
+    var: router_install_script_output.stdout_lines
 
-- name: Register and auto-subscribe to available content
-  community.general.redhat_subscription:
-    state: present
-    username: "{{ redhat_username }}"
-    password: "{{ redhat_password }}"
-    auto_attach: true
-  register: register_n_auto_subscribe_output
-
-- name: Show register_n_auto_subscribe_output
-  debug:
-    var: register_n_auto_subscribe_output
-
-- name: Enable interconnect repos with rhel-8-server
-  community.general.rhsm_repository:
-    name:
-      - interconnect-2-for-rhel-8-x86_64-rpms
-      - amq-clients-2-for-rhel-8-x86_64-rpms
-    state: enabled
-  register: enable_router_repo_output
-
-- name: Ensure the packages needed are installed on the Router(s)
-  dnf:
-    name: "{{ router_packages }}"
-    state: latest
-    update_cache: yes
-  register: dnf_output
+#- name: Enable interconnect repos with rhel-8-server
+#  community.general.rhsm_repository:
+#    name:
+#      - interconnect-2-for-rhel-8-x86_64-rpms
+#      - amq-clients-2-for-rhel-8-x86_64-rpms
+#    state: enabled
+#  register: enable_router_repo_output
+#
+#- name: Ensure the packages needed are installed on the Router(s)
+#  dnf:
+#    name: "{{ packages }}"
+#    state: latest
+#    update_cache: yes
+#  register: dnf_output
 
 - name: Add hub router and broker ip/hosts to hosts
   when: inventory_hostname.endswith('-spoke')
@@ -79,21 +80,27 @@
     mode: 0644
   register: copy_router_config_output
 
-- name: Change ownership recursively for one level above mount dir
-  when: dnf_output.changed is true
-  ansible.builtin.file:
-    path: "{{ router_config_dir }}"
-    state: directory
-    recurse: yes
-    owner: "{{ user_amq }}"
-    group: "{{ user_amq }}"
-  register: chown_router_config_dir_output
+#- name: Change ownership recursively for one level above mount dir
+#  when: dnf_output.changed is true
+#  ansible.builtin.file:
+#    path: "{{ router_config_dir }}"
+#    state: directory
+#    recurse: yes
+#    owner: "{{ user_amq }}"
+#    group: "{{ user_amq }}"
+#  register: chown_router_config_dir_output
+#
+#- name: Delete router config backups
+#  ansible.builtin.file:
+#    path: "{{ item }}.ORG"
+#    state: absent
+#  loop:
+#    - rhsm.conf
+#    - rhsm.conf.kat-backup
 
 - name: All done!!!
   when: >
       (etc_hosts_output.changed is true) or (copy_router_config_output.changed is true) or
-      (dnf_output.changed is true) or (cp_rhsm_config_output.changed is true) or
-      (enable_router_repo_output.changed is true) or (register_n_auto_subscribe_output.changed is true) or
       (copy_router_config_output.changed is true)
   debug:
     msg: "Router common setup complete..."

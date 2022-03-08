@@ -1,0 +1,61 @@
+---
+
+- name: IP address
+  debug:
+    msg:
+      - "ansible_host = {{ ansible_host }}"
+#      - "ansible_address = {{ ansible_eth0.ipv4.address }}"
+      - "hostname = {{ inventory_hostname }}"
+
+- include_role:
+    name: stop_router
+
+- name: Remove router packages
+  dnf:
+    name: "{{ packages }}"
+    state: absent
+    update_cache: yes
+
+#- name: Disable interconnect repos with rhel-8-server
+#  community.general.rhsm_repository:
+#    name:
+#      - interconnect-2-for-rhel-8-x86_64-rpms
+#      - amq-clients-2-for-rhel-8-x86_64-rpms
+#    state: disabled
+
+- name: Remove router and broker ip/hosts from hosts
+  when: inventory_hostname.endswith('-spoke')
+  blockinfile:
+    path: /etc/hosts
+    # empty block == remove
+    block: ""
+
+- name: Remove router config backups
+  ansible.builtin.file:
+    path: "/etc/rhsm/{{ item }}"
+    state: absent
+  loop:
+    - rhsm.conf.ORG
+    - rhsm.conf.kat-backup.ORG
+    - BAK
+
+- name: Unregister system
+  shell: |
+    sudo subscription-manager repos --disable=interconnect-2-for-rhel-8-x86_64-rpms --disable=amq-clients-2-for-rhel-8-x86_64-rpms
+    sudo subscription-manager clean
+
+- name: Delete AMQ user
+  ansible.builtin.user:
+    name: "{{ user_amq }}"
+    state: absent
+    # Remove the user directories as well
+    remove: yes
+
+- name: Delete AMQ user group
+  ansible.builtin.group:
+    name: "{{ user_amq }}"
+    state: absent
+
+- name: All done!!!
+  debug:
+    msg: "Router config removed completely..."
