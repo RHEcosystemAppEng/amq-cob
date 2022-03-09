@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  vars:
+    CA_GEN: no
+  
+  tasks:
+    - name: Generate CA Certs
+      include_role:
+        name: ssl-cacertgen
+      when: CA_GEN
+
+    - name: Generate certs for components
+      include_role: 
+        name: ssl-certgen
+      vars:
+        CERT_FILE_PREFIX: "{{item.CERT_FILE_PREFIX}}"
+        SERVER_HOST_NAME: "{{item.SERVER_HOST_NAME}}"
+        SERVER_INTERNAL_IP: "{{item.SERVER_INTERNAL_IP}}"
+        SERVER_EXTERNAL_IP: "{{item.SERVER_EXTERNAL_IP}}"
+        SERVER_DNS_NAME: "{{item.SERVER_DNS_NAME}}"
+        IMPORT_CERT_CHAIN_IN_JKS: "{{item.IMPORT_CERT_CHAIN_IN_JKS}}"
+        GEN_PRIVATE_KEY: "{{item.GEN_PRIVATE_KEY}}"
+      loop:
+        # Jira 99 Servers
+        - { CERT_FILE_PREFIX: "j99-java-client", SERVER_HOST_NAME: "kpanchal-mac", SERVER_INTERNAL_IP: "192.168.0.185", SERVER_EXTERNAL_IP: "99.234.248.196", SERVER_DNS_NAME: "www.kpanchal-mac.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        # - { CERT_FILE_PREFIX: "j99-tor-broker-primary", SERVER_HOST_NAME: "rhkp-jira99-tor1-broker-01", SERVER_INTERNAL_IP: "10.249.0.4", SERVER_EXTERNAL_IP: "163.66.86.110", SERVER_DNS_NAME: "www.rhkp-jira99-tor1-broker-01.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        # - { CERT_FILE_PREFIX: "j99-tor-broker-backup", SERVER_HOST_NAME: "rhkp-jira99-tor2-broker-02", SERVER_INTERNAL_IP: "10.249.64.7", SERVER_EXTERNAL_IP: "163.74.89.103", SERVER_DNS_NAME: "www.rhkp-jira99-tor2-broker-02.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        # - { CERT_FILE_PREFIX: "j99-tor-router", SERVER_HOST_NAME: "rhkp-jira99-tor3-router-01", SERVER_INTERNAL_IP: "10.249.128.4", SERVER_EXTERNAL_IP: "163.75.82.64", SERVER_DNS_NAME: "www.rhkp-jira99-tor3-router-01.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+        
+        # - { CERT_FILE_PREFIX: "j99-wdc-broker-primary", SERVER_HOST_NAME: "rhkp-jira99-wdc1-broker-01", SERVER_INTERNAL_IP: "10.241.0.6", SERVER_EXTERNAL_IP: "150.239.81.86", SERVER_DNS_NAME: "www.rhkp-jira99-wdc1-broker-01.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        # - { CERT_FILE_PREFIX: "j99-wdc-broker-backup", SERVER_HOST_NAME: "rhkp-jira99-wdc2-broker-02", SERVER_INTERNAL_IP: "10.241.64.6", SERVER_EXTERNAL_IP: "169.63.191.160", SERVER_DNS_NAME: "www.rhkp-jira99-wdc2-broker-02.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        # - { CERT_FILE_PREFIX: "j99-wdc-router", SERVER_HOST_NAME: "rhkp-jira99-wdc3-router-01", SERVER_INTERNAL_IP: "10.241.128.4", SERVER_EXTERNAL_IP: "169.62.23.122", SERVER_DNS_NAME: "www.rhkp-jira99-wdc3-router-01.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+        
+        # Jira 214 Servers
+        # - { CERT_FILE_PREFIX: "broker01", SERVER_HOST_NAME: "rhkp-jira214-tor2-standalone-broker", SERVER_INTERNAL_IP: "10.249.64.11", SERVER_EXTERNAL_IP: "163.74.91.169", SERVER_DNS_NAME: "www.rhkp.j214.broker01.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        # - { CERT_FILE_PREFIX: "router01", SERVER_HOST_NAME: "rhkp-jira214-tor2-standalone-router", SERVER_INTERNAL_IP: "10.249.64.12", SERVER_EXTERNAL_IP: "163.74.80.183", SERVER_DNS_NAME: "www.rhkp.j214.router01.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+        # - { CERT_FILE_PREFIX: "router02", SERVER_HOST_NAME: "rhkp-jira214-tor2-standalone-router01", SERVER_INTERNAL_IP: "10.249.64.5", SERVER_EXTERNAL_IP: "163.74.88.146", SERVER_DNS_NAME: "www.rhkp.j214.router02.redhat.com", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }

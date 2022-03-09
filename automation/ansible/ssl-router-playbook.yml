@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+    - ssl-router
+  vars:
+    ROUTER_NAME: "{{ group_names | regex_search('router[0-9]+') }}"

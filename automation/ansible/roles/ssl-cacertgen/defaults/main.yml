@@ -1,0 +1,12 @@
+---
+# Default CA Generation Variable values
+KEY_PASS: redhat 
+STORE_PASS: redhat 
+CA_VALIDITY: 3650 
+SERVER_CA_ALIAS: server-ca
+CA_CERT_FILE_PREFIX: server-ca
+KEY_SIZE: 2048 
+ORG_UNIT: Artemis
+ORG: ActiveMQwf
+CANONICAL_NAME: "ActiveMQ Artemis Server Certification Authority"
+CA_CERT_DIR: "./generated/ca-certs"

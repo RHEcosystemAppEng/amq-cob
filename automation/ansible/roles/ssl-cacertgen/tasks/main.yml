@@ -1,0 +1,29 @@
+---
+  - name: Create CA Certificate Directory
+    ansible.builtin.file:
+      path: "{{CA_CERT_DIR}}"
+      state: directory
+
+  - name: Remove CA Certificate
+    ansible.builtin.file:
+      path: "{{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}.crt"
+      state: absent    
+
+  - name: Remove CA Keystore
+    ansible.builtin.file:
+      path: "{{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}-keystore.p12"
+      state: absent    
+
+  - name: Remove Broker Trust Store
+    ansible.builtin.file:
+      path: "{{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}-truststore.p12"
+      state: absent
+
+  - name: Generating CA Cert
+    shell: keytool -storetype pkcs12 -keystore {{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}-keystore.p12 -storepass {{STORE_PASS}} -keypass {{KEY_PASS}} -alias {{SERVER_CA_ALIAS}} -genkey -keyalg "RSA" -keysize {{KEY_SIZE}} -sigalg sha384WithRSA -dname "CN={{CANONICAL_NAME}}, OU={{ORG_UNIT}}, O={{ORG}}" -validity {{CA_VALIDITY}} -ext bc:c=ca:true,pathlen:0  -startdate -1m
+
+  - name: Exporting CA Cert
+    shell: 'keytool -storetype pkcs12 -keystore {{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}-keystore.p12 -storepass {{STORE_PASS}} -alias {{SERVER_CA_ALIAS}} -exportcert -rfc > {{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}.crt'
+
+  - name: Create Trust Store with CA Cert for use by {{CA_CERT_FILE_PREFIX}}
+    shell: keytool -keystore {{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}-truststore.p12 -storepass {{STORE_PASS}} -keypass {{KEY_PASS}} -importcert -alias {{SERVER_CA_ALIAS}} -file {{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}.crt -noprompt;

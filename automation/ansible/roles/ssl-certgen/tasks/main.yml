@@ -1,0 +1,46 @@
+---
+  - name: "Create Certificate Directory: {{CERT_FILE_PREFIX}}"
+    ansible.builtin.file:
+      path: "{{CERT_DIR}}/{{CERT_FILE_PREFIX}}"
+      state: directory
+
+  - name: Remove {{CERT_FILE_PREFIX}} Keystore
+    ansible.builtin.file:
+      path: "{{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-keystore.p12"
+      state: absent    
+
+  - name: Remove {{CERT_FILE_PREFIX}} Certificate
+    ansible.builtin.file:
+      path: "{{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}.crt"
+      state: absent
+
+  - name: Remove {{CERT_FILE_PREFIX}} Private Key
+    ansible.builtin.file:
+      path: "{{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-private-key.key"
+      state: absent
+
+  - name: "Generate {{CERT_FILE_PREFIX}} Keystore: {{CERT_FILE_PREFIX}}-keystore.p12"
+    shell: keytool -keystore {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-keystore.p12 -storepass {{STORE_PASS}} -keypass {{KEY_PASS}} -alias {{CERT_FILE_PREFIX}} -genkey -keyalg "RSA" -keysize {{KEY_SIZE}} -sigalg sha384WithRSA -dname "CN={{SERVER_HOST_NAME}}, OU={{ORG_UNIT}}, O={{ORG}}, L={{LOCALITY}}, S={{STATE}}, C={{COUNTRY}}" -validity {{VALIDITY}} -ext bc=ca:false -ext eku=sA -ext san=dns:localhost,ip:127.0.0.1,dns:{{SERVER_DNS_NAME}},ip:{{SERVER_INTERNAL_IP}},ip:{{SERVER_EXTERNAL_IP}}
+
+  - name: "Generate {{CERT_FILE_PREFIX}} CSR: {{CERT_FILE_PREFIX}}.csr"
+    shell: keytool -keystore {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-keystore.p12 -storepass {{STORE_PASS}} -keyalg RSA -keysize {{KEY_SIZE}} -sigalg sha384WithRSA -alias {{CERT_FILE_PREFIX}} -certreq -file {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}.csr
+
+  - name: "Generate {{CERT_FILE_PREFIX}} Certificate: {{CERT_FILE_PREFIX}}.crt"
+    shell: keytool -keystore {{CA_CERT_DIR}}/{{CA_CERT_FILE_PREFIX}}-keystore.p12 -keyalg RSA -keysize {{KEY_SIZE}} -sigalg sha384WithRSA -storepass {{STORE_PASS}} -alias {{SERVER_CA_ALIAS}} -gencert -rfc -infile {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}.csr -outfile {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}.crt -validity {{VALIDITY}} -ext bc=ca:false -ext san=dns:localhost,ip:127.0.0.1,dns:{{SERVER_DNS_NAME}}.internal,ip:{{SERVER_INTERNAL_IP}},dns:{{SERVER_DNS_NAME}},ip:{{SERVER_EXTERNAL_IP}}
+
+  - name: "Import CA Cert into {{CERT_FILE_PREFIX}} Keystore"
+    when: IMPORT_CERT_CHAIN_IN_JKS
+    shell: keytool -keystore {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-keystore.p12 -storepass {{STORE_PASS}} -keypass {{KEY_PASS}} -importcert -alias {{SERVER_CA_ALIAS}} -file {{CA_CERT_DIR}}/{{SERVER_CA_CERT_FILE_NAME}} -noprompt;
+
+  - name: "Import {{CERT_FILE_PREFIX}} Cert into {{CERT_FILE_PREFIX}} Keystore"
+    when: IMPORT_CERT_CHAIN_IN_JKS
+    shell: keytool -keystore {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-keystore.p12 -storepass {{STORE_PASS}} -keypass {{KEY_PASS}} -importcert -alias {{CERT_FILE_PREFIX}} -file {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}.crt
+
+  - name: "Generate Private Key"
+    shell: openssl pkcs12 -passin pass:{{STORE_PASS}} -in {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-keystore.p12 -out {{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}-private-key.key -nodes -nocerts     
+    when: GEN_PRIVATE_KEY
+
+  - name: Remove {{CERT_FILE_PREFIX}} CSR
+    ansible.builtin.file:
+      path: "./{{CERT_DIR}}/{{CERT_FILE_PREFIX}}/{{CERT_FILE_PREFIX}}.csr"
+      state: absent

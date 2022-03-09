@@ -1,0 +1,101 @@
+<?xml version='1.0'?>
+
+<configuration xmlns="urn:activemq"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:xi="http://www.w3.org/2001/XInclude"
+               xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+
+   <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:activemq:core ">
+
+   <broker-connections>
+      <amqp-connection uri="tcp://10.249.0.4:61617?sslEnabled=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat;verifyHost=false;enabledProtocols=TLSv1.3;" name="TOR01">
+         <mirror/>
+      </amqp-connection>
+      <amqp-connection uri="tcp://10.249.64.7:61617?sslEnabled=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat;verifyHost=false;enabledProtocols=TLSv1.3;" name="TOR02">
+         <mirror/>
+      </amqp-connection>
+    </broker-connections>
+
+    <paging-directory>/mnt/broker-storage/amq/one/data/paging</paging-directory>
+    <bindings-directory>/mnt/broker-storage/amq/one/data/bindings</bindings-directory>
+    <journal-directory>/mnt/broker-storage/amq/one/data/journal</journal-directory>
+    <large-messages-directory>/mnt/broker-storage/amq/one/data/large-messages</large-messages-directory>
+
+    <ha-policy>
+      <shared-store>
+        <master>
+          <failover-on-shutdown>true</failover-on-shutdown>
+        </master>
+      </shared-store>
+    </ha-policy>
+
+    <acceptors>
+      <acceptor name="netty-ssl-acceptor">tcp://10.241.0.6:61617?sslEnabled=true;keyStorePath=../etc/j99-wdc-broker-primary-keystore.p12;keyStorePassword=redhat;verifyHost=false;enabledProtocols=TLSv1.3;</acceptor>
+
+<!--
+      <acceptor name="amqp">tcp://10.241.0.6:5672??sslEnabled=true;keyStorePath=../etc/j99-wdc-broker-primary-keystore.p12;keyStorePassword=redhat;verifyHost=false;enabledProtocols=TLSv1.3;tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300</acceptor>
+-->
+
+    </acceptors>
+
+    <connectors>
+      <connector name="netty-connector">tcp://10.241.0.6:61617?sslEnabled=true;trustStorePath=../etc/server-ca-truststore.p12;trustStorePassword=redhat;verifyHost=false;enabledProtocols=TLSv1.3;</connector>
+    </connectors>
+
+      <broadcast-groups>
+         <broadcast-group name="my-broadcast-group">
+            <broadcast-period>5000</broadcast-period>
+            <jgroups-file>jgroups-ping.xml</jgroups-file>
+            <jgroups-channel>active_broadcast_channel</jgroups-channel>
+            <connector-ref>netty-connector</connector-ref>
+         </broadcast-group>
+      </broadcast-groups>
+
+      <discovery-groups>
+         <discovery-group name="my-discovery-group">
+            <jgroups-file>jgroups-ping.xml</jgroups-file>
+            <jgroups-channel>active_broadcast_channel</jgroups-channel>
+            <refresh-timeout>10000</refresh-timeout>
+         </discovery-group>
+      </discovery-groups>
+
+      <cluster-connections>
+         <cluster-connection name="my-cluster">
+            <connector-ref>netty-connector</connector-ref>
+            <retry-interval>500</retry-interval>
+            <use-duplicate-detection>true</use-duplicate-detection>
+            <message-load-balancing>STRICT</message-load-balancing>
+            <max-hops>1</max-hops>
+            <discovery-group-ref discovery-group-name="my-discovery-group"/>
+         </cluster-connection>
+      </cluster-connections>
+
+      <security-settings>
+         <!--security for example queue-->
+         <security-setting match="#">
+            <permission roles="amq, guest" type="createDurableQueue"/>
+            <permission roles="amq, guest" type="deleteDurableQueue"/>
+            <permission roles="amq, guest" type="createNonDurableQueue"/>
+            <permission roles="amq, guest" type="deleteNonDurableQueue"/>
+            <permission roles="amq, guest" type="consume"/>
+            <permission roles="amq, guest" type="send"/>
+            <permission type="createAddress" roles="amq, guest"/>
+            <permission type="deleteAddress" roles="amq, guest"/>
+            <permission type="browse" roles="amq, guest"/>
+            <!-- we need this otherwise ./artemis data imp wouldn't work -->
+            <permission type="manage" roles="amq, guest"/>
+  
+          </security-setting>
+      </security-settings>
+
+      <addresses>
+         <address name="SampleQueue">
+            <anycast>
+               <queue name="SampleQueue" />
+            </anycast>
+         </address>
+      </addresses>
+
+   </core>
+</configuration>
