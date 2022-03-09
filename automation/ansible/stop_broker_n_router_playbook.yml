@@ -8,6 +8,7 @@
   gather_facts: false
   roles:
     - stop_broker
+  tags: stop_broker
 
 - hosts:
     - routers
@@ -17,3 +18,4 @@
   gather_facts: false
   roles:
     - stop_router
+  tags: stop_router

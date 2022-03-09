@@ -28,7 +28,9 @@
       tags: setup_broker
     - role: setup_broker
       become_user: "{{ user_amq }}"
-      tags: setup_broker
+      tags:
+        - setup_broker
+        - update_broker_config
     # Remove "amq_user" from sudoers so that password prompt is shown when invoking "sudo"
     - role: setup_broker-sudoer-remove
       tags: setup_broker
