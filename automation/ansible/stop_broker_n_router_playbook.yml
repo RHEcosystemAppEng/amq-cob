@@ -7,8 +7,8 @@
   become_method: sudo
   gather_facts: false
   roles:
-    - run_broker
-  tags: run_broker
+    - stop_broker
+  tags: stop_broker
 
 - hosts:
     - routers
@@ -17,5 +17,5 @@
   become_method: sudo
   gather_facts: false
   roles:
-    - run_router
-  tags: run_router
+    - stop_router
+  tags: stop_router

@@ -1,0 +1,23 @@
+---
+
+- name: Copy "amq" broker stop script
+  template:
+    src: stop_broker.sh.j2
+    dest: "{{ amq_broker_stop_script }}"
+    mode: 0755
+  register: copy_broker_script_output
+
+- name: Copy "amq" broker stop script - output
+  when: copy_broker_script_output.changed is true
+  debug:
+    msg: "AMQ {{ broker_name }} stop script copied..."
+
+- name: Execute the "amq" broker stop script
+  shell:
+    "{{ amq_broker_stop_script }}"
+  register: amq_broker_script_output
+
+- name: Execute the "amq" broker stop script - output
+  when: amq_broker_script_output.changed is true
+  debug:
+    var: amq_broker_script_output.stdout_lines

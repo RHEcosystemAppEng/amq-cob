@@ -9,21 +9,6 @@
     - Enable NFS service
   register: dnf_output
 
-#- name: Check if "files" mount directory exists
-#  stat:
-#    path: "{{nfs_files_mount}}"
-#  register: mount_dir_output
-#
-#- name: Create "files" directory and change ownership recursively
-#  when: mount_dir_output.stat.exists == false
-#  ansible.builtin.file:
-#    path: "{{nfs_files_mount}}"
-#    state: directory
-#    recurse: yes
-#    owner: "{{ user_nobody }}"
-#    group: "{{ user_nobody }}"
-#
-
 - name: Create "files" directory and change ownership recursively
   shell: |
     if [ ! -d "{{nfs_files_mount}}" ]; then
@@ -37,7 +22,7 @@
 #  when: (main_config_dir | length > 0)
   copy:
     src: "amq-broker-7.9.0-bin.zip"
-    dest: "{{nfs_files_mount}}"
+    dest: "{{ nfs_files_mount }}"
     owner: "{{ user_nobody }}"
     group: "{{ user_nobody }}"
     mode: 0644

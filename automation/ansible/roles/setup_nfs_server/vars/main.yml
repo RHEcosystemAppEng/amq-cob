@@ -1,5 +1,2 @@
 ---
-packages:
-  - nfs-utils
-nfs_service: "nfs-server.service"
 nfs_options: "(rw,insecure,sync,no_all_squash,root_squash)"

@@ -39,7 +39,9 @@
 - name: Copy amq config files output
   when: copy_amq_config_output.changed is true
   debug:
-    msg: "AMQ config files copied to {{ amq_config_dir }} ..."
+    msg:
+      - "AMQ config files copied to {{ amq_config_dir }} ..."
+      - "Mirroring enabled: {{ enable_amq_mirroring }}"
 
 - name: All done!!!
   when: (copy_amq_setup_output.changed is true) or (amq_install_script_output.changed is true) or (copy_amq_jgroups_output.changed is true)

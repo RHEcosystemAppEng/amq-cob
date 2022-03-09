@@ -1,0 +1,50 @@
+---
+
+- name: IP address
+  debug:
+    msg:
+      - "ansible_host = {{ ansible_host }}"
+#      - "ansible_address = {{ ansible_eth0.ipv4.address }}"
+      - "hostname = {{ inventory_hostname }}"
+
+- include_role:
+    name: stop_broker
+
+- include_role:
+    name: unmount_nfs
+
+- name: Remove NFS server from hosts
+  blockinfile:
+    path: /etc/hosts
+    state: absent
+
+- name: Remove broker packages
+  dnf:
+    name: "{{ packages }}"
+    state: absent
+    update_cache: yes
+
+- name: Remove AMQ broker and install directory recursively
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ amq_broker_dir }}"
+    - "{{ amq_install_dir }}"
+    - "{{ broker_mount_dir }}"
+
+- name: Delete AMQ user
+  ansible.builtin.user:
+    name: "{{ user_amq }}"
+    state: absent
+    # Remove the user directories as well
+    remove: yes
+
+- name: Delete AMQ user group
+  ansible.builtin.group:
+    name: "{{ user_amq }}"
+    state: absent
+
+- name: All done!!!
+  debug:
+    msg: "Broker config removed completely..."

@@ -1,7 +1,0 @@
----
-broker_packages:
-  - nfs-utils
-  - java-11-openjdk
-  - zip
-  - unzip
-

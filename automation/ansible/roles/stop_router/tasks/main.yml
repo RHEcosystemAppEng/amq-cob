@@ -1,0 +1,23 @@
+---
+
+- name: Copy "amq" router stop script
+  template:
+    src: stop_router.sh.j2
+    dest: "{{amq_router_stop_script}}"
+    mode: 0755
+  register: copy_stop_router_script_output
+
+- name: Copy "amq" router stop script - output
+  when: copy_stop_router_script_output.changed is true
+  debug:
+    msg: "AMQ {{ router_id }} stop script copied..."
+
+- name: Execute the "amq" router stop script
+  shell:
+    "{{ amq_router_stop_script }}"
+  register: amq_router_stop_script_output
+
+- name: Stop AMQ router instance - result - 2
+  when: amq_router_stop_script_output.changed is true
+  debug:
+    var: amq_router_stop_script_output.stdout_lines

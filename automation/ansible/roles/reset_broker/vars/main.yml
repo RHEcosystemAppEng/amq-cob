@@ -1,0 +1,2 @@
+amq_install_dir: /opt/rh-amq-broker
+amq_broker_dir: /var/opt/amq-broker

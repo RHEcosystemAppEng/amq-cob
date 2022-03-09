@@ -1,0 +1,39 @@
+---
+
+- name: Stop NFS service
+  ansible.builtin.service:
+    name: "{{ nfs_service }}"
+    state: stopped
+
+- name: Disable NFS service
+  ansible.builtin.service:
+    name: "{{ nfs_service }}"
+    enabled: no
+
+- name: Remove nfs packages
+  dnf:
+    name: "{{ packages }}"
+    state: absent
+    update_cache: yes
+
+- name: Remove NFS mount directory (for brokers) recursively
+  when: delete_amq_archive is false
+  ansible.builtin.file:
+    path: "{{ amq_advanced_topology_dir }}"
+    state: absent
+
+- name: Remove NFS mount "root" directory recursively
+  when: delete_amq_archive is true
+  ansible.builtin.file:
+    path: "{{ nfs_files_mount }}"
+    state: absent
+
+- name: Remove etc/exportfs entries
+  blockinfile:
+    path: /etc/exports
+    # empty block == remove
+    block: ""
+
+- name: All done!!!
+  debug:
+    msg: "NFS server config removed completely..."
