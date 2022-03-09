@@ -5,6 +5,7 @@
 **/.vscode
 **/target
 **/.idea
+**/generated
 
 **/cert-generation
 #**/input-files

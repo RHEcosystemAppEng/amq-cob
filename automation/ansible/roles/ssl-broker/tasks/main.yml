@@ -1,0 +1,36 @@
+---
+- name: Copy broker.xml file
+  ansible.builtin.copy:
+    src: "{{INPUT_FILES_BASE_DIR}}/{{BROKER_NAME}}/broker.xml"   
+    dest: "{{BROKER_CONFIG_DIR}}"
+    owner: "{{AMQ_USER}}"
+
+- name: Copy {{BROKER_NAME}}-keystore.p12 file
+  ansible.builtin.copy:
+    src: "{{INPUT_FILES_BASE_DIR}}/{{BROKER_NAME}}/{{BROKER_NAME}}-keystore.p12"
+    dest: "{{BROKER_CONFIG_DIR}}"
+    owner: "{{AMQ_USER}}"
+
+- name: Copy {{CA_CERT_FILE_PREFIX}}-truststore.p12 file
+  ansible.builtin.copy:
+    src: "{{INPUT_FILES_BASE_DIR}}/{{BROKER_NAME}}/{{CA_CERT_FILE_PREFIX}}-truststore.p12"
+    dest: "{{BROKER_CONFIG_DIR}}"
+    owner: "{{AMQ_USER}}"
+
+- name: Copy login.config file
+  ansible.builtin.copy:
+    src: "{{INPUT_FILES_BASE_DIR}}/{{BROKER_NAME}}/login.config"
+    dest: "{{BROKER_CONFIG_DIR}}"
+    owner: "{{AMQ_USER}}"
+
+- name: Copy artemis-roles.properties file
+  ansible.builtin.copy:
+    src: "{{INPUT_FILES_BASE_DIR}}/{{BROKER_NAME}}/artemis-roles.properties"
+    dest: "{{BROKER_CONFIG_DIR}}"
+    owner: "{{AMQ_USER}}"
+
+- name: Copy artemis-users.properties file
+  ansible.builtin.copy:
+    src: "{{INPUT_FILES_BASE_DIR}}/{{BROKER_NAME}}/artemis-users.properties"
+    dest: "{{BROKER_CONFIG_DIR}}"
+    owner: "{{AMQ_USER}}"

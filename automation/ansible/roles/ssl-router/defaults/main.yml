@@ -1,0 +1,5 @@
+---
+ROUTER_CONFIG_DIR: '/etc/qpid-dispatch/'
+INPUT_FILES_BASE_DIR: './generated'
+ROUTER_NAME: 'router'
+CA_CERT_FILE_PREFIX: server-ca

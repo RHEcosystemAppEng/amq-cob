@@ -1,0 +1,25 @@
+---
+# Default CA Generation Variable values
+KEY_PASS: redhat 
+STORE_PASS: redhat 
+CA_VALIDITY: 3650 
+VALIDITY: 1460
+SERVER_CA_ALIAS: server-ca
+KEY_SIZE: 2048 
+ORG_UNIT: Artemis
+ORG: RedHat
+LOCALITY: Toronto
+STATE: Ontario
+COUNTRY: CA
+CANONICAL_NAME: "ActiveMQ Artemis Server Certification Authority"
+SERVER_CA_CERT_FILE_NAME: server-ca.crt
+CA_CERT_DIR: "./generated/ca-certs"
+CA_CERT_FILE_PREFIX: server-ca
+CERT_DIR: "./generated"
+SERVER_HOST_NAME: to_be_changed
+SERVER_INTERNAL_IP: 10.10.10.10
+SERVER_EXTERNAL_IP: 111.111.111.111 # For scenarios e.g. Java clients which use external IP to establish secure connection
+SERVER_DNS_NAME: www.to.be.changed.com
+CERT_FILE_PREFIX: to_be_changed
+IMPORT_CERT_CHAIN_IN_JKS: false # false = do not import, true = import
+GEN_PRIVATE_KEY: true  # false = do not generate, true = generate
