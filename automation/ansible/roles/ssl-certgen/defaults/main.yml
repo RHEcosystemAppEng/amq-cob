@@ -7,10 +7,10 @@ VALIDITY: 1460
 SERVER_CA_ALIAS: server-ca
 KEY_SIZE: 2048 
 ORG_UNIT: Artemis
-ORG: ActiveMQ
-LOCALITY: AMQ
-STATE: AMQ
-COUNTRY: AMQ
+ORG: RedHat
+LOCALITY: Toronto
+STATE: Ontario
+COUNTRY: CA
 CANONICAL_NAME: "ActiveMQ Artemis Server Certification Authority"
 SERVER_CA_CERT_FILE_NAME: server-ca.crt
 CA_CERT_DIR: "./generated/ca-certs"
