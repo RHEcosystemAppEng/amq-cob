@@ -16,6 +16,7 @@
 *.dll
 *.so
 *.dylib
+*.iml
 
 # Certificate extensions
 *.crt
