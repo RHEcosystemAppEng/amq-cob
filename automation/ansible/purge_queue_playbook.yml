@@ -1,0 +1,18 @@
+---
+
+- hosts:
+    - r1-broker01-live
+    - r1-broker03-live
+    - r1-broker05-live
+    - r1-broker07-live
+    - r2-broker01-live
+    - r2-broker03-live
+    - r2-broker05-live
+    - r2-broker07-live
+  become: 'yes'
+  become_user: "{{ user_amq }}"
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - purge_queue
+  tags: purge_queue

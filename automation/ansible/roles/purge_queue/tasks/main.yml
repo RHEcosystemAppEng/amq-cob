@@ -1,0 +1,10 @@
+---
+
+- name: Purge queue
+  shell: |
+    /var/opt/amq-broker/{{ broker_name }}/bin/artemis queue purge --name {{ amq_queue }} --user {{ user_amq }} --password {{ amq_user_password }}
+  register: purge_queue_output
+
+- name: Purge queue output
+  debug:
+    var: purge_queue_output.stdout_lines

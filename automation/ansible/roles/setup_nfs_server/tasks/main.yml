@@ -19,7 +19,6 @@
   register: create_mount_dir_output
 
 - name: Copy AMQ binary to NFS server
-#  when: (main_config_dir | length > 0)
   copy:
     src: "amq-broker-7.9.0-bin.zip"
     dest: "{{ nfs_files_mount }}"

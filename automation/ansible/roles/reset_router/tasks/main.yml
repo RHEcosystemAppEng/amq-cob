@@ -16,13 +16,6 @@
     state: absent
     update_cache: yes
 
-#- name: Disable interconnect repos with rhel-8-server
-#  community.general.rhsm_repository:
-#    name:
-#      - interconnect-2-for-rhel-8-x86_64-rpms
-#      - amq-clients-2-for-rhel-8-x86_64-rpms
-#    state: disabled
-
 - name: Remove router and broker ip/hosts from hosts
   when: inventory_hostname.endswith('-spoke')
   blockinfile:

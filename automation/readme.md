@@ -19,20 +19,24 @@
   * [Prerequisites](#prerequisites---region-2)
   * [Setup Region 2 infrastructure](#setup-region-2-infrastructure)
 * [Transit Gateway setup](#global-transit-gateway-setup)
-* [Add public IP to hosts file](#capture-public-ip---manual-step)
-  * [Region 1 public IPs](#capture-public-ip---region-1)
-  * [Region 2 public IPs](#capture-public-ip---region-2)
+  * [Prerequisites](#prerequisites---transit-gateway-setup)
 * [Configure Region 1/2 with Ansible](#configure-region-12---ansible)
-  * [Create vault password](#create-vault-password)
+  * [Prerequisites](#prerequisites---ansible-config)
+  * [Capture public IP](#capture-public-ip---manual-step)
+  * [Create vault password](#create-vault-password---manual-step)
   * [Configure regions](#configure-regions)
 * [Other Ansible plays](#other-ansible-plays)
+  * [Prerequisites](#prerequisites---other-ansible-plays)
   * [Reset regions](#reset-regions)
   * [Stop brokers and routers](#stop-brokersrouters)
   * [Run brokers and routers](#run-brokersrouters)
+  * [Purge queue](#purge-queue)
 * [Start/stop instances](#startstop-the-instances)
+  * [Prerequisites](#prerequisites---startstop-instances)
   * [Start stopped instances](#start-instances---region-12)
   * [Stop running instances](#stop-instances---region-12)
 * [Destroy the resources](#destroy-the-resources)
+  * [Prerequisites](#prerequisites---destroy-resources)
   * [Region 1](#destroy-resources---region-1)
   * [Region 2](#destroy-resources---region-2)
 * [Instance info](#instance-info)
@@ -333,6 +337,10 @@ This section contains information on setting up transit gateways for communicati
 * Cluster1 and Cluster3 - between different regions
 * Cluster2 and Cluster4 - between different regions
 
+### Prerequisites - transit gateway setup
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
+
+### Transit Gateway config
 * Perform setup of Transit Gateways by running following commands
   ```shell
   cd $MAIN_CONFIG_DIR/terraform/transit-gateway/global
@@ -351,46 +359,15 @@ This section contains information on setting up transit gateways for communicati
 <br>
 
 
-## Capture public IP - Manual step
-Public IP provisioned for the instances created in the above steps need to be added to the `/etc/hosts` file
-so that ansible can make use of them
-
-### Capture public IP - Region 1
-* Run following script to capture the public IP (or floating IP) for each of the instances:
-  ```shell
-    cd $MAIN_CONFIG_DIR/terraform
-    ./capture_ip_host.sh -r r1 -d toronto
-  ```
-  * Paste the `ip hostname` output from above script in `/etc/hosts` (_you will need to use `sudo` command to edit this file_ )
-
-<br>
-
-### Capture public IP - Region 2
-* Run following script to capture the public IP (or floating IP) for each of the instances:
-  ```shell
-    cd $MAIN_CONFIG_DIR/terraform
-    ./capture_ip_host.sh -r r2 -d dallas
-  ```
-  * Paste the `ip hostname` output from above script in `/etc/hosts` (_you will need to use `sudo` command to edit this file_ )
-
-<br>
-
-
-### Configure Region 1/2 - ansible
+## Configure Region 1/2 - ansible
 Ansible is used to configure brokers/routers and NFS server to install required packages as well as running
-them.
+them. _For this purpose, we need to run two manual steps before we can use ansible to configure the system_
 
-#### Create vault password
-* Create a file named `.vault_password` in `$MAIN_CONFIG_DIR/ansible` directory with it contents set to following text
-  * `password`
-* Run following command to set the correct username/password for Red Hat login:
-  * `ansible-vault edit group_vars/routers/vault`
-    * _Above command will open up an editor_
-  * Provide values for following keys:
-    * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)
-    * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
+### Prerequisites - Ansible config
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
 
-#### Configure regions
+### Capture public IP - Manual step
+To configure the instances using ansible, we need to extract the public ip for all the instances first.
 * Execute following commands to retrieve public ip for region 1 and 2:
   ```shell
   cd $MAIN_CONFIG_DIR/terraform
@@ -403,6 +380,18 @@ them.
   ```
   Copy the `<hostname>: <ip_address>` output (_between START and END tags_), for each of the above commands,
   to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
+
+### Create vault password - Manual step
+* Create a file named `.vault_password` in `$MAIN_CONFIG_DIR/ansible` directory with it contents set to following text
+  * `password`
+* Run following command to set the correct username/password for Red Hat login:
+  * `ansible-vault edit group_vars/routers/vault`
+    * _Above command will open up an editor_
+  * Provide values for following keys:
+    * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)
+    * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
+
+### Configure regions
 * Perform configuration setup of cluster1 and cluster2 in region 1/2 by running following commands
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
@@ -419,10 +408,13 @@ them.
   * All the brokers will start
   * All the routers will start
 
-### Other ansible plays
+## Other ansible plays
 Ansible can be used to perform other tasks, e.g. reset the config, stop, run the brokers/routers
 
-#### Reset regions
+### Prerequisites - other ansible plays
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
+
+### Reset regions
 * One can reset the brokers/routers/nfs server to bring them to the initial state by running following commands: 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
@@ -436,7 +428,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
   * Remove user/groups that were setup by ansible
   * Remove all the user directories and any other directories created as part of ansible setup
 
-#### Stop brokers/routers
+### Stop brokers/routers
 * To stop the running brokers/routers, execute following commands 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
@@ -446,7 +438,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
   * Stop broker instances
   * Stop router instances
 
-#### Run brokers/routers
+### Run brokers/routers
 * To stop the running brokers/routers, execute following commands 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
@@ -456,12 +448,26 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
   * Run broker instances
   * Run router instances
 
+### Purge queue
+* While doing performance test the queue might need to be purged. There are two ways to do so:
+  1. Using ansible scripts:
+    ```shell
+    cd $MAIN_CONFIG_DIR/ansible
+    ansible-playbook purge_queue_playbook.yml --extra-vars "@variable_override.yml"
+    ```
+  2. **TODO - will be provided by Kamlesh**
+* Above command(s) will purge `exampleQueue` on all the live AMQ brokers in region 1 and 2.
+  _The name of the queue can be overridden from command line by specifying `amq_queue` variable in `variable_override.yml` file_
+
 <br>
 <br>
 
 ## Start/stop the instances
 Sometimes you may need to stop the running instances, or start the instances that are stopped. This section provides
 information on that process
+
+### Prerequisites - start/stop instances
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
 
 ### Start instances - Region 1/2
 * To start instances in region 1 and 2, use following commands:
@@ -474,7 +480,8 @@ information on that process
   ```
 
 ### Stop instances - Region 1/2
-* To stop running instances in region 1 and 2, use following commands:
+* To perform a graceful shutdown, first execute steps given in [Stop broker and routers](#stop-brokersrouters)
+* Stop running instances in region 1 and 2 by perform following commands:
   ```shell
     cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
     terraform apply -auto-approve \
@@ -490,6 +497,9 @@ _Above command will take a few minutes and will either start or stop the instanc
 ## Destroy the resources
 This section provides information on how to cleanup / delete the resources that were setup for all the clusters in
 the two regions
+
+### Prerequisites - destroy resources
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
 
 ### Destroy resources - Region 1
 * To delete resources setup in region 1 (cluster 1/2), use following commands:
