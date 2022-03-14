@@ -30,6 +30,7 @@
   * [Reset regions](#reset-regions)
   * [Stop brokers and routers](#stop-brokersrouters)
   * [Run brokers and routers](#run-brokersrouters)
+  * [Purge queue](#purge-queue)
 * [Start/stop instances](#startstop-the-instances)
   * [Prerequisites](#prerequisites---startstop-instances)
   * [Start stopped instances](#start-instances---region-12)
@@ -446,6 +447,17 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * Above command(s) will perform following tasks:
   * Run broker instances
   * Run router instances
+
+### Purge queue
+* While doing performance test the queue might need to be purged. There are two ways to do so:
+  1. Using ansible scripts:
+    ```shell
+    cd $MAIN_CONFIG_DIR/ansible
+    ansible-playbook purge_queue_playbook.yml --extra-vars "@variable_override.yml"
+    ```
+  2. **TODO - will be provided by Kamlesh**
+* Above command(s) will purge `exampleQueue` on all the live AMQ brokers in region 1 and 2.
+  _The name of the queue can be overridden from command line by specifying `amq_queue` variable in `variable_override.yml` file_
 
 <br>
 <br>
