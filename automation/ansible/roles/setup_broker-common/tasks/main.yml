@@ -35,7 +35,6 @@
   register: etc_hosts_output
 
 - name: Mount NFS volume
-#  when: (mount_dir_output.stat.exists is true) or (create_mount_dir_output.changed is true)
   ansible.posix.mount:
     src: "{{nfs_server_host}}:{{nfs_mount_point}}"
     path: "{{broker_mount_dir}}"

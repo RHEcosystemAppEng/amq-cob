@@ -1,0 +1,7 @@
+---
+
+# Unmount NFS (in case it's mounted) as this gives error on checking the mount dir sometimes
+- name: Unmount NFS volume
+  ansible.posix.mount:
+    path: "{{ broker_mount_dir }}"
+    state: unmounted

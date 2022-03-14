@@ -10,7 +10,9 @@
 - name: Copy "amq" broker run script - output
   when: copy_run_broker_script_output.changed is true
   debug:
-    msg: "AMQ {{ broker_name }} run script copied..."
+    msg:
+      - "AMQ {{ broker_name }} run script copied..."
+      - "Mirroring enabled: {{ enable_amq_mirroring }}"
 
 - name: Execute the "amq" broker run script
   shell:
@@ -21,4 +23,3 @@
   when: amq_broker_run_script_output.changed is true
   debug:
     var: amq_broker_run_script_output.stdout_lines
-

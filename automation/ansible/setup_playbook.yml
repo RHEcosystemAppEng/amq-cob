@@ -46,5 +46,7 @@
     - role: setup_hostname
       tags: setup_router_hostname
     - role: setup_router
-      tags: setup_router
+      tags:
+        - setup_router
+        - register_router
       force_handlers: True
