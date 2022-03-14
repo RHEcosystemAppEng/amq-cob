@@ -29,6 +29,9 @@
   * [Reset regions](#reset-regions)
   * [Stop brokers and routers](#stop-brokersrouters)
   * [Run brokers and routers](#run-brokersrouters)
+* [Start/stop instances](#startstop-the-instances)
+  * [Start stopped instances](#start-instances---region-12)
+  * [Stop running instances](#stop-instances---region-12)
 * [Destroy the resources](#destroy-the-resources)
   * [Region 1](#destroy-resources---region-1)
   * [Region 2](#destroy-resources---region-2)
@@ -453,6 +456,34 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
   * Run broker instances
   * Run router instances
 
+<br>
+<br>
+
+## Start/stop the instances
+Sometimes you may need to stop the running instances, or start the instances that are stopped. This section provides
+information on that process
+
+### Start instances - Region 1/2
+* To start instances in region 1 and 2, use following commands:
+  ```shell
+    cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
+    terraform apply -auto-approve \
+      -var PREFIX="cob-test" \
+      -var INSTANCE_ACTION="start" \
+      -var FORCE_ACTION="false"
+  ```
+
+### Stop instances - Region 1/2
+* To stop running instances in region 1 and 2, use following commands:
+  ```shell
+    cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
+    terraform apply -auto-approve \
+      -var PREFIX="cob-test" \
+      -var INSTANCE_ACTION="stop" \
+      -var FORCE_ACTION="false"
+  ```
+
+_Above command will take a few minutes and will either start or stop the instances (depending on the action)_
 <br>
 <br>
 
