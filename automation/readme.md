@@ -262,6 +262,7 @@ As part of cluster2 config, following interconnect router is also created and se
 ### Prerequisites - Region 2
 * _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
 * IBM API key should have been setup as part of [setting up API key config](#setup-config-for-ibm-api-key)
+* Make sure the ssh key for Region 2 VPC is created as part of [create SSH key](#create-ssh-key-to-work-with-vpc)
 
 ### Setup Region 2 infrastructure
 * Terraform is used to setup the infrastructure for region1. Perform setup of region 2 (cluster1/cluster2)

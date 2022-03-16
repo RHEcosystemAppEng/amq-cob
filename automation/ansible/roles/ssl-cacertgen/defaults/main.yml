@@ -6,7 +6,7 @@ CA_VALIDITY: 3650
 SERVER_CA_ALIAS: server-ca
 CA_CERT_FILE_PREFIX: server-ca
 KEY_SIZE: 2048 
-ORG_UNIT: Artemis
-ORG: ActiveMQwf
-CANONICAL_NAME: "ActiveMQ Artemis Server Certification Authority"
+ORG_UNIT: FSI
+ORG: RedHat
+CANONICAL_NAME: "Red Hat Certification Authority"
 CA_CERT_DIR: "./generated/ca-certs"

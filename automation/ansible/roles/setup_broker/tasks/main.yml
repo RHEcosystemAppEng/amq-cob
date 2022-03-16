@@ -25,6 +25,16 @@
       - "Broker installed at {{ amq_broker_dir }}/{{ broker_name }}."
       - "*** Setup script might have created backup directories for AMQ and broker ***"
 
+- name: Copy keystore & truststore files
+  when: enable_ssl
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ amq_config_dir }}"
+    mode: 0755
+  loop:
+    - "{{INPUT_FILES_BASE_DIR}}/{{inventory_hostname}}/{{inventory_hostname}}-keystore.p12"
+    - "{{INPUT_FILES_BASE_DIR}}/{{inventory_hostname}}/{{CA_CERT_FILE_PREFIX}}-truststore.p12"
+
 - name: Copy amq config files - broker/jgroup/bootstrap
   template:
     src: "{{ item }}.j2"    # iterate over all the template files specified in the loop
