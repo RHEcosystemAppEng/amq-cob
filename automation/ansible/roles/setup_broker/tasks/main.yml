@@ -44,6 +44,9 @@
     - broker.xml
     - jgroups-ping.xml
     - bootstrap.xml
+    - login.config
+    - artemis-roles.properties
+    - artemis-users.properties
   register: copy_amq_config_output
 
 - name: Copy amq config files output

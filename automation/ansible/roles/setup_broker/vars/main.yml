@@ -14,3 +14,7 @@ amq_jgroups_config: "{{ amq_config_dir }}/jgroups-ping.xml"
 amq_mirror_primary_broker_ip: "{{ hostvars[groups[mirror_group][mirror_primary_host_idx]]['broker_private_ip'] }}"
 # Backup mirror broker private IP
 amq_mirror_backup_broker_ip: "{{ hostvars[groups[mirror_group][mirror_backup_host_idx]]['broker_private_ip'] }}"
+CA_CERT_FILE_PREFIX: server-ca
+INPUT_FILES_BASE_DIR: './generated'
+KEY_PASS: redhat 
+STORE_PASS: redhat 
