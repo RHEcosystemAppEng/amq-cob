@@ -37,6 +37,7 @@
   * [Stop running instances](#stop-instances---region-12)
 * [Destroy the resources](#destroy-the-resources)
   * [Prerequisites](#prerequisites---destroy-resources)
+  * [Global Transit Gateway](#destroy-global-transit-gateway)
   * [Region 1](#destroy-resources---region-1)
   * [Region 2](#destroy-resources---region-2)
 * [Instance info](#instance-info)
@@ -387,7 +388,7 @@ To configure the instances using ansible, we need to extract the public ip for a
 * Run following command to set the correct username/password for Red Hat login:
   * `ansible-vault edit group_vars/routers/vault`
     * _Above command will open up an editor_
-  * Provide values for following keys:
+  * Provide values for following keys (**_This is the Red Hat SSO user/password and not the Mac/Linux user/password_**):
     * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)
     * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
 
@@ -500,6 +501,15 @@ the two regions
 
 ### Prerequisites - destroy resources
 * _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
+
+### Destroy Global Transit Gateway
+* To delete the Global Transit Gateway, use following commands:
+  ```shell
+    cd $MAIN_CONFIG_DIR/terraform/transit-gateway/global
+    terraform plan -destroy -out=destroy.plan \
+      -var PREFIX="cob-test"
+    terraform apply destroy.plan
+  ```
 
 ### Destroy resources - Region 1
 * To delete resources setup in region 1 (cluster 1/2), use following commands:
