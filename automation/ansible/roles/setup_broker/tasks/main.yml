@@ -33,7 +33,7 @@
     mode: 0755
   loop:
     - "{{INPUT_FILES_BASE_DIR}}/{{inventory_hostname}}/{{inventory_hostname}}-keystore.p12"
-    - "{{INPUT_FILES_BASE_DIR}}/{{inventory_hostname}}/{{CA_CERT_FILE_PREFIX}}-truststore.p12"
+    - "{{INPUT_FILES_BASE_DIR}}/ca-certs/{{CA_CERT_FILE_PREFIX}}-truststore.p12"
 
 - name: Copy amq config files - broker/jgroup/bootstrap
   template:
