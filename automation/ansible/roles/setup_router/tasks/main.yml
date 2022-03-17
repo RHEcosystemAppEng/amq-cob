@@ -40,6 +40,17 @@
       - "{{ first_live_broker_ip }}  amq-{{ live_broker_01_host }}"
       - "{{ second_live_broker_ip }} amq-{{ live_broker_02_host }}"
 
+- name: Copy private key & cert files to router
+  when: enable_ssl
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ router_config_dir }}"
+    mode: 0755
+  loop:
+    - "{{INPUT_FILES_BASE_DIR}}/{{inventory_hostname}}/{{inventory_hostname}}-private-key.key"
+    - "{{INPUT_FILES_BASE_DIR}}/{{inventory_hostname}}/{{inventory_hostname}}.crt"
+    - "{{INPUT_FILES_BASE_DIR}}/ca-certs/{{CA_CERT_FILE_PREFIX}}.crt"
+
 - name: Copy router config file
   template:
     src: "{{ router_config_file_prefix }}-config.conf.j2"

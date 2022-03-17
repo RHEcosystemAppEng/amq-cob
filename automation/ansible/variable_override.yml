@@ -2,6 +2,12 @@ enable_amq_mirroring: false
 enable_ssl: true
 ssl_generate_ca: true
 
+CA_CERT_FILE_PREFIX: server-ca
+INPUT_FILES_BASE_DIR: './generated'
+CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
+KEY_PASS: redhat 
+STORE_PASS: redhat 
+
 # Region 1 TOR Hosts & IPs
 r1_broker01_live_ip:      163.66.88.98
 r1_broker02_bak_ip:       163.74.93.92
