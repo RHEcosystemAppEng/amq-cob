@@ -1,3 +1,6 @@
 ---
 amq_broker_stop_script: "/home/{{ user_amq }}/stop_broker.sh"
-amq_broker_stop_command: "/var/opt/amq-broker/{{ broker_name }}/bin/artemis-service stop"
+#amq_broker_stop_command: "/var/opt/amq-broker/{{ broker_name }}/bin/artemis-service stop"
+
+# Pair command when broker was started with 'artemis run'
+amq_broker_stop_command: "/var/opt/amq-broker/{{ broker_name }}/bin/artemis stop"

@@ -38,14 +38,18 @@ under the License.
        -->
       <journal-type>NIO</journal-type>
 
-      <paging-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/paging</paging-directory>
-
-      <bindings-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/bindings</bindings-directory>
-
-      <journal-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/journal</journal-directory>
-
-      <large-messages-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/large-messages</large-messages-directory>
-
+    {% if enable_amq_mirroring is defined and enable_amq_mirroring == true %}
+      <paging-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/paging</paging-directory>
+      <bindings-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/bindings</bindings-directory>
+      <journal-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/journal</journal-directory>
+      <large-messages-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/large-messages</large-messages-directory>
+    {% else %}
+      <paging-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/nossl/paging</paging-directory>
+      <bindings-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/nossl/bindings</bindings-directory>
+      <journal-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/nossl/journal</journal-directory>
+      <large-messages-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/nossl/large-messages</large-messages-directory>
+    {% endif %}
+    
       <!--
       if you want to retain your journal uncomment this following configuration.
 
