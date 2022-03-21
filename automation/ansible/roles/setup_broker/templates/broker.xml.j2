@@ -38,7 +38,7 @@ under the License.
        -->
       <journal-type>NIO</journal-type>
 
-    {% if enable_amq_mirroring is defined and enable_amq_mirroring == true %}
+    {% if enable_ssl is defined and enable_ssl == true %}
       <paging-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/paging</paging-directory>
       <bindings-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/bindings</bindings-directory>
       <journal-directory>{{ amq_advanced_topology_dir }}/{{ broker_data_directory }}/ssl/journal</journal-directory>

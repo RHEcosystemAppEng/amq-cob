@@ -1,4 +1,6 @@
 enable_amq_mirroring: false
+
+### Start - SSL Variables
 enable_ssl: true
 ssl_generate_ca: true
 
@@ -7,33 +9,34 @@ INPUT_FILES_BASE_DIR: './generated'
 CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
 KEY_PASS: redhat 
 STORE_PASS: redhat 
+### END - SSL Variables
 
 # Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      163.66.88.98
-r1_broker02_bak_ip:       163.74.93.92
-r1_broker03_live_ip:      163.75.85.47
-r1_broker04_bak_ip:       163.66.92.132
-r1_vpc1_nfs_server_ip:    163.66.88.96
-r1_router01_hub_ip:       163.75.82.88
-r1_router02_spoke_ip:     163.74.91.213
-r1_broker05_live_ip:      163.75.85.43
-r1_broker06_bak_ip:       163.74.91.214
-r1_broker07_live_ip:      163.66.88.97
-r1_broker08_bak_ip:       163.75.85.46
-r1_vpc2_nfs_server_ip:    163.74.91.212
-r1_router03_spoke_ip:     163.66.92.131
+r1_broker01_live_ip:      163.66.84.27
+r1_broker02_bak_ip:       163.74.84.79
+r1_broker03_live_ip:      163.75.86.231
+r1_broker04_bak_ip:       163.66.90.162
+r1_vpc1_nfs_server_ip:    163.66.82.212
+r1_router01_hub_ip:       163.75.89.153
+r1_router02_spoke_ip:     163.74.84.78
+r1_broker05_live_ip:      163.75.94.208
+r1_broker06_bak_ip:       163.74.84.80
+r1_broker07_live_ip:      163.66.94.222
+r1_broker08_bak_ip:       163.75.80.171
+r1_vpc2_nfs_server_ip:    163.74.81.182
+r1_router03_spoke_ip:     163.66.84.26
 
 # Region 2 DAL Hosts & IPs
-r2_broker01_live_ip:      150.240.65.207
-r2_broker02_bak_ip:       150.239.164.147
-r2_broker03_live_ip:      52.118.100.237
-r2_broker04_bak_ip:       52.118.144.19
-r2_vpc1_nfs_server_ip:    150.240.66.88
-r2_router01_hub_ip:       52.117.3.233
-r2_router02_spoke_ip:     169.47.93.9
-r2_broker05_live_ip:      52.118.80.148
-r2_broker06_bak_ip:       169.47.93.10
-r2_broker07_live_ip:      52.118.151.12
-r2_broker08_bak_ip:       52.117.3.235
-r2_vpc2_nfs_server_ip:    150.239.168.18
-r2_router03_spoke_ip:     169.48.154.228
+r2_broker01_live_ip:      52.118.185.73
+r2_broker02_bak_ip:       52.118.204.131
+r2_broker03_live_ip:      52.118.83.86
+r2_broker04_bak_ip:       52.118.190.90
+r2_vpc1_nfs_server_ip:    52.118.145.49
+r2_router01_hub_ip:       52.117.15.74
+r2_router02_spoke_ip:     150.239.164.233
+r2_broker05_live_ip:      169.48.93.254
+r2_broker06_bak_ip:       52.118.208.66
+r2_broker07_live_ip:      52.118.149.225
+r2_broker08_bak_ip:       52.118.81.226
+r2_vpc2_nfs_server_ip:    52.116.204.110
+r2_router03_spoke_ip:     52.118.186.235
