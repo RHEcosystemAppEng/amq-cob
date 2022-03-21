@@ -21,6 +21,7 @@
         GEN_PRIVATE_KEY: "{{item.GEN_PRIVATE_KEY}}"
       when:
         - enable_ssl
+        - ssl_generate_certs
       loop:
         # Ref: https://github.com/sgahlot/amq-cob/blob/main/automation/ansible/hosts.yml
         # r1_vpc1_brokers

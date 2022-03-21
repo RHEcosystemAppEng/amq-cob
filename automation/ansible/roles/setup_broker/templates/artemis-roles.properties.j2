@@ -1,5 +1,5 @@
 {% if enable_ssl is defined and enable_ssl == true %}
-    amq=admin,r1-broker08-bak,r1-broker05-live,r1-broker03-live,r1-broker04-bak,r1-broker02-bak,r1-broker07-live,r2-broker01-live,r2-broker04-bak,r2-broker06-bak,r1-router01-hub,r2-broker08-bak,r2-broker07-live,r2-broker05-live,r1-router03-spoke,r1-router02-spoke,r2-router02-spoke,r1-broker06-bak,r1-broker01-live,r2-broker02-bak,r2-broker03-live,r2-router03-spoke,r2-router01-hub
+    amq=admin,{{ vars['play_hosts']|join(",") }}
 {% else %}
     amq = admin
 {% endif %}

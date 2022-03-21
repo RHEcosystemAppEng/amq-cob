@@ -1,6 +1,0 @@
----
-- hosts: all
-  roles:
-    - ssl-broker
-  vars:
-    BROKER_NAME: "{{ group_names | regex_search('broker[0-9]+') }}"

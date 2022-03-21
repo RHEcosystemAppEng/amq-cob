@@ -400,7 +400,8 @@ To configure the instances using ansible, we need to extract the public ip for a
 |Variable|Description|
 |-----|-----|
 | enable_ssl | Enable SSL config in brokers and routers |
-| ssl_generate_ca | Whether to generate CA Certificates |
+| ssl_generate_ca | Whether to generate CA Certificates. For the very first run of the scripts, set this to true, for subsequent runs you may set this to false for reusing the existing CA certificates.|
+| ssl_generate_certs | Whether to generate server certificate. For the very first run of the scripts, set this to true, for subsequent runs you may set this to false for reusing the existing certificates. |
 
 ### Configure regions
 * Perform configuration setup of cluster1 and cluster2 in region 1/2 by running following commands

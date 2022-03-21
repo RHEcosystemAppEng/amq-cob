@@ -1,27 +1,7 @@
 {% if enable_ssl is defined and enable_ssl == true %}
-    r1-broker01-live=CN=r1-broker01-live,O=RedHat,C=CA
-    r1-broker02-bak=CN=r1-broker02-bak,O=RedHat,C=CA
-    r1-broker03-live=CN=r1-broker03-live,O=RedHat,C=CA
-    r1-broker04-bak=CN=r1-broker04-bak,O=RedHat,C=CA
-    r1-broker05-live=CN=r1-broker05-live,O=RedHat,C=CA
-    r1-broker06-bak=CN=r1-broker06-bak,O=RedHat,C=CA
-    r1-broker07-live=CN=r1-broker07-live,O=RedHat,C=CA
-    r1-broker08-bak=CN=r1-broker08-bak,O=RedHat,C=CA
-    r1-router01-hub=CN=r1-router01-hub,O=RedHat,C=CA
-    r1-router02-spoke=CN=r1-router02-spoke,O=RedHat,C=CA
-    r1-router03-spoke=CN=r1-router03-spoke,O=RedHat,C=CA
-
-    r2-broker01-live=CN=r2-broker01-live,O=RedHat,C=CA
-    r2-broker02-bak=CN=r2-broker02-bak,O=RedHat,C=CA
-    r2-broker03-live=CN=r2-broker03-live,O=RedHat,C=CA
-    r2-broker04-bak=CN=r2-broker04-bak,O=RedHat,C=CA
-    r2-broker05-live=CN=r2-broker05-live,O=RedHat,C=CA
-    r2-broker06-bak=CN=r2-broker06-bak,O=RedHat,C=CA
-    r2-broker07-live=CN=r2-broker07-live,O=RedHat,C=CA
-    r2-broker08-bak=CN=r2-broker08-bak,O=RedHat,C=CA
-    r2-router01-hub=CN=r2-router01-hub,O=RedHat,C=CA
-    r2-router02-spoke=CN=r2-router02-spoke,O=RedHat,C=CA
-    r2-router03-spoke=CN=r2-router03-spoke,O=RedHat,C=CA
+    {%- for host in vars['play_hosts'] %}
+        {{ host }}=CN={{ host }},O=RedHat,C=CA
+    {% endfor %}
 {% else %}
     admin=amq_user
 {% endif %}
