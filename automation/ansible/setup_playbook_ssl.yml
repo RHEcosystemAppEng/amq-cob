@@ -1,0 +1,63 @@
+- name: SSL Cert Tasks
+  import_playbook: ssl-cert-gen-full-playbook.yml
+  when:
+    - enable_ssl
+
+# - hosts: brokers, routers
+#   tasks: 
+#     - name: Print the gateway for each host when defined
+#       ansible.builtin.debug:
+#         msg: inventory_hostname
+
+- hosts:
+    - nfs_servers
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: setup_nfs_server
+      tags: setup_nfs
+    - role: setup_hostname
+      tags: setup_nfs
+
+- hosts:
+    - brokers
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: setup_common
+      tags: setup_broker
+    - role: setup_hostname
+      tags: setup_broker
+    - role: setup_broker-common
+      tags: setup_broker
+    # Add "amq_user" to sudoers to allow invoking "sudo" without password prompt
+    - role: setup_broker-sudoer-add
+      tags: setup_broker
+
+
+    - role: setup_broker
+      become_user: "{{ user_amq }}"
+      tags:
+        - setup_broker
+        - update_broker_config
+    # Remove "amq_user" from sudoers so that password prompt is shown when invoking "sudo"
+    - role: setup_broker-sudoer-remove
+      tags: setup_broker
+
+- hosts:
+    - routers
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: setup_common
+      tags: setup_router_common
+    - role: setup_hostname
+      tags: setup_router_hostname
+    - role: setup_router
+      tags:
+        - setup_router
+        - register_router
+      force_handlers: True

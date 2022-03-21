@@ -1,3 +1,6 @@
 ---
 amq_broker_run_script: "/home/{{ user_amq }}/run_broker.sh"
-amq_broker_start_command: "/var/opt/amq-broker/{{ broker_name }}/bin/artemis-service start"
+# amq_broker_start_command: "/var/opt/amq-broker/{{ broker_name }}/bin/artemis-service start"
+
+# Use following command when log outputs in broker's <broker name>/log directory's artemis.log file
+amq_broker_start_command: "cd /var/opt/amq-broker/{{ broker_name }}/log; nohup /var/opt/amq-broker/{{ broker_name }}/bin/artemis run &"

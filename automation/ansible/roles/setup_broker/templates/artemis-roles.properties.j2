@@ -1,0 +1,5 @@
+{% if enable_ssl is defined and enable_ssl == true %}
+    amq=admin,{{ vars['play_hosts']|join(",") }}
+{% else %}
+    amq = admin
+{% endif %}

@@ -1,13 +1,12 @@
 ---
 - hosts: localhost
-  vars:
-    CA_GEN: no
-  
   tasks:
     - name: Generate CA Certs
       include_role:
         name: ssl-cacertgen
-      when: CA_GEN
+      when:
+        - enable_ssl
+        - ssl_generate_ca    
 
     - name: Generate certs for components
       include_role: 
@@ -16,41 +15,61 @@
         CERT_FILE_PREFIX: "{{item.CERT_FILE_PREFIX}}"
         SERVER_HOST_NAME: "{{item.SERVER_HOST_NAME}}"
         SERVER_INTERNAL_IP: "{{item.SERVER_INTERNAL_IP}}"
+        SERVER_EXTERNAL_IP: "{{item.SERVER_EXTERNAL_IP}}"
         SERVER_DNS_NAME: "{{item.SERVER_DNS_NAME}}"
         IMPORT_CERT_CHAIN_IN_JKS: "{{item.IMPORT_CERT_CHAIN_IN_JKS}}"
         GEN_PRIVATE_KEY: "{{item.GEN_PRIVATE_KEY}}"
+      when:
+        - enable_ssl
+        - ssl_generate_certs
       loop:
         # Ref: https://github.com/sgahlot/amq-cob/blob/main/automation/ansible/hosts.yml
         # r1_vpc1_brokers
-        - { CERT_FILE_PREFIX: "r1-broker-01", SERVER_HOST_NAME: "r1-broker01-live", SERVER_DNS_NAME: "www.r1-broker01-live.redhat.com", SERVER_INTERNAL_IP: "10.70.0.51", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r1-broker-02", SERVER_HOST_NAME: "r1-broker02-bak", SERVER_DNS_NAME: "www.r1-broker02-bak.redhat.com", SERVER_INTERNAL_IP: "10.70.64.51", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r1-broker-03", SERVER_HOST_NAME: "r1-broker03-live", SERVER_DNS_NAME: "www.r1-broker03-live.redhat.com", SERVER_INTERNAL_IP: "10.70.128.51", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r1-broker-04", SERVER_HOST_NAME: "r1-broker04-bak", SERVER_DNS_NAME: "www.r1-broker04-bak.redhat.com", SERVER_INTERNAL_IP: "10.70.0.52", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        - { CERT_FILE_PREFIX: "r1-broker01-live", SERVER_HOST_NAME: "r1-broker01-live", SERVER_DNS_NAME: "www.r1-broker01-live.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc1_private_ip_prefix }}.0.51", SERVER_EXTERNAL_IP: "{{ r1_broker01_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r1-broker02-bak", SERVER_HOST_NAME: "r1-broker02-bak", SERVER_DNS_NAME: "www.r1-broker02-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc1_private_ip_prefix }}.64.51", SERVER_EXTERNAL_IP: "{{ r1_broker02_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r1-broker03-live", SERVER_HOST_NAME: "r1-broker03-live", SERVER_DNS_NAME: "www.r1-broker03-live.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc1_private_ip_prefix }}.128.51", SERVER_EXTERNAL_IP: "{{ r1_broker03_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r1-broker04-bak", SERVER_HOST_NAME: "r1-broker04-bak", SERVER_DNS_NAME: "www.r1-broker04-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc1_private_ip_prefix }}.0.52", SERVER_EXTERNAL_IP: "{{ r1_broker04_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
 
         # r1_vpc2_brokers
-        - { CERT_FILE_PREFIX: "r1-broker-05", SERVER_HOST_NAME: "r1-broker05-live", SERVER_DNS_NAME: "www.r1-broker05-live.redhat.com", SERVER_INTERNAL_IP: "10.71.128.61", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r1-broker-06", SERVER_HOST_NAME: "r1-broker06-bak", SERVER_DNS_NAME: "www.r1-broker06-bak.redhat.com", SERVER_INTERNAL_IP: "10.71.64.61", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r1-broker-07", SERVER_HOST_NAME: "r1-broker07-live", SERVER_DNS_NAME: "www.r1-broker07-live.redhat.com", SERVER_INTERNAL_IP: "10.71.0.61", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r1-broker-08", SERVER_HOST_NAME: "r1-broker08-bak", SERVER_DNS_NAME: "www.r1-broker08-bak.redhat.com", SERVER_INTERNAL_IP: "10.71.128.62", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        - { CERT_FILE_PREFIX: "r1-broker05-live", SERVER_HOST_NAME: "r1-broker05-live", SERVER_DNS_NAME: "www.r1-broker05-live.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc2_private_ip_prefix }}.128.61", SERVER_EXTERNAL_IP: "{{ r1_broker05_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r1-broker06-bak", SERVER_HOST_NAME: "r1-broker06-bak", SERVER_DNS_NAME: "www.r1-broker06-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc2_private_ip_prefix }}.64.61", SERVER_EXTERNAL_IP: "{{ r1_broker06_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r1-broker07-live", SERVER_HOST_NAME: "r1-broker07-live", SERVER_DNS_NAME: "www.r1-broker07-live.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc2_private_ip_prefix }}.0.61", SERVER_EXTERNAL_IP: "{{ r1_broker07_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r1-broker08-bak", SERVER_HOST_NAME: "r1-broker08-bak", SERVER_DNS_NAME: "www.r1-broker08-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r1_vpc2_private_ip_prefix }}.128.62",SERVER_EXTERNAL_IP: "{{ r1_broker08_bak_ip }}",  IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
 
         # r2_vpc1_brokers
-        - { CERT_FILE_PREFIX: "r2-broker-01", SERVER_HOST_NAME: "r2-broker01-live", SERVER_DNS_NAME: "www.r2-broker01-live.redhat.com", SERVER_INTERNAL_IP: "10.75.0.51", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r2-broker-02", SERVER_HOST_NAME: "r2-broker02-bak", SERVER_DNS_NAME: "www.r2-broker02-bak.redhat.com", SERVER_INTERNAL_IP: "10.75.64.51", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r2-broker-03", SERVER_HOST_NAME: "r2-broker03-live", SERVER_DNS_NAME: "www.r2-broker03-live.redhat.com", SERVER_INTERNAL_IP: "10.75.128.51", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r2-broker-04", SERVER_HOST_NAME: "r2-broker04-bak", SERVER_DNS_NAME: "www.r2-broker04-bak.redhat.com", SERVER_INTERNAL_IP: "10.75.0.52", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        - { CERT_FILE_PREFIX: "r2-broker01-live", SERVER_HOST_NAME: "r2-broker01-live", SERVER_DNS_NAME: "www.r2-broker01-live.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.0.51", SERVER_EXTERNAL_IP: "{{ r2_broker01_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r2-broker02-bak", SERVER_HOST_NAME: "r2-broker02-bak", SERVER_DNS_NAME: "www.r2-broker02-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.64.51", SERVER_EXTERNAL_IP: "{{ r2_broker02_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r2-broker03-live", SERVER_HOST_NAME: "r2-broker03-live", SERVER_DNS_NAME: "www.r2-broker03-live.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.128.51", SERVER_EXTERNAL_IP: "{{ r2_broker03_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r2-broker04-bak", SERVER_HOST_NAME: "r2-broker04-bak", SERVER_DNS_NAME: "www.r2-broker04-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.0.52", SERVER_EXTERNAL_IP: "{{ r2_broker04_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
 
         # r2_vpc2_brokers
-        - { CERT_FILE_PREFIX: "r2-broker-05", SERVER_HOST_NAME: "r2-broker05-live", SERVER_DNS_NAME: "www.r2-broker05-live.redhat.com", SERVER_INTERNAL_IP: "10.76.128.61", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r2-broker-06", SERVER_HOST_NAME: "r2-broker06-bak", SERVER_DNS_NAME: "www.r2-broker06-bak.redhat.com", SERVER_INTERNAL_IP: "10.76.64.61", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r2-broker-07", SERVER_HOST_NAME: "r2-broker07-live", SERVER_DNS_NAME: "www.r2-broker07-live.redhat.com", SERVER_INTERNAL_IP: "10.76.0.61", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
-        - { CERT_FILE_PREFIX: "r2-broker-08", SERVER_HOST_NAME: "r2-broker08-bak", SERVER_DNS_NAME: "www.r2-broker08-bak.redhat.com", SERVER_INTERNAL_IP: "10.76.128.62", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+        - { CERT_FILE_PREFIX: "r2-broker05-live", SERVER_HOST_NAME: "r2-broker05-live", SERVER_DNS_NAME: "www.r2-broker05-live.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc2_private_ip_prefix }}.128.61", SERVER_EXTERNAL_IP: "{{ r2_broker05_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r2-broker06-bak", SERVER_HOST_NAME: "r2-broker06-bak", SERVER_DNS_NAME: "www.r2-broker06-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc2_private_ip_prefix }}.64.61", SERVER_EXTERNAL_IP: "{{ r2_broker06_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r2-broker07-live", SERVER_HOST_NAME: "r2-broker07-live", SERVER_DNS_NAME: "www.r2-broker07-live.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc2_private_ip_prefix }}.0.61", SERVER_EXTERNAL_IP: "{{ r2_broker07_live_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
+
+        - { CERT_FILE_PREFIX: "r2-broker08-bak", SERVER_HOST_NAME: "r2-broker08-bak", SERVER_DNS_NAME: "www.r2-broker08-bak.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc2_private_ip_prefix }}.128.62", SERVER_EXTERNAL_IP: "{{ r2_broker08_bak_ip }}", IMPORT_CERT_CHAIN_IN_JKS: yes, GEN_PRIVATE_KEY: no }
 
        # r1_routers 
-        - { CERT_FILE_PREFIX: "r1-router01-hub", SERVER_HOST_NAME: "r1-router01-hub", SERVER_DNS_NAME: "www.r1-router01-hub.redhat.com", SERVER_INTERNAL_IP: "10.75.128.100", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
-        - { CERT_FILE_PREFIX: "r1-router02-spoke", SERVER_HOST_NAME: "r1-router02-spoke", SERVER_DNS_NAME: "www.r1-router02-spoke.redhat.com", SERVER_INTERNAL_IP: "10.75.64.100", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
-        - { CERT_FILE_PREFIX: "r1-router03-spoke", SERVER_HOST_NAME: "r1-router03-spoke", SERVER_DNS_NAME: "www.r1-router03-spoke.redhat.com", SERVER_INTERNAL_IP: "10.76.0.100", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+        - { CERT_FILE_PREFIX: "r1-router01-hub", SERVER_HOST_NAME: "r1-router01-hub", SERVER_DNS_NAME: "www.r1-router01-hub.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.128.100", SERVER_EXTERNAL_IP: "{{ r1_router01_hub_ip }}", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+
+        - { CERT_FILE_PREFIX: "r1-router02-spoke", SERVER_HOST_NAME: "r1-router02-spoke", SERVER_DNS_NAME: "www.r1-router02-spoke.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.64.100", SERVER_EXTERNAL_IP: "{{ r1_router02_spoke_ip }}", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+
+        - { CERT_FILE_PREFIX: "r1-router03-spoke", SERVER_HOST_NAME: "r1-router03-spoke", SERVER_DNS_NAME: "www.r1-router03-spoke.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc2_private_ip_prefix }}.0.100", SERVER_EXTERNAL_IP: "{{ r1_router03_spoke_ip }}", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
 
        # r2_routers 
-        - { CERT_FILE_PREFIX: "r2-router01-hub", SERVER_HOST_NAME: "r2-router01-hub", SERVER_DNS_NAME: "www.r2-router01-hub.redhat.com", SERVER_INTERNAL_IP: "10.75.128.100", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
-        - { CERT_FILE_PREFIX: "r2-router02-spoke", SERVER_HOST_NAME: "r2-router02-spoke", SERVER_DNS_NAME: "www.r2-router02-spoke.redhat.com", SERVER_INTERNAL_IP: "10.75.64.100", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
-        - { CERT_FILE_PREFIX: "r2-router03-spoke", SERVER_HOST_NAME: "r2-router03-spoke", SERVER_DNS_NAME: "www.r2-router03-spoke.redhat.com", SERVER_INTERNAL_IP: "10.76.0.100", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+        - { CERT_FILE_PREFIX: "r2-router01-hub", SERVER_HOST_NAME: "r2-router01-hub", SERVER_DNS_NAME: "www.r2-router01-hub.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.128.100", SERVER_EXTERNAL_IP: "{{ r2_router01_hub_ip }}", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+
+        - { CERT_FILE_PREFIX: "r2-router02-spoke", SERVER_HOST_NAME: "r2-router02-spoke", SERVER_DNS_NAME: "www.r2-router02-spoke.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc1_private_ip_prefix }}.64.100", SERVER_EXTERNAL_IP: "{{ r2_router02_spoke_ip }}", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }
+
+        - { CERT_FILE_PREFIX: "r2-router03-spoke", SERVER_HOST_NAME: "r2-router03-spoke", SERVER_DNS_NAME: "www.r2-router03-spoke.redhat.com", SERVER_INTERNAL_IP: "{{ r2_vpc2_private_ip_prefix }}.0.100", SERVER_EXTERNAL_IP: "{{ r2_router03_spoke_ip }}", IMPORT_CERT_CHAIN_IN_JKS: no, GEN_PRIVATE_KEY: yes }

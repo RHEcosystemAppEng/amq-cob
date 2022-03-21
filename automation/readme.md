@@ -262,6 +262,7 @@ As part of cluster2 config, following interconnect router is also created and se
 ### Prerequisites - Region 2
 * _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
 * IBM API key should have been setup as part of [setting up API key config](#setup-config-for-ibm-api-key)
+* Make sure the ssh key for Region 2 VPC is created as part of [create SSH key](#create-ssh-key-to-work-with-vpc)
 
 ### Setup Region 2 infrastructure
 * Terraform is used to setup the infrastructure for region1. Perform setup of region 2 (cluster1/cluster2)
@@ -391,6 +392,16 @@ To configure the instances using ansible, we need to extract the public ip for a
   * Provide values for following keys (**_This is the Red Hat SSO user/password and not the Mac/Linux user/password_**):
     * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)
     * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
+
+### SSL Setup
+* You can setup Brokers & Routers with SSL and the SSL behavior is determined by the SSL variables in `$MAIN_CONFIG_DIR/ansible/variable_override.yml`. 
+* In most cases just changing (_enable_ssl_) & (_ssl_generate_ca_) should be sufficient and one can change other variables based on specific requirements.
+
+|Variable|Description|
+|-----|-----|
+| enable_ssl | Enable SSL config in brokers and routers |
+| ssl_generate_ca | Whether to generate CA Certificates. For the very first run of the scripts, set this to true, for subsequent runs you may set this to false for reusing the existing CA certificates.|
+| ssl_generate_certs | Whether to generate server certificate. For the very first run of the scripts, set this to true, for subsequent runs you may set this to false for reusing the existing certificates. |
 
 ### Configure regions
 * Perform configuration setup of cluster1 and cluster2 in region 1/2 by running following commands

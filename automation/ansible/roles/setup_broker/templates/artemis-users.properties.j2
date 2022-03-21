@@ -1,0 +1,7 @@
+{% if enable_ssl is defined and enable_ssl == true %}
+    {%- for host in vars['play_hosts'] %}
+        {{ host }}=CN={{ host }},O=RedHat,C=CA
+    {% endfor %}
+{% else %}
+    admin=amq_user
+{% endif %}

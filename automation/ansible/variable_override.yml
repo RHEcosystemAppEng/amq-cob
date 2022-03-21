@@ -1,1 +1,43 @@
 enable_amq_mirroring: false
+
+### Start - SSL Variables
+enable_ssl: true
+ssl_generate_ca: true
+ssl_generate_certs: true 
+
+CA_CERT_FILE_PREFIX: server-ca
+INPUT_FILES_BASE_DIR: './generated'
+CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
+KEY_PASS: redhat 
+STORE_PASS: redhat 
+### END - SSL Variables
+
+# Region 1 TOR Hosts & IPs
+r1_broker01_live_ip:      163.66.89.190
+r1_broker02_bak_ip:       163.74.94.31
+r1_broker03_live_ip:      163.75.85.242
+r1_broker04_bak_ip:       163.66.87.83
+r1_vpc1_nfs_server_ip:    163.66.87.82
+r1_router01_hub_ip:       163.75.85.241
+r1_router02_spoke_ip:     163.74.86.233
+r1_broker05_live_ip:      163.75.85.243
+r1_broker06_bak_ip:       163.74.86.235
+r1_broker07_live_ip:      163.66.94.1
+r1_broker08_bak_ip:       163.75.88.100
+r1_vpc2_nfs_server_ip:    163.74.81.39
+r1_router03_spoke_ip:     163.66.82.185
+
+# Region 2 DAL Hosts & IPs
+r2_broker01_live_ip:      52.116.143.2
+r2_broker02_bak_ip:       52.116.207.60
+r2_broker03_live_ip:      52.118.100.124
+r2_broker04_bak_ip:       150.240.67.234
+r2_vpc1_nfs_server_ip:    52.118.186.66
+r2_router01_hub_ip:       52.118.100.122
+r2_router02_spoke_ip:     52.118.209.113
+r2_broker05_live_ip:      52.117.13.43
+r2_broker06_bak_ip:       52.116.192.226
+r2_broker07_live_ip:      150.240.67.233
+r2_broker08_bak_ip:       52.118.100.123
+r2_vpc2_nfs_server_ip:    52.116.199.250
+r2_router03_spoke_ip:     52.116.133.120

@@ -1,6 +1,0 @@
----
-BROKER_CONFIG_DIR: '/var/opt/amq-broker/broker-01/etc/'
-AMQ_USER: amq_runner
-INPUT_FILES_BASE_DIR: './generated'
-BROKER_NAME: 'broker'
-CA_CERT_FILE_PREFIX: server-ca
