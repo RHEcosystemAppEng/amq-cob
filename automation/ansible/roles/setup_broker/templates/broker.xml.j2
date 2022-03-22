@@ -156,11 +156,7 @@ under the License.
             <!-- For setting up mirroring between brokers -->
             <broker-connections>
                 <!-- Mirror to Dallas Live server and backup server -->
-                <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672?sslEnabled=true;trustStorePath=../etc/{{ CA_CERT_FILE_PREFIX }}-truststore.p12;trustStorePassword={{ STORE_PASS }};verifyHost=false;enabledProtocols=TLSv1.3;" name="{{ inventory_hostname }}-mirror-01">
-                    <mirror/>
-                </amqp-connection>
-
-                <amqp-connection uri="tcp://{{ amq_mirror_backup_broker_ip }}:5672?sslEnabled=true;trustStorePath=../etc/{{ CA_CERT_FILE_PREFIX }}-truststore.p12;trustStorePassword={{ STORE_PASS }};verifyHost=false;enabledProtocols=TLSv1.3;" name="{{ inventory_hostname }}-mirror-02">
+                <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672?sslEnabled=true;trustStorePath=../etc/{{ CA_CERT_FILE_PREFIX }}-truststore.p12;trustStorePassword={{ STORE_PASS }};verifyHost=false;enabledProtocols=TLSv1.3;#tcp://{{ amq_mirror_backup_broker_ip }}:5672?sslEnabled=true;trustStorePath=../etc/{{ CA_CERT_FILE_PREFIX }}-truststore.p12;trustStorePassword={{ STORE_PASS }};verifyHost=false;enabledProtocols=TLSv1.3;" name="{{ inventory_hostname }}-mirror">
                     <mirror/>
                 </amqp-connection>
             </broker-connections>
