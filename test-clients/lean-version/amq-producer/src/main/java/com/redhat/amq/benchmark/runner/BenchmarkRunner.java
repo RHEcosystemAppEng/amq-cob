@@ -1,5 +1,6 @@
 package com.redhat.amq.benchmark.runner;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,13 +21,10 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.redhat.amq.benchmark.entity.Message;
-import com.redhat.amq.benchmark.entity.Metadata;
-import com.redhat.amq.benchmark.entity.TestMetrics;
-import com.redhat.amq.benchmark.resources.*;
+import com.redhat.amq.benchmark.pojo.Message;
+import com.redhat.amq.benchmark.pojo.TestMetrics;
+import com.redhat.amq.benchmark.services.*;
 
-import com.redhat.amq.benchmark.services.MessageProducerService;
-import com.redhat.amq.benchmark.services.StatsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,18 +35,6 @@ public class BenchmarkRunner {
     @Inject
     MessageProducerService messageProducerService;
 
-    @Inject
-    MessageResource messageResource;
-
-   @Inject
-   ErrorResource errorResource;
-
-    @Inject
-    StatsService statsService;
-
-    @Inject
-    MetadataResource metadataResource;
-
     private final String smallString = "7f2kvogvshjxox7zu3qcqccnp3dhulqoc84piara8ryfxvnrb05yk";
     private final String mediumString = "8qpgoiakys0jke2mxbpjy1hyexhjzcfjdyk8kf5xl2ck3vpzri0wp7gqnyuh8ltwj35w0tzkycvzzkdcqkvw7wzu8kbafk9ewys1o581o31qg2esl5n79d80221l";
     private final String longString = "b7b5tvh4rf81r5xwcba3fj5ysd17f3kpqmj49r1hsrjrf867li660mvb14bfgutvdzbha8s3rqwurarqyqmtczxtn82m481dbgidh5jc16oys9b8hqeeqoxyenor2aazgbb5cglv7dc40viva3dk29wyfdk1qr34vnltmukb50cxdx76c";
@@ -58,50 +44,46 @@ public class BenchmarkRunner {
 
     public String run(int durationInSeconds, int receiveWaitTimeInSeconds, int noOfThreads) throws JsonProcessingException,
             InterruptedException {
-        logger.info("Total Number of Records before deleting all messages -{}", messageResource.getMessagesCount());
-        messageResource.deleteAllMessages();
-        logger.info("Total Number of Records after deleting all messages -{}", messageResource.getMessagesCount());
+        Worker worker = new Worker(durationInSeconds, noOfThreads);
+        worker.run();
 
-        logger.info("Total Number of Records before deleting all ERRORS -{}", errorResource.getErrorsCount());
-        errorResource.deleteAllErrors();
-        logger.info("Total Number of Records after deleting all ERRORS -{}", errorResource.getErrorsCount());
-
-        Metadata metadata = new Metadata();
-        metadataResource.insertMetadata(metadata);
-        new Worker(durationInSeconds, noOfThreads, metadata).run();
-        metadataResource.updateMetadata(metadata);
-
-        TestMetrics metrics = statsService.buildMetrics(receiveWaitTimeInSeconds);
-        logger.info("Printing top errors.");
-        errorResource.printTopHunErrors();
+        TestMetrics metrics = new TestMetrics();
+        metrics.setTotalMessagesSent(worker.itemsCounter.get());
+        metrics.setProducerStartTime(new Timestamp(worker.startTime));
+        metrics.setProducerEndTime(new Timestamp(worker.endTime));
+        metrics.setRunTimeInSeconds((metrics.getProducerEndTime().getTime() - metrics.getProducerStartTime().getTime())/1000);
         String metricsResult = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(metrics);
         logger.info("Metrics Result:"+metricsResult);
+
         return metricsResult;
     }
 
     private class Worker {
         private int durationInSeconds;
         private int noOfThreads;
-        private AtomicLong itemsCounter = new AtomicLong(0);
+        AtomicLong itemsCounter = new AtomicLong(0);
         AtomicBoolean timerElapsed = new AtomicBoolean(false);
-        private Metadata metadata;
+        long startTime = 0;
+        long endTime = 0;
 
-        private Worker(int durationInSeconds, int noOfThreads, Metadata metadata) {
+        private Worker(int durationInSeconds, int noOfThreads) {
             this.durationInSeconds = durationInSeconds;
             this.noOfThreads = noOfThreads;
-            this.metadata = metadata;
         }
 
         private void run() throws InterruptedException {
             logger.info("Ready to run for {} seconds in {} threads", durationInSeconds,
                     noOfThreads);
             ExecutorService executor = Executors.newFixedThreadPool(noOfThreads);
+            logger.info("**** Starting OPS ****");
+            startTime = System.currentTimeMillis();
 
             Timer timer = new Timer("timer");
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    logger.info("Timer elapsed");
+                    endTime = System.currentTimeMillis();
+                    logger.info("**** Timer elapsed - Ending ****");
                     timerElapsed.set(true);
                     timer.cancel();
                 }
@@ -117,11 +99,9 @@ public class BenchmarkRunner {
                 while (!timerElapsed.get()) {
                     long index = itemsCounter.incrementAndGet();
                     try {
-                        logger.info("Executing: {}", index);
                         newMessageSendOperation.execute();
                     } catch (Exception e) {
                         logger.error("Failed to run: {}", e.getMessage());
-                        errorResource.insertError("Failed to submit message - "+e.getMessage());
                     }
                 }
                 return null;
@@ -129,7 +109,7 @@ public class BenchmarkRunner {
         }
 
         private Supplier<Message> newMessageData = () -> new Message(UUID.randomUUID().toString(), "Apple",
-                stringMessages[ThreadLocalRandom.current().nextInt(0,4)], metadata.getBenchmarkSeqId());
+                stringMessages[ThreadLocalRandom.current().nextInt(0,4)], "");
 
         private final DatabaseOperation newMessageSendOperation = () -> messageProducerService.send(newMessageData.get());
 

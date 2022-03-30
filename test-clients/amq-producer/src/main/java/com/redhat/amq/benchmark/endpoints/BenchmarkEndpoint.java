@@ -1,4 +1,4 @@
-package com.redhat.amq.benchmark.rest;
+package com.redhat.amq.benchmark.endpoints;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -14,7 +14,7 @@ import com.redhat.amq.benchmark.runner.BenchmarkRunner;
 import com.redhat.amq.benchmark.services.StatsService;
 
 @Path("/benchmark")
-public class BenchmarkResource {
+public class BenchmarkEndpoint {
     @Inject
     BenchmarkRunner benchmarkRunner;
 

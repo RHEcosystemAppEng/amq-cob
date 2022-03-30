@@ -1,15 +1,12 @@
 package com.redhat.amq.benchmark.services;
 
-import com.redhat.amq.benchmark.resources.MessageResource;
+import com.redhat.amq.benchmark.pojo.Message;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import com.redhat.amq.benchmark.entity.Message;
-
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -21,13 +18,8 @@ public class MessageProducerService {
     @OnOverflow(value = OnOverflow.Strategy.UNBOUNDED_BUFFER)
     Emitter<Message> emitter;
 
-    @Inject
-    MessageResource messageResource;
-
     public Message send(Message message) {
-        message.setSent(Timestamp.from(Instant.now()));
-        emitter.send(message);
-        messageResource.create(message);
+        emitter.send(message.setSent(Timestamp.from(Instant.now())));
         return message;
     }
 }
