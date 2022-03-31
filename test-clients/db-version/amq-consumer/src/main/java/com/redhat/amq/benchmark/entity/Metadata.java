@@ -10,42 +10,44 @@ import javax.persistence.Id;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
-public class Message {
-
+public class Metadata {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String uuid;
-    private String name;
-    private String description;
-    private Timestamp sent;
-    private Timestamp received;
-    private String benchmarkSeqId;
 
-    public Message(String uuid, String name, String description, String benchmarkSeqId) {
-        this.uuid = uuid;
-        this.name = name;
-        this.description = description;
-        this.benchmarkSeqId = benchmarkSeqId;
+    private String benchmarkSeqId;
+    private Timestamp startTime;
+    private Timestamp endTime;
+
+    public Metadata(){
+        this.benchmarkSeqId = UUID.randomUUID().toString();
+        this.startTime = Timestamp.from(Instant.now());
     }
 
-    public void update(Message other) {
-        received = other.received != null ? other.received : Timestamp.from(Instant.now());
+    public Metadata(String benchmarkSeqId, Timestamp startTime, Timestamp endTime) {
+        this.benchmarkSeqId = benchmarkSeqId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public void update(Metadata other) {
+        endTime = other.endTime != null ? other.endTime : Timestamp.from(Instant.now());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Message message = (Message) o;
-        return id != null && Objects.equals(id, message.id);
+        Metadata metadata = (Metadata) o;
+        return id != null && Objects.equals(id, metadata.id);
     }
 
     @Override

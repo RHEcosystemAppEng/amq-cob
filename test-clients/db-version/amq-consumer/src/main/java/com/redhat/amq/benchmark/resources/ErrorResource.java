@@ -1,4 +1,4 @@
-package com.redhat.amq.benchmark.services;
+package com.redhat.amq.benchmark.resources;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,9 +17,9 @@ import org.slf4j.Logger;
 import io.agroal.api.AgroalDataSource;
 
 @Singleton
-public class ErrorDaoService {
+public class ErrorResource {
 
-    private Logger logger = LoggerFactory.getLogger(ErrorDaoService.class);
+    private Logger logger = LoggerFactory.getLogger(ErrorResource.class);
 
     @Inject
     AgroalDataSource h2DataSource;
