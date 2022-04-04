@@ -21,7 +21,6 @@ public class MessageResource {
     @Transactional
     public void create(Message message) {
         entityManager.persist(message);
-//        logger.info("Message is inserted to h2 = {}",message);
     }
 
     @Transactional

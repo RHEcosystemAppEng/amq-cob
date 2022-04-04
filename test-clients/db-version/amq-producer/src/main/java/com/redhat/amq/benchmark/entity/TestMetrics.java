@@ -17,6 +17,6 @@ public class TestMetrics {
     private long elapsedTimeMillis;
     private long totalMessagesSent;
     private String message;
-    private Timestamp producerStartTime;
-    private Timestamp producerEndTime;
+    private LocalDateTime producerStartTime;
+    private LocalDateTime producerEndTime;
 }

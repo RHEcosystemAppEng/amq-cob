@@ -24,22 +24,22 @@ public class Metadata {
     private Long id;
 
     private String benchmarkSeqId;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     public Metadata(){
         this.benchmarkSeqId = UUID.randomUUID().toString();
-        this.startTime = Timestamp.from(Instant.now());
+        this.startTime = LocalDateTime.now();
     }
 
-    public Metadata(String benchmarkSeqId, Timestamp startTime, Timestamp endTime) {
+    public Metadata(String benchmarkSeqId, LocalDateTime startTime, LocalDateTime endTime) {
         this.benchmarkSeqId = benchmarkSeqId;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
     public void update(Metadata other) {
-        endTime = other.endTime != null ? other.endTime : Timestamp.from(Instant.now());
+        endTime = other.endTime != null ? other.endTime : LocalDateTime.now();
     }
 
     @Override

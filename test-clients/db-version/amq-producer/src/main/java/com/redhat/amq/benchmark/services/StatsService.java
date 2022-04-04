@@ -13,6 +13,8 @@ import com.redhat.amq.benchmark.entity.TestMetrics;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @ApplicationScoped
 @Slf4j
@@ -26,12 +28,11 @@ public class StatsService {
     @Inject
     MetadataResource metadataResource;
 
-    public TestMetrics buildMetrics(int receiveWaitTimeInSeconds) throws InterruptedException {
+    public TestMetrics buildMetrics() throws InterruptedException {
         final Metadata metadata = metadataResource.getMetadata();
 
         TestMetrics metrics = new TestMetrics();
-        Duration testDuration = Duration.between(metadata.getStartTime().toInstant(), metadata.getEndTime().toInstant());
-
+        Duration testDuration = Duration.between(metadata.getStartTime(), metadata.getEndTime());
         metrics.setProducerStartTime(metadata.getStartTime());
         metrics.setProducerEndTime(metadata.getEndTime());
 
@@ -42,7 +43,6 @@ public class StatsService {
     }
 
     public TestMetrics getIntermittentMetrics(){
-        Instant endTime = Instant.now();
         Metadata metadata = metadataResource.getMetadata();
         TestMetrics metrics = new TestMetrics();
         if(metadata == null){
@@ -50,10 +50,11 @@ public class StatsService {
             return metrics;
         }
 
-        Instant startTime = metadata.getStartTime().toInstant();
-        Duration testDuration = Duration.between(startTime, endTime);
+        LocalDateTime endTime = LocalDateTime.now();
+        long testDuration = ChronoUnit.MILLIS.between(metadata.getStartTime(), endTime);
+
         metrics.setTotalMessagesSent(messageResource.getMessagesCount());
-        metrics.setElapsedTimeMillis(testDuration.toMillis());
+        metrics.setElapsedTimeMillis(testDuration);
 
         return metrics;
     }

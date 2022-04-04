@@ -12,6 +12,7 @@ import com.redhat.amq.benchmark.entity.Message;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @ApplicationScoped
 public class MessageProducerService {
@@ -25,7 +26,7 @@ public class MessageProducerService {
     MessageResource messageResource;
 
     public Message send(Message message) {
-        message.setSent(Timestamp.from(Instant.now()));
+        message.setSent(LocalDateTime.now());
         emitter.send(message);
         messageResource.create(message);
         return message;

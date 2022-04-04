@@ -23,10 +23,10 @@ public class BenchmarkEndpoint {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("/{durationInSeconds}/{receiveWaitTimeInSeconds}/{noOfThreads}")
-    public String run(@PathParam("durationInSeconds") int durationInSeconds, @PathParam("receiveWaitTimeInSeconds") int receiveWaitTimeInSeconds,
+    @Path("/{durationInSeconds}/{noOfThreads}")
+    public String run(@PathParam("durationInSeconds") int durationInSeconds,
                       @PathParam("noOfThreads") int noOfThreads) throws JsonProcessingException, InterruptedException {
-        return benchmarkRunner.run(durationInSeconds, receiveWaitTimeInSeconds, noOfThreads);
+        return benchmarkRunner.run(durationInSeconds, noOfThreads);
     }
 
     @GET

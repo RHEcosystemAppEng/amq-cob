@@ -10,6 +10,7 @@ import javax.persistence.Id;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -25,8 +26,8 @@ public class Message {
     private String uuid;
     private String name;
     private String description;
-    private Timestamp sent;
-    private Timestamp received;
+    private LocalDateTime sent;
+    private LocalDateTime received;
     private String benchmarkSeqId;
 
     public Message(String uuid, String name, String description, String benchmarkSeqId) {
@@ -37,7 +38,7 @@ public class Message {
     }
 
     public void update(Message other) {
-        received = other.received != null ? other.received : Timestamp.from(Instant.now());
+        received = other.received != null ? other.received : LocalDateTime.now();
     }
 
     @Override

@@ -25,7 +25,6 @@ public class MetadataResource {
         this.deleteMetada();
 
         entityManager.persist(metadata);
-//        logger.info("Persisted metadata: " + metadata);
     }
 
     public Metadata getMetadata() {
@@ -36,8 +35,6 @@ public class MetadataResource {
         if (!dataList.isEmpty()) {
             metadata = dataList.get(0);
         }
-
-//        logger.info("Returning metadata: " + metadata);
 
         return metadata;
     }

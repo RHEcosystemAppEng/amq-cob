@@ -56,7 +56,7 @@ public class BenchmarkRunner {
 
     private final String[] stringMessages = {smallString, mediumString, longString, veryLongString};
 
-    public String run(int durationInSeconds, int receiveWaitTimeInSeconds, int noOfThreads) throws JsonProcessingException,
+    public String run(int durationInSeconds, int noOfThreads) throws JsonProcessingException,
             InterruptedException {
         logger.info("Total Number of Records before deleting all messages -{}", messageResource.getMessagesCount());
         messageResource.deleteAllMessages();
@@ -71,10 +71,12 @@ public class BenchmarkRunner {
         new Worker(durationInSeconds, noOfThreads, metadata).run();
         metadataResource.updateMetadata(metadata);
 
-        TestMetrics metrics = statsService.buildMetrics(receiveWaitTimeInSeconds);
+        TestMetrics metrics = statsService.buildMetrics();
         logger.info("Printing top errors.");
         errorResource.printTopHunErrors();
-        String metricsResult = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(metrics);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        String metricsResult = objectMapper.enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(metrics);
         logger.info("Metrics Result:"+metricsResult);
         return metricsResult;
     }
