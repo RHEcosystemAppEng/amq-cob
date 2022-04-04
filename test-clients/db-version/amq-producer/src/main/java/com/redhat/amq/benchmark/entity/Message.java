@@ -8,8 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 

@@ -1,6 +1,7 @@
 package com.redhat.amq.benchmark.runner;
 
-import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,17 +43,21 @@ public class BenchmarkRunner {
 
     private final String[] stringMessages = {smallString, mediumString, longString, veryLongString};
 
-    public String run(int durationInSeconds, int receiveWaitTimeInSeconds, int noOfThreads) throws JsonProcessingException,
+    public String run(int durationInSeconds, int noOfThreads) throws JsonProcessingException,
             InterruptedException {
         Worker worker = new Worker(durationInSeconds, noOfThreads);
         worker.run();
 
         TestMetrics metrics = new TestMetrics();
         metrics.setTotalMessagesSent(worker.itemsCounter.get());
-        metrics.setProducerStartTime(new Timestamp(worker.startTime));
-        metrics.setProducerEndTime(new Timestamp(worker.endTime));
-        metrics.setRunTimeInSeconds((metrics.getProducerEndTime().getTime() - metrics.getProducerStartTime().getTime())/1000);
-        String metricsResult = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(metrics);
+        metrics.setProducerStartTime(worker.startTime);
+        metrics.setProducerEndTime(worker.endTime);
+        Duration testDuration = Duration.between(worker.startTime, worker.endTime);
+        metrics.setRunTimeInSeconds(testDuration.toSeconds());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        String metricsResult = objectMapper.enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(metrics);
+
         logger.info("Metrics Result:"+metricsResult);
 
         return metricsResult;
@@ -63,8 +68,8 @@ public class BenchmarkRunner {
         private int noOfThreads;
         AtomicLong itemsCounter = new AtomicLong(0);
         AtomicBoolean timerElapsed = new AtomicBoolean(false);
-        long startTime = 0;
-        long endTime = 0;
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = LocalDateTime.now();
 
         private Worker(int durationInSeconds, int noOfThreads) {
             this.durationInSeconds = durationInSeconds;
@@ -75,14 +80,14 @@ public class BenchmarkRunner {
             logger.info("Ready to run for {} seconds in {} threads", durationInSeconds,
                     noOfThreads);
             ExecutorService executor = Executors.newFixedThreadPool(noOfThreads);
-            logger.info("**** Starting OPS ****");
-            startTime = System.currentTimeMillis();
+            logger.info("**** Starting OPS **** for " + durationInSeconds);
+            startTime = LocalDateTime.now();
 
             Timer timer = new Timer("timer");
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    endTime = System.currentTimeMillis();
+                    endTime = LocalDateTime.now();
                     logger.info("**** Timer elapsed - Ending ****");
                     timerElapsed.set(true);
                     timer.cancel();

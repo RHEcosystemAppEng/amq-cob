@@ -10,8 +10,7 @@ import javax.inject.Inject;
 
 import com.redhat.amq.benchmark.entity.Message;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+
 import java.time.LocalDateTime;
 
 @ApplicationScoped

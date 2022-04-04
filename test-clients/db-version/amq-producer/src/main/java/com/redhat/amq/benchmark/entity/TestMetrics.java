@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)

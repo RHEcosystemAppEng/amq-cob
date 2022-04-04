@@ -1,15 +1,14 @@
 package com.redhat.amq.benchmark.pojo;
 
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class Message {
 
     private String name;
     private String description;
     private String uuid;
-    private Timestamp sent;
-    private Timestamp received;
+    private LocalDateTime sent;
+    private LocalDateTime received;
     private String benchmarkSeqId;
 
     public Message(String uuid, String name, String description, String benchmarkSeqId) {
@@ -35,22 +34,6 @@ public class Message {
         this.description = description;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Message)) {
-            return false;
-        }
-
-        Message other = (Message) obj;
-
-        return Objects.equals(other.name, this.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.name);
-    }
-
     public String getUuid() {
         return uuid;
     }
@@ -59,24 +42,20 @@ public class Message {
         this.uuid = uuid;
     }
 
-    public Timestamp getSent() {
+    public LocalDateTime getSent() {
         return sent;
     }
 
-    public Message setSent(Timestamp sent) {
+    public void setSent(LocalDateTime sent) {
         this.sent = sent;
-        return this;
     }
 
-
-
-    public Timestamp getReceived() {
+    public LocalDateTime getReceived() {
         return received;
     }
 
-    public Message setReceived(Timestamp received) {
+    public void setReceived(LocalDateTime received) {
         this.received = received;
-        return this;
     }
 
     public String getBenchmarkSeqId() {

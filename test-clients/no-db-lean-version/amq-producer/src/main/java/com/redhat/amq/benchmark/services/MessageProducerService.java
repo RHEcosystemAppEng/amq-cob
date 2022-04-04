@@ -7,8 +7,7 @@ import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @ApplicationScoped
 public class MessageProducerService {
@@ -19,7 +18,8 @@ public class MessageProducerService {
     Emitter<Message> emitter;
 
     public Message send(Message message) {
-        emitter.send(message.setSent(Timestamp.from(Instant.now())));
+        message.setSent(LocalDateTime.now());
+        emitter.send(message);
         return message;
     }
 }
