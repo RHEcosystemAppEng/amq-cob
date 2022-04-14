@@ -29,6 +29,3 @@ variable "SECURITY_GROUP_3_ID" {}
 variable "DEFAULT_SECURITY_GROUP" {}
 
 variable "MAIN_SUBNET_ID" {}
-
-variable "USER_DATA_FILE" {}
-

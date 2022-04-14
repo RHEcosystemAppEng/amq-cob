@@ -23,7 +23,4 @@ variable "INSTANCE_PROFILE" {}
 
 variable "PRIVATE_IP_PREFIX" {}
 
-variable "ROUTER_01_HUB_USER_DATA_FILE" {}
-variable "ROUTER_02_SPOKE_USER_DATA_FILE" {}
-
 variable "tags" {}

@@ -41,7 +41,7 @@
       - "{{ second_live_broker_ip }} amq-{{ live_broker_02_host }}"
 
 - name: Copy private key & cert files to router
-  when: enable_ssl
+  when: enable_ssl is defined and enable_ssl
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ router_config_dir }}"

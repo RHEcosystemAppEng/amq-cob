@@ -71,40 +71,12 @@ router {
 }
 
 
-# ----------------------------------------------------------------
-# For 1-way SSL [start]
-# ----------------------------------------------------------------
-
-#sslProfile {
-#    name: hub-n-broker-tls
-#    caCertFile: /etc/qpid-dispatch/server-ca.crt
-#    password: redhat
-#}
-
-# Connection to the broker
-#connector {
-#    name: {{ live_broker_01_host }}
-#    # substitute this with actual hostname (or ip address) of live broker 1
-#    host: amq-{{ live_broker_01_host }}
-#    port: 61616
-#    role: route-container
-#    saslMechanisms: EXTERNAL ANONYMOUS
-#    sslProfile: hub-n-broker-tls
-#    verifyHostname: no
-#}
-
-# ----------------------------------------------------------------
-# For 1-way SSL [end]
-# ----------------------------------------------------------------
-
-
-
+{% if enable_ssl is defined and enable_ssl == true %}
 # ----------------------------------------------------------------
 # For 2-way SSL [start]
 # ----------------------------------------------------------------
 
 #### Profile for 2-way SSL - for Hub and brokers
-{% if enable_ssl is defined and enable_ssl == true %}
     sslProfile {
         name: hub-n-broker-tls
         caCertFile: /etc/qpid-dispatch/{{ CA_CERT_FILE_PREFIX }}.crt
@@ -117,7 +89,6 @@ router {
 # Connection to the hub
 connector {
     name: {{ hub_router_id }}
-    # substitute with actual hostname (or ip address) of the hub router
     host: amq-{{ hub_router_id }}
     port: 5773
     role: inter-router
@@ -132,7 +103,6 @@ connector {
 # Connection to the broker (01)
 connector {
     name: {{ live_broker_01_host }}
-    # substitute this with actual hostname (or ip address) of live broker 1
     host: amq-{{ live_broker_01_host }}
     port: 61616
     role: route-container
@@ -147,7 +117,6 @@ connector {
 # Connection to the broker (02)
 connector {
     name: {{ live_broker_02_host }}
-    # substitute this with actual hostname (or ip address) of live broker 2
     host: amq-{{ live_broker_02_host }}
     port: 61616
     role: route-container
@@ -159,9 +128,11 @@ connector {
     {% endif %}
 }
 
+{% if enable_ssl is defined and enable_ssl == true %}
 # ----------------------------------------------------------------
 # For 2-way SSL [end]
 # ----------------------------------------------------------------
+{% endif %}
 
 
 # router will use the queue specified in prefix
