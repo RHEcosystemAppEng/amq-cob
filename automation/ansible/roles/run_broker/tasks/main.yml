@@ -1,5 +1,11 @@
 ---
 
+- name: IP address
+  debug:
+    msg:
+      - "ansible_host = {{ ansible_host }}"
+      - "hostname = {{ inventory_hostname }}"
+
 - name: Copy "amq" broker run script
   template:
     src: run_broker.sh.j2

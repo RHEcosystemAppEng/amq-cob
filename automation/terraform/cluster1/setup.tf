@@ -207,8 +207,6 @@ module "router-01-hub" {
   SECURITY_GROUP_3_ID    = module.router-common.custom_sg_3_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
 
-  USER_DATA_FILE = var.ROUTER_01_HUB_USER_DATA_FILE
-
   tags = concat(var.tags, [
     "router: hub",
     "setup: amq_interconnect_router"
@@ -237,8 +235,6 @@ module "router-02-spoke" {
   SECURITY_GROUP_2_ID    = module.common.custom_sg_2_id
   SECURITY_GROUP_3_ID    = module.router-common.custom_sg_3_id
   DEFAULT_SECURITY_GROUP = module.common.default_vpc_sg
-
-  USER_DATA_FILE = var.ROUTER_02_SPOKE_USER_DATA_FILE
 
   tags = concat(var.tags, [
     "router: spoke",

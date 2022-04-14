@@ -4,9 +4,6 @@
     name: "{{ packages }}"
     state: latest
     update_cache: yes
-  notify:
-    - Start NFS service
-    - Enable NFS service
   register: dnf_output
 
 - name: Create "files" directory and change ownership recursively
@@ -20,7 +17,7 @@
 
 - name: Copy AMQ binary to NFS server
   copy:
-    src: "amq-broker-7.9.0-bin.zip"
+    src: "{{ amq_binary_archive }}"
     dest: "{{ nfs_files_mount }}"
     owner: "{{ user_nobody }}"
     group: "{{ user_nobody }}"
@@ -36,6 +33,18 @@
                             {{zone2_cidr}}{{nfs_options}} \
                             {{zone3_cidr}}{{nfs_options}}
   register: nfs_add_exports_output
+
+- name: Start NFS service
+  ansible.builtin.service:
+    name: "{{ nfs_service }}"
+    state: started
+  register: nfs_service_start_output
+
+- name: Enable NFS service
+  ansible.builtin.service:
+    name: "{{ nfs_service }}"
+    enabled: yes
+  register: nfs_service_enable_output
 
 - name: Get exports entries
   when: nfs_add_exports_output.changed is true
@@ -56,6 +65,17 @@
   when: nfs_add_exports_output.changed is true
   debug:
     var: exports_output.stdout_lines
+
+- name: Start NFS service output
+  when: nfs_service_start_output.state == "started" and nfs_service_start_output.changed is true
+  debug:
+    msg:
+     - "NFS Service started..."
+
+- name: Enable NFS service output
+  when: nfs_service_enable_output.enabled is true
+  debug:
+    msg: "NFS Service enabled..."
 
 - name: All done!!!
   debug:
