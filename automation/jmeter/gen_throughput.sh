@@ -20,33 +20,32 @@ function USAGE() {
     fi
 
     cat <<- USAGE_INFO
-      Usage: $0 [-s consumer label] [-p producer label] [-a samples to aggregate] -i <jmeter_JTL_file>
-        where
+      Usage: $0 [options] -i <jmeter_JTL_file>
           jmeter_JTL_file is the input file that contains JMeter log sample result
                 and is generated using the "-l" option when running jmeter
-          -a|A - specifies consumer sample size to aggregate
-          -b|B - specifies producer sample size to aggregate
-          -c|C - specifies consumer label
-          -i|I - specifies the JMeter log file
-          -p|P - specifies producer label
-          -f|F - specifies output format. Valid choice is either "json" or "csv". Default is json
+          and options are:
+            -a|A: consumer sample size to aggregate
+            -b|B: producer sample size to aggregate
+            -c|C: consumer label
+            -p|P: producer label
+            -f|F: output format. Valid choice is either "json" or "csv"
+                  Default is json
 
-        e.g: $0 -s SUB -i /tmp/jmeter.jtl
-             This will read JMeter logs from the /tmp/jmeter.jtl file and use "SUB" text to look for consumer lines.
+        e.g: $0 -c SUB -i /tmp/jmeter.jtl
+             This will read JMeter sample logs from the /tmp/jmeter.jtl file
+             and use "SUB" text to look for consumer lines.
              By default, it will take 200 as the samples to aggregate and
                          "JMS Publisher" text to look for the producer lines
-                         and outout will be in json format
+                         and output will be in json format
 
         e.g: $0 -c CONSUME -p PUB -i /tmp/jmeter.jtl -a 2500 -b 1000 -f csv
              This will:
-              - read JMeter logs from the /tmp/jmeter.jtl file
+              - read JMeter sample logs from the /tmp/jmeter.jtl file
               - and use "CONSUME" text to look for consumer lines
               - and "PUB" text to look for the producer lines.
-              - 2500 will be taken as the samples to aggregate for the consumer
-              - 1000 will be taken as the samples to aggregate for the producer
+              - 2500 will be used as the samples to aggregate for the consumer
+              - 1000 will be used as the samples to aggregate for the producer
               - output will be in the "csv" format
-
-
 USAGE_INFO
 
     exit 1
@@ -88,9 +87,6 @@ function calculate_throughput() {
     local producerSamplesToAggregate=$4
     local consumerSamplesToAggregate=$5
     local outputFormat=$6
-
-#    printf " -->> Using following data: logFile=%s, producer=%s, consumer=%s, samplesToAggregate (producer=%s, consumer=%s)\n" \
-#      "$jmeterLogFile" "$producerLabel" "$consumerLabel" "$producerSamplesToAggregate" "$consumerSamplesToAggregate"
 
     # timestamp is given in the 1st field
     local producerFirstTimestamp=`cat "$jmeterLogFile" | awk -F',' 'FNR == 2 {print $1}'`   # read timestamp from 2nd line
