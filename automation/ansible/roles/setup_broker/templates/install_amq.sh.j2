@@ -54,9 +54,10 @@ if [ -f $AMQ_BINARY_FULL_PATH ]; then
       --data {{ amq_advanced_topology_dir }}/{{ broker_data_directory }} \
       {{ broker_name }}
 else
-    echo "..."
-    echo "AMQ zip is not in it's location ($AMQ_BINARY_FULL_PATH)"
-    echo "Please fix the above error and re-run"
-    echo "..."
+    echo "******************************************************************"
+    echo "** -->> AMQ zip is not in it's location ($AMQ_BINARY_FULL_PATH) <<--"
+    echo "** -->> Please fix the above error and re-run"
+    echo "******************************************************************"
+    exit 10
 fi
 
