@@ -18,6 +18,16 @@
             <stringProp name="Argument.value">15</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="producerSamples" elementType="Argument">
+            <stringProp name="Argument.name">producerSamples</stringProp>
+            <stringProp name="Argument.value">500</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="consumerSamples" elementType="Argument">
+            <stringProp name="Argument.name">consumerSamples</stringProp>
+            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -53,7 +63,7 @@
           <stringProp name="jms.random_path"></stringProp>
           <stringProp name="jms.config_choice">jms_use_text</stringProp>
           <stringProp name="jms.config_msg_type">jms_text_message</stringProp>
-          <stringProp name="jms.iterations">200</stringProp>
+          <stringProp name="jms.iterations">${producerSamples}</stringProp>
           <boolProp name="jms.authenticate">false</boolProp>
           <elementProp name="jms.jmsProperties" elementType="JMSProperties">
             <collectionProp name="JMSProperties.properties"/>
@@ -85,7 +95,7 @@
           <stringProp name="jms.security_principle"></stringProp>
           <stringProp name="jms.security_credentials"></stringProp>
           <boolProp name="jms.authenticate">false</boolProp>
-          <stringProp name="jms.iterations">200</stringProp>
+          <stringProp name="jms.iterations">${consumerSamples}</stringProp>
           <stringProp name="jms.read_response">true</stringProp>
           <stringProp name="jms.client_choice">jms_subscriber_receive</stringProp>
           <stringProp name="jms_error_reconnect_on_codes"></stringProp>
