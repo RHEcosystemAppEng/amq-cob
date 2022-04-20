@@ -13,7 +13,7 @@ jmeter -n -t "${currentDir}/AMQ_Jmeter_Test_Plan_local.jmx" \
   -l "${outputDir}/jmeter_results_${HOST_ADDRESS}.jtl"
 
 printf  "Calculating throughput from JTL file."
-./gen_throughput.sh "-i" "${outputDir}/jmeter_results_${HOST_ADDRESS}.jtl" -a 1000 -b 2000 -f csv -c "JMS Subscriber" -p "JMS Publisher" > "${outputDir}/jmeter_csv_results_${HOST_ADDRESS}.csv"
+./gen_throughput.sh "-i" "${outputDir}/jmeter_results_${HOST_ADDRESS}.jtl" -a 2000 -b 1000 -f csv -c "JMS Subscriber" -p "JMS Publisher" > "${outputDir}/jmeter_csv_results_${HOST_ADDRESS}.csv"
 
 printf  "Benchmark is done..!!"
 }
