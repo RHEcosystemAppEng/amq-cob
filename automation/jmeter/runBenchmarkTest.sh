@@ -9,15 +9,10 @@ jmeter -n -t "${currentDir}/AMQ_Jmeter_Test_Plan_local.jmx" \
   -JconsumerDuration=20 \
   -l "${outputDir}/jmeter_results_${HOST_ADDRESS}.jtl"
 
-printf  "Calculating throughout from JTL file."
-./gen_throughput.sh "-i" "${outputDir}/jmeter_results_${HOST_ADDRESS}.jtl"
+printf  "Calculating throughput from JTL file."
+./gen_throughput.sh "-i" "${outputDir}/jmeter_results_${HOST_ADDRESS}.jtl" -a 200 -b 200 -f csv -c "JMS Subscriber" -p "JMS Publisher" > "${outputDir}/jmeter_csv_results_${HOST_ADDRESS}.csv"
 
-printf "Generating CSV report"
-local PUBLISHER_THROUGHPUT=$(cat jtl_throughput_results.json| jq ".throughputSec.publisher")
-local CONSUMER_THROUGHPUT=$(cat jtl_throughput_results.json| jq ".throughputSec.consumer")
-local COMBINED_THROUGHPUT=$(cat jtl_throughput_results.json| jq ".throughputSec.combined")
-
-printf "\n127.0.0.1,${PUBLISHER_THROUGHPUT}, ${CONSUMER_THROUGHPUT}, ${COMBINED_THROUGHPUT} " >> "${outputDir}/amq_benchmark_report.csv"
+printf  "Benchmark is done..!!"
 }
 
 function generateJndiPropertiesFile(){
@@ -37,7 +32,6 @@ outputDir=$(pwd)/amq_benchmark
 printf ${outputDir}
 rm -rf "${outputDir}"
 mkdir -p "${outputDir}"
-printf "broker/router IP, Publisher Throughput, Consumer Throughput, Combined Throughput" > "${outputDir}/amq_benchmark_report.csv"
 
 generateJndiPropertiesFile "${BROKER_IP_ADDRESS}"
 runBenchmark "${BROKER_IP_ADDRESS}"
