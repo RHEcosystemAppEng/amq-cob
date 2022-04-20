@@ -144,6 +144,9 @@ all:
     broker_mount_base_dir: "/mnt/nfs_mount"
     broker_mount_dir: "{{broker_mount_base_dir}}/amq"
     enable_amq_mirroring: true
+    amq_advanced_topology_dir: "{{ broker_mount_dir }}/advanced_topology"
+    amq_binary_version: amq-broker-7.9.0
+    amq_binary_archive: "{{ amq_binary_version }}-bin.zip"
 
     # Private IP prefixes for each region/vpc
     r1_vpc1_private_ip_prefix: "10.101"

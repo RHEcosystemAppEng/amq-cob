@@ -24,12 +24,4 @@ locals {
 
   CLUSTER2_VPC_NAME                        = "${local.VPC_NAME_PREFIX}-2"
   CLUSTER2_VPC_DEFAULT_SECURITY_GROUP_NAME = "${local.CLUSTER2_VPC_NAME}-default-sg"
-
-
-  # User data scripts are relative to the cluster they're invoked from
-  CLUSTER1_ROUTER_01_HUB_USER_DATA_FILE   = "../router/hub-router1/region2-initial_setup-01.sh"
-  CLUSTER1_ROUTER_02_SPOKE_USER_DATA_FILE = "../router/spoke-router2/region2-initial_setup-01.sh"
-
-  CLUSTER2_ROUTER_03_SPOKE_USER_DATA_FILE = "../router/spoke-router3/region2-initial_setup-01.sh"
-
 }

@@ -1,8 +1,6 @@
 ---
 amq_install_dir: /opt/rh-amq-broker
 amq_broker_dir: /var/opt/amq-broker
-amq_binary_version: amq-broker-7.9.0
-amq_binary_archive: "{{ amq_binary_version }}-bin.zip"
 amq_binary_location: "{{ broker_mount_dir }}/files"
 amq_advanced_topology_dir: "{{ broker_mount_dir }}/advanced_topology"
 amq_install_script: "/home/{{ user_amq }}/install_amq.sh"

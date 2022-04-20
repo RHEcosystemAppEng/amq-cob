@@ -27,8 +27,6 @@ resource "ibm_is_instance" "amq_router" {
     ]
   }
 
-  user_data = file(var.USER_DATA_FILE)
-
   tags = local.tags
 
   timeouts {

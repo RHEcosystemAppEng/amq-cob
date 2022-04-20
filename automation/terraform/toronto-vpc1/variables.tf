@@ -6,8 +6,6 @@ variable "PREFIX" {
 
 variable "ssh_key" {}
 
-#variable "ssh_keys" {}
-
 variable "REGION" {
   default = "ca-tor"
 }
@@ -15,11 +13,6 @@ variable "REGION" {
 # This variable should be defined on the cli
 variable "CLUSTER1_PRIVATE_IP_PREFIX" {
 #  default = "10.101"
-}
-
-# This variable should be defined on the cli
-variable "CLUSTER2_PRIVATE_IP_PREFIX" {
-#  default = "10.102"
 }
 
 variable "tags" {
