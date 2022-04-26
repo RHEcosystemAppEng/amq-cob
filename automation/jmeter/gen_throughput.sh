@@ -30,6 +30,8 @@ function USAGE() {
             -p|P: producer label
             -f|F: output format. Valid choice is either "json" or "csv"
                   Default is json
+            -z|Z: deduce sample size to aggregate from JTL file
+                  -a/-b options will be ignored if provided
 
         e.g: $0 -c SUB -i /tmp/jmeter.jtl
              This will read JMeter sample logs from the /tmp/jmeter.jtl file
@@ -84,9 +86,18 @@ function calculate_throughput() {
     local jmeterLogFile=$1
     local producerLabel=$2
     local consumerLabel=$3
-    local producerSamplesToAggregate=$4
-    local consumerSamplesToAggregate=$5
-    local outputFormat=$6
+    local outputFormat=$4
+    local readSampleSizeFromJTL=$5
+    local producerSamplesToAggregate=$6
+    local consumerSamplesToAggregate=$7
+
+    if [ "$readSampleSizeFromJTL" == "true" ]; then
+      # Pick up 1st word (field) from 5th column of 1st line matching producer label that has a 200 responseCode
+      producerSamplesToAggregate=`egrep "$producerLabel" "$jmeterLogFile" | egrep -m 1 ',200,' | awk -F',' '{print $5}' | awk -F' ' '{print $1}'`
+
+      # Pick up 2nd last word (field) from 5th column of 1st line matching consumer label that has a 200 responseCode
+      consumerSamplesToAggregate=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,' | awk -F',' '{print $5}' | awk -F' ' '{print $(NF-1)}'`
+    fi
 
     # timestamp is given in the 1st field
     local producerFirstTimestamp=`cat "$jmeterLogFile" | awk -F',' 'FNR == 2 {print $1}'`   # read timestamp from 2nd line
@@ -106,8 +117,6 @@ function calculate_throughput() {
     # Full sample aggregate lines (where number of messages sent/received == sample aggregate size)
     local producerCount=`egrep "$producerLabel" "$jmeterLogFile" | egrep -c ',200,'`
     local consumerCount=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -c ',200,'`
-
-    #
 
     # Count "Consumer" lines that are NOT with 200 or 404 responseCode. JMeter will mark the consumer lines
     # with responseCode 404 where 0 messages are received
@@ -140,7 +149,7 @@ function calculate_throughput() {
              "producer": "%s",
              "consumer": { full: "%s", partial: "%s" }
            },
-          "samples": {
+          "sample_size": {
             "to_aggregate": { "producer": "%s", "consumer": "%s" },
             "total_aggregated": { "producer": "%s", "consumer": "%s" }
           },
@@ -185,14 +194,14 @@ function process_cmd_args() {
 
     local consumerLabel="JMS Subscriber"
     local producerLabel="JMS Publisher"
-    local samplesToAggregate=200  # default value
     local producerSamplesToAggregate=200  # default value
     local consumerSamplesToAggregate=200  # default value
     local outputFormat="json"
     local jmeterLogFile
     local incorrectUsageMessage
+    local readSampleSizeFromJTL=false
 
-    while getopts a:A:b:B:c:C:f:F:p:P:i:I: arg
+    while getopts a:A:b:B:c:C:f:F:p:P:i:I:zZ arg
     do
         case $arg in
           c|C)
@@ -206,6 +215,9 @@ function process_cmd_args() {
             ;;
           b|B)
             producerSamplesToAggregate="$OPTARG"
+            ;;
+          z|Z)
+            readSampleSizeFromJTL=true
             ;;
           i|I)
             jmeterLogFile="${OPTARG}"
@@ -233,7 +245,7 @@ function process_cmd_args() {
       USAGE "$incorrectUsageMessage"
     fi
 
-    calculate_throughput "$jmeterLogFile" "$producerLabel" "$consumerLabel" "$producerSamplesToAggregate" "$consumerSamplesToAggregate" "$outputFormat"
+     calculate_throughput "$jmeterLogFile" "$producerLabel" "$consumerLabel" "$outputFormat" "$readSampleSizeFromJTL" "$producerSamplesToAggregate" "$consumerSamplesToAggregate"
 }
 
 process_cmd_args "$@"
