@@ -90,9 +90,9 @@ function calculate_throughput() {
 
     # timestamp is given in the 1st field
     local producerFirstTimestamp=`cat "$jmeterLogFile" | awk -F',' 'FNR == 2 {print $1}'`   # read timestamp from 2nd line
-    local producerLastTimestamp=`egrep "$producerLabel" "$jmeterLogFile" | tail -1 | awk -F',' '{print $1}'`  # from last match
-    local consumerFirstTimestamp=`egrep -m 1 "$consumerLabel" "$jmeterLogFile" | awk -F',' '{print $1}'`  # from 1st match
-    local consumerLastTimestamp=`tail -100 "$jmeterLogFile" | egrep "$consumerLabel" | tail -1 | awk -F',' '{print $1}'`  # from last match
+    local producerLastTimestamp=`egrep "$producerLabel" "$jmeterLogFile" | egrep ',200,' | tail -1 | awk -F',' '{print $1}'`  # from last match
+    local consumerFirstTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,' | awk -F',' '{print $1}'`  # from 1st match
+    local consumerLastTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep ',200,' | tail -1 | awk -F',' '{print $1}'`  # from last match
 
     compute_time_diff $producerLastTimestamp $producerFirstTimestamp
     local producerTimeDiffSeconds=$TIME_DIFF_SECONDS
@@ -103,11 +103,25 @@ function calculate_throughput() {
     compute_time_diff $consumerLastTimestamp $producerFirstTimestamp
     local timeDiffSeconds=$TIME_DIFF_SECONDS
 
-    local producerCount=`egrep -c "$producerLabel" "$jmeterLogFile"`
-    local consumerCount=`egrep -c "$consumerLabel" "$jmeterLogFile"`
+    # Full sample aggregate lines (where number of messages sent/received == sample aggregate size)
+    local producerCount=`egrep "$producerLabel" "$jmeterLogFile" | egrep -c ',200,'`
+    local consumerCount=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -c ',200,'`
+
+    #
+
+    # Count "Consumer" lines that are NOT with 200 or 404 responseCode. JMeter will mark the consumer lines
+    # with responseCode 404 where 0 messages are received
+    # and with responseCode 500 where less than expected messages are received
+    local consumerCountPartial=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -vc ',404,|,200,'`
+
+    # Pick up "Consumer" lines that are NOT with 200 or 404 responseCode, picking up 5th column that contains
+    # "N message(s) received successfully of <sample_aggregate_size> expected" text. And, finally extract the
+    # 1st column from this field that is the actual number of messages received and sum it up for each line
+    local consumerSampleCountPartial=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -v ',404,|,200,' | awk -F',' '{print $5}' | awk -F' ' '{print $1}' | paste -sd+ - | bc`
 
     local producerSampleCount="$((producerCount * producerSamplesToAggregate))"
-    local consumerSampleCount="$((consumerCount * consumerSamplesToAggregate))"
+    # Also add consumer partial sample count to get total number of  consumer messages
+    local consumerSampleCount="$(( (consumerCount * consumerSamplesToAggregate) + consumerSampleCountPartial))"
 
     local producerThroughput="$((producerSampleCount / producerTimeDiffSeconds))"
     local consumerThroughput="$((consumerSampleCount / consumerTimeDiffSeconds))"
@@ -122,7 +136,10 @@ function calculate_throughput() {
             "consumer_timestamp_millis": { "first": "%s", "last": "%s" },
             "diff_in_seconds": { "producer": "%s", "consumer": "%s", "combined": "%s" }
           },
-          "count": { "producer": "%s", "consumer": "%s" },
+          "count": {
+             "producer": "%s",
+             "consumer": { full: "%s", partial: "%s" }
+           },
           "samples": {
             "to_aggregate": { "producer": "%s", "consumer": "%s" },
             "total_aggregated": { "producer": "%s", "consumer": "%s" }
@@ -131,18 +148,18 @@ function calculate_throughput() {
         }\n' \
           "$producerFirstTimestamp" "$producerLastTimestamp" \
           "$consumerFirstTimestamp" "$consumerLastTimestamp" \
-          "$producerTimeDiffSeconds", "$consumerTimeDiffSeconds" "$timeDiffSeconds" \
-          "$producerCount" "$consumerCount" \
+          "$producerTimeDiffSeconds" "$consumerTimeDiffSeconds" "$timeDiffSeconds" \
+          "$producerCount" "$consumerCount" "$consumerCountPartial" \
           "$producerSamplesToAggregate" "$consumerSamplesToAggregate" "$producerSampleCount" "$consumerSampleCount" \
           "$producerThroughput" "$consumerThroughput" "$combinedThroughput"
         ;;
       csv)
-        printf 'producer_first_timestamp, producer_last_timestamp, consumer_first_timestamp, consumer_last_timestamp, producer_diff_seconds, consumer_diff_seconds, combined_diff_seconds, producer_count, consumer_count, producer_samples_to_aggregate, consumer_samples_to_aggregate, producer_samples_aggregated, consumer_samples_aggregated, producer_throughput, consumer_throughput, combined_throughput\n'
-        printf '%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n' \
+        printf 'producer_first_timestamp, producer_last_timestamp, consumer_first_timestamp, consumer_last_timestamp, producer_diff_seconds, consumer_diff_seconds, combined_diff_seconds, producer_count, consumer_count, consumer_partial_count, producer_samples_to_aggregate, consumer_samples_to_aggregate, producer_samples_aggregated, consumer_samples_aggregated, producer_throughput, consumer_throughput, combined_throughput\n'
+        printf '%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n' \
           "$producerFirstTimestamp" "$producerLastTimestamp" \
           "$consumerFirstTimestamp" "$consumerLastTimestamp" \
           "$producerTimeDiffSeconds" "$consumerTimeDiffSeconds" "$timeDiffSeconds" \
-          "$producerCount" "$consumerCount" \
+          "$producerCount" "$consumerCount" "$consumerCountPartial" \
           "$producerSamplesToAggregate" "$consumerSamplesToAggregate" "$producerSampleCount" "$consumerSampleCount" \
           "$producerThroughput" "$consumerThroughput" "$combinedThroughput"
         ;;
