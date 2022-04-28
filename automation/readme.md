@@ -25,6 +25,9 @@
   * [Capture public IP](#capture-public-ip---manual-step)
   * [Create vault password](#create-vault-password---manual-step)
   * [Configure regions](#configure-regions)
+* [Run performance tests using JMeter](#run-performance-tests)
+  * [Prerequisites](#prerequisites---install-jmeter)
+  * [Run tests](#run-tests)
 * [Other Ansible plays](#other-ansible-plays)
   * [Prerequisites](#prerequisites---other-ansible-plays)
   * [Reset regions](#reset-regions)
@@ -419,6 +422,25 @@ To configure the instances using ansible, we need to extract the public ip for a
   * Host entries will be added to the brokers (for NFS server) and spoke routers (for hub router and brokers)
   * All the brokers will start
   * All the routers will start
+
+## Run performance tests
+JMeter is being used to run the performance tests on the AMQ brokers and routers
+
+### Prerequisites - install JMeter
+Create another virtual instance (manually) and install JMeter on it by using following commands: 
+```shell
+  sudo dnf install -y wget bc
+  wget https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.4.3.zip
+```
+
+### Run tests
+* Copy following files to any directory on your client instance:
+  * `AMQ_Jmeter_Test_Plan.jmx` - JMeter config
+  * `gen_throughput.sh` - script to generate throughput numbers for producer/consumer
+* Run JMeter:
+  * `runBenchmarkTest.sh`
+* Execute the script
+  * `./gen_throughput.sh -i ~/jmeter.jtl`
 
 ## Other ansible plays
 Ansible can be used to perform other tasks, e.g. reset the config, stop, run the brokers/routers

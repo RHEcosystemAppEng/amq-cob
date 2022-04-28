@@ -95,15 +95,17 @@ function calculate_throughput() {
       # Pick up 1st word (field) from 5th column of 1st line matching producer label that has a 200 responseCode
       producerSamplesToAggregate=`egrep "$producerLabel" "$jmeterLogFile" | egrep -m 1 ',200,' | awk -F',' '{print $5}' | awk -F' ' '{print $1}'`
 
-      # Pick up 2nd last word (field) from 5th column of 1st line matching consumer label that has a 200 responseCode
-      consumerSamplesToAggregate=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,' | awk -F',' '{print $5}' | awk -F' ' '{print $(NF-1)}'`
+      # Pick up 2nd last word (field) from 5th column of 1st line matching consumer label that has a 200 or 500 responseCode
+      # Consumers don't always get 200 response as there are cases where we ONLY got the 500 response for a client
+      consumerSamplesToAggregate=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,|,500,' | awk -F',' '{print $5}' | awk -F' ' '{print $(NF-1)}'`
     fi
 
-    # timestamp is given in the 1st field
+    # timestamp is given in the 1st field for matching lines that has a 200 or 500 responseCode
+    # Consumers don't always get 200 response as there are cases where we ONLY got the 500 response for a client
     local producerFirstTimestamp=`cat "$jmeterLogFile" | awk -F',' 'FNR == 2 {print $1}'`   # read timestamp from 2nd line
-    local producerLastTimestamp=`egrep "$producerLabel" "$jmeterLogFile" | egrep ',200,' | tail -1 | awk -F',' '{print $1}'`  # from last match
-    local consumerFirstTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,' | awk -F',' '{print $1}'`  # from 1st match
-    local consumerLastTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep ',200,' | tail -1 | awk -F',' '{print $1}'`  # from last match
+    local producerLastTimestamp=`egrep "$producerLabel" "$jmeterLogFile" | egrep ',200,|,500,' | tail -1 | awk -F',' '{print $1}'`  # from last match
+    local consumerFirstTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,|,500,' | awk -F',' '{print $1}'`  # from 1st match
+    local consumerLastTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep ',200,|,500,' | tail -1 | awk -F',' '{print $1}'`  # from last match
 
     compute_time_diff $producerLastTimestamp $producerFirstTimestamp
     local producerTimeDiffSeconds=$TIME_DIFF_SECONDS
