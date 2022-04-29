@@ -102,7 +102,7 @@ function calculate_throughput() {
 
     # timestamp is given in the 1st field for matching lines that has a 200 or 500 responseCode
     # Consumers don't always get 200 response as there are cases where we ONLY got the 500 response for a client
-    local producerFirstTimestamp=`cat "$jmeterLogFile" | awk -F',' 'FNR == 2 {print $1}'`   # read timestamp from 2nd line
+    local producerFirstTimestamp=`egrep "$producerLabel" "$jmeterLogFile" | egrep -m 1 ',200,|,500,' | awk -F',' '{print $1}'`   # read timestamp from 1st match
     local producerLastTimestamp=`egrep "$producerLabel" "$jmeterLogFile" | egrep ',200,|,500,' | tail -1 | awk -F',' '{print $1}'`  # from last match
     local consumerFirstTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -m 1 ',200,|,500,' | awk -F',' '{print $1}'`  # from 1st match
     local consumerLastTimestamp=`egrep "$consumerLabel" "$jmeterLogFile" | egrep ',200,|,500,' | tail -1 | awk -F',' '{print $1}'`  # from last match
@@ -125,10 +125,10 @@ function calculate_throughput() {
     # and with responseCode 500 where less than expected messages are received
     local consumerCountPartial=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -vc ',404,|,200,'`
 
-    # Pick up "Consumer" lines that are NOT with 200 or 404 responseCode, picking up 5th column that contains
+    # Pick up "Consumer" lines that are 500 responseCode, picking up 5th column that contains
     # "N message(s) received successfully of <sample_aggregate_size> expected" text. And, finally extract the
     # 1st column from this field that is the actual number of messages received and sum it up for each line
-    local consumerSampleCountPartial=`egrep "$consumerLabel" "$jmeterLogFile" | egrep -v ',404,|,200,' | awk -F',' '{print $5}' | awk -F' ' '{print $1}' | paste -sd+ - | bc`
+    local consumerSampleCountPartial=`egrep "$consumerLabel" "$jmeterLogFile" | egrep ',500,' | awk -F',' '{print $5}' | awk -F' ' '{print $1}' | paste -sd+ - | bc`
 
     local producerSampleCount="$((producerCount * producerSamplesToAggregate))"
     # Also add consumer partial sample count to get total number of  consumer messages
@@ -149,7 +149,7 @@ function calculate_throughput() {
           },
           "count": {
              "producer": "%s",
-             "consumer": { full: "%s", partial: "%s" }
+             "consumer": { "full": "%s", "partial": "%s" }
            },
           "sample_size": {
             "to_aggregate": { "producer": "%s", "consumer": "%s" },
