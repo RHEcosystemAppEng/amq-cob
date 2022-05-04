@@ -37,32 +37,41 @@ output "vpc1-zone3_cidr" {
   value = module.toronto-cluster1.zone3_cidr
 }
 
+output "route_table-main-id" {
+  value = module.toronto-cluster1.route_table-main-id
+
+}
+
+output "route_table-default-id" {
+  value = module.toronto-cluster1.route_table-default-id
+}
+
 #output "vpc1-default_vpc_sg" {
 #  value = module.toronto-cluster1.default_vpc_sg
 #}
 
-output "vpc1-custom_security_group_1_id" {
-  value = module.toronto-cluster1.custom_security_group_1_id
+output "vpc1-security_group-ping_ssh-id" {
+  value = module.toronto-cluster1.security_group_ping_ssh_id
 }
 
-output "vpc1-custom_security_group_1_name" {
-  value = module.toronto-cluster1.custom_security_group_1_name
+output "vpc1-security_group-ping_ssh-name" {
+  value = module.toronto-cluster1.security_group_ping_ssh_name
 }
 
-output "vpc1-custom_security_group_2_id" {
-  value = module.toronto-cluster1.custom_security_group_2_id
+output "vpc1-security_group-amq_broker-id" {
+  value = module.toronto-cluster1.security_group_amq_broker_id
 }
 
-output "vpc1-custom_security_group_2_name" {
-  value = module.toronto-cluster1.custom_security_group_2_name
+output "vpc1-security_group-amq_broker-name" {
+  value = module.toronto-cluster1.security_group_amq_broker_name
 }
 
-output "vpc1-custom_security_group_3_id" {
-  value = module.toronto-cluster1.custom_security_group_3_id
+output "vpc1-security_group-amq_router-id" {
+  value = module.toronto-cluster1.security_group_amq_router_id
 }
 
-output "vpc1-custom_security_group_3_name" {
-  value = module.toronto-cluster1.custom_security_group_3_name
+output "vpc1-security_group-amq_router-name" {
+  value = module.toronto-cluster1.security_group_amq_router_name
 }
 
 output "vpc1-vpc_id" {
@@ -159,87 +168,86 @@ output "vpc1-nfs-server-host_id" {
 #  value = module.toronto-cluster2.nfs-server-floating_ip_name
 #}
 #
+
 #
-##
-## Broker 01 (live 01) section
-##
-#output "vpc1-broker01-live-private_ip" {
-#  value = module.toronto-cluster1.broker01-live-private_ip
-#}
+# Broker 01 (live 01) section
 #
-#output "vpc1-broker01-live-public_ip" {
-#  value = module.toronto-cluster1.broker01-live-public_ip
-#}
+output "vpc1-broker01-live-private_ip" {
+  value = module.toronto-cluster1.broker01-live-private_ip
+}
+
+output "vpc1-broker01-live-public_ip" {
+  value = module.toronto-cluster1.broker01-live-public_ip
+}
+
+output "vpc1-broker01-live-instance_name" {
+  value = module.toronto-cluster1.broker01-live-instance_name
+}
+
+output "vpc1-broker01-live-host_id" {
+  value = module.toronto-cluster1.broker01-live-host_id
+}
+
+
 #
-#output "vpc1-broker01-live-instance_name" {
-#  value = module.toronto-cluster1.broker01-live-instance_name
-#}
+# Broker 02 (bak 01) section
 #
-#output "vpc1-broker01-live-floating_ip_name" {
-#  value = module.toronto-cluster1.broker01-live-floating_ip_name
-#}
+output "vpc1-broker02-bak-private_ip" {
+  value = module.toronto-cluster1.broker02-bak-private_ip
+}
+
+output "vpc1-broker02-bak-public_ip" {
+  value = module.toronto-cluster1.broker02-bak-public_ip
+}
+
+output "vpc1-broker02-bak-instance_name" {
+  value = module.toronto-cluster1.broker02-bak-instance_name
+}
+
+output "vpc1-broker02-bak-host_id" {
+  value = module.toronto-cluster1.broker02-bak-host_id
+}
+
+
 #
+# Broker 03 (live 02) section
 #
-##
-## Broker 02 (bak 01) section
-##
-#output "vpc1-broker02-bak-private_ip" {
-#  value = module.toronto-cluster1.broker02-bak-private_ip
-#}
+output "vpc1-broker03-live-private_ip" {
+  value = module.toronto-cluster1.broker03-live-private_ip
+}
+
+output "vpc1-broker03-live-public_ip" {
+  value = module.toronto-cluster1.broker03-live-public_ip
+}
+
+output "vpc1-broker03-live-instance_name" {
+  value = module.toronto-cluster1.broker03-live-instance_name
+}
+
+output "vpc1-broker03-live-host_id" {
+  value = module.toronto-cluster1.broker03-live-host_id
+}
+
+
 #
-#output "vpc1-broker02-bak-public_ip" {
-#  value = module.toronto-cluster1.broker02-bak-public_ip
-#}
+# Broker 04 (bak 02) section
 #
-#output "vpc1-broker02-bak-instance_name" {
-#  value = module.toronto-cluster1.broker02-bak-instance_name
-#}
-#
-#output "vpc1-broker02-bak-floating_ip_name" {
-#  value = module.toronto-cluster1.broker02-bak-floating_ip_name
-#}
-#
-#
-##
-## Broker 03 (live 02) section
-##
-#output "vpc1-broker03-live-private_ip" {
-#  value = module.toronto-cluster1.broker03-live-private_ip
-#}
-#
-#output "vpc1-broker03-live-public_ip" {
-#  value = module.toronto-cluster1.broker03-live-public_ip
-#}
-#
-#output "vpc1-broker03-live-instance_name" {
-#  value = module.toronto-cluster1.broker03-live-instance_name
-#}
-#
-#output "vpc1-broker03-live-floating_ip_name" {
-#  value = module.toronto-cluster1.broker03-live-floating_ip_name
-#}
-#
-#
-##
-## Broker 04 (bak 02) section
-##
-#output "vpc1-broker04-bak-private_ip" {
-#  value = module.toronto-cluster1.broker04-bak-private_ip
-#}
-#
-#output "vpc1-broker04-bak-public_ip" {
-#  value = module.toronto-cluster1.broker04-bak-public_ip
-#}
-#
-#output "vpc1-broker04-bak-instance_name" {
-#  value = module.toronto-cluster1.broker04-bak-instance_name
-#}
-#
-#output "vpc1-broker04-bak-floating_ip_name" {
-#  value = module.toronto-cluster1.broker04-bak-floating_ip_name
-#}
-#
-#
+output "vpc1-broker04-bak-private_ip" {
+  value = module.toronto-cluster1.broker04-bak-private_ip
+}
+
+output "vpc1-broker04-bak-public_ip" {
+  value = module.toronto-cluster1.broker04-bak-public_ip
+}
+
+output "vpc1-broker04-bak-instance_name" {
+  value = module.toronto-cluster1.broker04-bak-instance_name
+}
+
+output "vpc1-broker04-bak-host_id" {
+  value = module.toronto-cluster1.broker04-bak-host_id
+}
+
 ##
 ## Broker 05 (live 03) section
 ##

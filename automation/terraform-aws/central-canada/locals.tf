@@ -2,7 +2,7 @@ locals {
 
   MAIN_CIDR_BLOCK = "${var.CLUSTER1_PRIVATE_IP_PREFIX}.0.0/16"
 
-  NAME_PREFIX = "${var.PREFIX} - AMQ COB"
+  NAME_PREFIX = "${var.PREFIX}-AMQ_COB"
 
   REGION_N_AMI = {
     (var.REGION_CENTRAL) : {

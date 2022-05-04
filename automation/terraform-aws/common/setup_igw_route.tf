@@ -1,23 +1,3 @@
-#resource "aws_instance" "main" {
-#  ami           = local.REGION_N_AMI[var.REGION].ami_id
-#  instance_type = var.INSTANCE_TYPE
-#  key_name      = var.ssh_key
-#  private_ip    = "${local.IP_NUMBER_PREFIX.0}.10"
-#
-#  #  for_each = aws_subnet.all
-#  subnet_id       = aws_subnet.all["0"].id
-#  vpc_security_group_ids = [aws_security_group.ingress-all.id, aws_security_group.ssh.id, aws_default_security_group.default_sg.id]
-#
-#  tags = local.MAIN_TAGS
-#}
-
-## Elastic IP
-#resource "aws_eip" "main" {
-#  instance = aws_instance.main.id
-#  vpc      = true
-#
-#  tags = local.MAIN_TAGS
-#}
 
 # Internet Gateway (to route traffic from internet to VPC)
 resource "aws_internet_gateway" "main" {

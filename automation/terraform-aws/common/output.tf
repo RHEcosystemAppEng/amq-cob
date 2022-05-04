@@ -39,27 +39,27 @@ output "zone3" {
   value = aws_subnet.all["2"].availability_zone
 }
 
-output "custom_sg_1_id" {
+output "security_group_ping_ssh_id" {
   value = aws_security_group.ping_ssh.id
 }
 
-output "custom_sg_1_name" {
+output "security_group_ping_ssh_name" {
   value = aws_security_group.ping_ssh.name
 }
 
-output "custom_sg_2_id" {
+output "security_group_amq_broker_id" {
   value = aws_security_group.amq_broker.id
 }
 
-output "custom_sg_2_name" {
+output "security_group_amq_broker_name" {
   value = aws_security_group.amq_broker.name
 }
 
-output "custom_sg_3_id" {
+output "security_group_amq_router_id" {
   value = aws_security_group.amq_router.id
 }
 
-output "custom_sg_3_name" {
+output "security_group_amq_router_name" {
   value = aws_security_group.amq_router.name
 }
 
@@ -85,4 +85,12 @@ output "subnet_3_id" {
 
 output "subnet_3_name" {
   value =aws_subnet.all["2"].tags.Name
+}
+
+output "route_table-main-id" {
+  value = aws_route_table.main.id
+}
+
+output "route_table-default-id" {
+  value = aws_default_route_table.main.id
 }
