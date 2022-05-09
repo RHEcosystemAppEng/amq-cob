@@ -1,10 +1,12 @@
+
 variable "PREFIX" {
   default = "PROVIDE_VALUE_ON_CLI"
 }
 
-variable "ssh_key" {}
+variable "SSH_KEY" {}
 
 variable "REGION" {
+  default = "ca-central-1"
 }
 
 # Canada
@@ -77,12 +79,25 @@ variable "CLUSTER1_PRIVATE_IP_PREFIX" {
   #  default = "10.101"
 }
 
+variable "SUBNET_1_3RD_OCTET" {
+  default = "100"
+}
+
+variable "SUBNET_2_3RD_OCTET" {
+  default = "101"
+}
+
+variable "SUBNET_3_3RD_OCTET" {
+  default = "102"
+}
+
 variable "SUBNET_ENABLE_AUTO_ASSIGN_PUBLIC_IP" {
   default = true
 }
 
+# https://aws.amazon.com/ec2/instance-types/
 variable "INSTANCE_TYPE" {
-  default = "t2.medium"
+  default = "t2.large"
 }
 
 variable "CIDR_BLOCK_ALL" {
@@ -98,7 +113,11 @@ variable "SEC_GRP_EGRESS_TO_PORT" {
 }
 
 variable "SEC_GRP_EGRESS_PROTOCOL" {
-  default = 0
+  default = "-1"
+}
+
+variable "SEC_GRP_EGRESS_PROTOCOL_ALL" {
+  default = "all"
 }
 
 variable "SEC_GRP_EGRESS_IPV6_CIDR_BLOCK" {
