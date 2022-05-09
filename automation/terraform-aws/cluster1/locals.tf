@@ -41,15 +41,15 @@ locals {
   BROKER_04_MAIN_ZONE      = module.common.zone1
   BROKER_04_MAIN_SUBNET_ID = module.common.subnet_1_id # Subnet should match zone
 
-  #  HUB_ROUTER_01_SUFFIX         = "hub-router1"
-  #  HUB_ROUTER_01_PRIVATE_IP     = "${var.IP_NUMBER_PREFIX}.128.100"
-  #  HUB_ROUTER_01_MAIN_ZONE      = var.ZONE3
-  #  HUB_ROUTER_01_MAIN_SUBNET_ID = module.common.subnet_3_id # Subnet should match zone
-  #
-  #  SPOKE_ROUTER_02_SUFFIX         = "spoke-router2"
-  #  SPOKE_ROUTER_02_PRIVATE_IP     = "${var.IP_NUMBER_PREFIX}.64.100"
-  #  SPOKE_ROUTER_02_MAIN_ZONE      = var.ZONE2
-  #  SPOKE_ROUTER_02_MAIN_SUBNET_ID = module.common.subnet_2_id # Subnet should match zone
+  HUB_ROUTER_01_SUFFIX         = "hub-router1"
+  HUB_ROUTER_01_PRIVATE_IP     = "${var.IP_NUMBER_PREFIX.1}.100"
+  HUB_ROUTER_01_MAIN_ZONE      = module.common.zone2
+  HUB_ROUTER_01_MAIN_SUBNET_ID = module.common.subnet_2_id # Subnet should match zone
+
+  SPOKE_ROUTER_02_SUFFIX         = "spoke-router2"
+  SPOKE_ROUTER_02_PRIVATE_IP     = "${var.IP_NUMBER_PREFIX.0}.100"
+  SPOKE_ROUTER_02_MAIN_ZONE      = module.common.zone1
+  SPOKE_ROUTER_02_MAIN_SUBNET_ID = module.common.subnet_1_id # Subnet should match zone
 
   tags = merge(
     var.TAGS,

@@ -201,42 +201,42 @@ output "broker04-bak-host_id" {
 #  value = module.router-common.custom_sg_3_name
 #}
 #
+
 #
-##
-## Router 01 (hub router) section
-##
-#output "router-01-hub-private_ip" {
-#  value = module.router-01-hub.private_ip
-#}
+# Router 01 (hub router) section
 #
-#output "router-01-hub-public_ip" {
-#  value = module.router-01-hub.public_ip
-#}
+output "router-01-hub-private_ip" {
+  value = module.router-01-hub.private_ip
+}
+
+output "router-01-hub-public_ip" {
+  value = module.router-01-hub.public_ip
+}
+
+output "router-01-hub-instance_name" {
+  value = module.router-01-hub.instance_name
+}
+
+output "router-01-hub-host_id" {
+  value = module.router-01-hub.host_id
+}
+
+
 #
-#output "router-01-hub-instance_name" {
-#  value = module.router-01-hub.instance_name
-#}
+# Router 02 (spoke router) section
 #
-#output "router-01-hub-floating_ip_name" {
-#  value = module.router-01-hub.floating_ip_name
-#}
-#
-#
-##
-## Router 02 (spoke router) section
-##
-#output "router-02-spoke-private_ip" {
-#  value = module.router-02-spoke.private_ip
-#}
-#
-#output "router-02-spoke-public_ip" {
-#  value = module.router-02-spoke.public_ip
-#}
-#
-#output "router-02-spoke-instance_name" {
-#  value = module.router-02-spoke.instance_name
-#}
-#
-#output "router-02-spoke-floating_ip_name" {
-#  value = module.router-02-spoke.floating_ip_name
-#}
+output "router-02-spoke-private_ip" {
+  value = module.router-02-spoke.private_ip
+}
+
+output "router-02-spoke-public_ip" {
+  value = module.router-02-spoke.public_ip
+}
+
+output "router-02-spoke-instance_name" {
+  value = module.router-02-spoke.instance_name
+}
+
+output "router-02-spoke-host_id" {
+  value = module.router-02-spoke.host_id
+}

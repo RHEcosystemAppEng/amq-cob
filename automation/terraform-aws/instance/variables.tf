@@ -2,7 +2,6 @@
 variable "SSH_KEY" {}
 
 variable "INSTANCE_TYPE" {
-  default = "t2.medium"
 }
 
 variable "AMI_ID" {}

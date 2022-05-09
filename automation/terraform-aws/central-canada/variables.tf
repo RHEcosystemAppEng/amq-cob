@@ -95,8 +95,9 @@ variable "SUBNET_ENABLE_AUTO_ASSIGN_PUBLIC_IP" {
   default = true
 }
 
+# https://aws.amazon.com/ec2/instance-types/
 variable "INSTANCE_TYPE" {
-  default = "t2.medium"
+  default = "t2.large"
 }
 
 variable "CIDR_BLOCK_ALL" {

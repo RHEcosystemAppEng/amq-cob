@@ -327,47 +327,47 @@ output "vpc1-broker04-bak-host_id" {
 #  value = module.toronto-cluster2.broker08-bak-floating_ip_name
 #}
 #
+
 #
-##
-## Router 01 (hub router) section
-##
-#output "vpc1-router01-hub-private_ip" {
-#  value = module.toronto-cluster1.router-01-hub-private_ip
-#}
+# Router 01 (hub router) section
 #
-#output "vpc1-router01-hub-public_ip" {
-#  value = module.toronto-cluster1.router-01-hub-public_ip
-#}
+output "vpc1-router01-hub-private_ip" {
+  value = module.toronto-cluster1.router-01-hub-private_ip
+}
+
+output "vpc1-router01-hub-public_ip" {
+  value = module.toronto-cluster1.router-01-hub-public_ip
+}
+
+output "vpc1-router01-hub-instance_name" {
+  value = module.toronto-cluster1.router-01-hub-instance_name
+}
+
+output "vpc1-router01-hub-host_id" {
+  value = module.toronto-cluster1.router-01-hub-host_id
+}
+
+
 #
-#output "vpc1-router01-hub-instance_name" {
-#  value = module.toronto-cluster1.router-01-hub-instance_name
-#}
+# Router 02 (spoke router) section
 #
-#output "vpc1-router01-hub-floating_ip_name" {
-#  value = module.toronto-cluster1.router-01-hub-floating_ip_name
-#}
-#
-#
-##
-## Router 02 (spoke router) section
-##
-#output "vpc1-router02-spoke-private_ip" {
-#  value = module.toronto-cluster1.router-02-spoke-private_ip
-#}
-#
-#output "vpc1-router02-spoke-public_ip" {
-#  value = module.toronto-cluster1.router-02-spoke-public_ip
-#}
-#
-#output "vpc1-router02-spoke-instance_name" {
-#  value = module.toronto-cluster1.router-02-spoke-instance_name
-#}
-#
-#output "vpc1-router02-spoke-floating_ip_name" {
-#  value = module.toronto-cluster1.router-02-spoke-floating_ip_name
-#}
-#
-#
+output "vpc1-router02-spoke-private_ip" {
+  value = module.toronto-cluster1.router-02-spoke-private_ip
+}
+
+output "vpc1-router02-spoke-public_ip" {
+  value = module.toronto-cluster1.router-02-spoke-public_ip
+}
+
+output "vpc1-router02-spoke-instance_name" {
+  value = module.toronto-cluster1.router-02-spoke-instance_name
+}
+
+output "vpc1-router02-spoke-host_id" {
+  value = module.toronto-cluster1.router-02-spoke-host_id
+}
+
+
 ##
 ## Router 03 (spoke router) section
 ##

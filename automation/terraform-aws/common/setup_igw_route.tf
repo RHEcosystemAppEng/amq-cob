@@ -51,10 +51,10 @@ resource "aws_route_table_association" "main" {
 }
 
 # Associate VPC with main route table. By default it is associated with the "default" route table
-resource "aws_main_route_table_association" "main" {
-  route_table_id = aws_route_table.main.id
-  vpc_id         = aws_vpc.main.id
-}
+#resource "aws_main_route_table_association" "main" {
+#  route_table_id = aws_route_table.main.id
+#  vpc_id         = aws_vpc.main.id
+#}
 
 resource "aws_route" "internet-route" {
   route_table_id = aws_route_table.main.id

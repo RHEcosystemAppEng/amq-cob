@@ -16,5 +16,6 @@ variable "ssh_key" {}
 variable "AMI_ID" {}
 variable "AMI_NAME" {}
 variable "PRIVATE_IP_PREFIX" {}
+variable "INSTANCE_TYPE" {}
 
 variable "TAGS" {}
