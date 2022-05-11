@@ -143,6 +143,7 @@ all:
     nfs_server_host: "nfs-server"
     broker_mount_base_dir: "/mnt/nfs_mount"
     broker_mount_dir: "{{broker_mount_base_dir}}/amq"
+    amq_advanced_topology_dir: "{{ nfs_mount_point }}/advanced_topology"
     enable_amq_mirroring: true
     amq_advanced_topology_dir: "{{ broker_mount_dir }}/advanced_topology"
     amq_binary_version: amq-broker-7.9.0
