@@ -3,13 +3,13 @@ enable_amq_mirroring: true
 ### Start - SSL Variables
 enable_ssl: true
 ssl_generate_ca: true
-ssl_generate_certs: true 
+ssl_generate_certs: true
 
 CA_CERT_FILE_PREFIX: server-ca
 INPUT_FILES_BASE_DIR: './generated'
 CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
-KEY_PASS: redhat 
-STORE_PASS: redhat 
+KEY_PASS: redhat
+STORE_PASS: redhat
 ### END - SSL Variables
 
 # Region 1 TOR Hosts & IPs
@@ -41,3 +41,12 @@ r2_broker07_live_ip:      52.116.135.19
 r2_broker08_bak_ip:       52.118.96.216
 r2_vpc2_nfs_server_ip:    52.116.202.69
 r2_router03_spoke_ip:     52.116.129.90
+
+
+## Jmeter client setup variables.
+jmeter_binary_download_uri: https://dlcdn.apache.org/jmeter/binaries
+jmeter_binary_version: apache-jmeter-5.4.3
+jmeter_binary_archive: "{{ jmeter_binary_version }}.zip"
+jmeter_remote_bin_dir: jmeter
+jmeter_hub_router_ip: 163.75.95.11
+jmeter_hub_router_port: 5672
