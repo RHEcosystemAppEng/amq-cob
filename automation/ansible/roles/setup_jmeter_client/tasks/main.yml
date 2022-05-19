@@ -6,18 +6,23 @@
     name: "{{ jmeter_packages }}"
     state: present
 
-- name: Prepare JMeter client directory
-  shell: |
-    if [ ! -d "{{ jmeter_remote_bin_dir_full_path }}" ]; then
-      mkdir -p "{{ jmeter_remote_bin_dir_full_path }}"
-    fi
-  register: prepare_jmeter_dir_output
+- name: Prepare JMeter client directories if it does not exists.
+  ansible.builtin.file:
+    path: "{{ jmeter_remote_bin_dir_full_path }}"
+    state: directory
+
+#- name: Prepare JMeter client directory
+#  shell: |
+#    if [ ! -d "{{ jmeter_remote_bin_dir_full_path }}" ]; then
+#      mkdir -p "{{ jmeter_remote_bin_dir_full_path }}"
+#    fi
+#  register: prepare_jmeter_dir_output
 
 - name: "Download jmeter binary {{ jmeter_binary_archive }}"
   get_url:
     url: "{{ jmeter_binary_download_uri }}/{{ jmeter_binary_archive }}"
     dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_archive }}"
-    mode: '0744'
+    mode: '0644'
 
 - name: "unzip jmeter archive to {{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_version }}"
   ansible.builtin.unarchive:
@@ -48,7 +53,7 @@
   template:
     src: "jndi.properties.j2"
     dest: "/tmp/jndi.properties"
-    mode: 0744
+    mode: 0644
   register: copy_jmeter_jndi_config_output
 
 - name: Upload runBenchmarkTest.sh script.
