@@ -3,41 +3,30 @@ enable_amq_mirroring: true
 ### Start - SSL Variables
 enable_ssl: true
 ssl_generate_ca: true
-ssl_generate_certs: true 
+ssl_generate_certs: true
 
 CA_CERT_FILE_PREFIX: server-ca
 INPUT_FILES_BASE_DIR: './generated'
 CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
-KEY_PASS: redhat 
-STORE_PASS: redhat 
+KEY_PASS: redhat
+STORE_PASS: redhat
 ### END - SSL Variables
 
 # Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      163.66.90.218
-r1_broker02_bak_ip:       163.74.87.213
-r1_broker03_live_ip:      163.75.94.76
-r1_broker04_bak_ip:       163.66.83.227
-r1_vpc1_nfs_server_ip:    163.66.90.217
-r1_router01_hub_ip:       163.75.94.75
-r1_router02_spoke_ip:     163.74.82.17
-r1_broker05_live_ip:      163.75.94.77
-r1_broker06_bak_ip:       163.74.87.214
-r1_broker07_live_ip:      163.66.84.104
-r1_broker08_bak_ip:       163.75.81.29
-r1_vpc2_nfs_server_ip:    163.74.95.24
-r1_router03_spoke_ip:     163.66.95.22
+r1_broker01_live_ip:      163.66.94.75
+r1_broker02_bak_ip:       163.74.85.119
+r1_broker03_live_ip:      163.75.84.23
+r1_broker04_bak_ip:       163.66.90.34
+r1_vpc1_nfs_server_ip:    163.66.94.73
+r1_router01_hub_ip:       163.75.95.11
+r1_router02_spoke_ip:     163.74.81.155
+r1_broker05_live_ip:      163.75.84.21
+r1_broker06_bak_ip:       163.74.85.122
+r1_broker07_live_ip:      163.66.87.248
+r1_broker08_bak_ip:       163.75.95.14
+r1_vpc2_nfs_server_ip:    163.74.92.75
+r1_router03_spoke_ip:     163.66.94.74
 
-# Region 2 DAL Hosts & IPs
-r2_broker01_live_ip:      52.118.150.61
-r2_broker02_bak_ip:       150.239.166.159
-r2_broker03_live_ip:      52.118.100.225
-r2_broker04_bak_ip:       169.48.155.96
-r2_vpc1_nfs_server_ip:    150.240.66.142
-r2_router01_hub_ip:       52.118.78.64
-r2_router02_spoke_ip:     52.118.208.15
-r2_broker05_live_ip:      52.117.9.158
-r2_broker06_bak_ip:       150.239.170.59
-r2_broker07_live_ip:      52.116.135.19
-r2_broker08_bak_ip:       52.118.96.216
-r2_vpc2_nfs_server_ip:    52.116.202.69
-r2_router03_spoke_ip:     52.116.129.90
+
+
+r1_vpc1_private_ip_prefix: "10.73"

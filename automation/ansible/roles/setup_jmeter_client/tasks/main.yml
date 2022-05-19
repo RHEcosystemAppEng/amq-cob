@@ -1,0 +1,64 @@
+---
+- name: Install jmeter client packages.
+  become: yes
+  become_user: root
+  ansible.builtin.package:
+    name: "{{ jmeter_packages }}"
+    state: present
+
+- name: Prepare JMeter client directories if it does not exists.
+  ansible.builtin.file:
+    path: "{{ jmeter_remote_bin_dir_full_path }}"
+    state: directory
+
+#- name: Prepare JMeter client directory
+#  shell: |
+#    if [ ! -d "{{ jmeter_remote_bin_dir_full_path }}" ]; then
+#      mkdir -p "{{ jmeter_remote_bin_dir_full_path }}"
+#    fi
+#  register: prepare_jmeter_dir_output
+
+- name: "Download jmeter binary {{ jmeter_binary_archive }}"
+  get_url:
+    url: "{{ jmeter_binary_download_uri }}/{{ jmeter_binary_archive }}"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_archive }}"
+    mode: '0644'
+
+- name: "unzip jmeter archive to {{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_version }}"
+  ansible.builtin.unarchive:
+    src: "{{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_archive }}"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}"
+    remote_src: yes
+
+- name: "Download qpid-amqp-1-0-client jars to the jmeter lib/ext directory."
+  get_url:
+    url: "https://repo1.maven.org/maven2/org/apache/qpid/{{item}}/{{jmeter_ext_jar_qpid_version}}/{{item}}-{{jmeter_ext_jar_qpid_version}}.jar"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_version }}/lib/ext"
+    mode: '0644'
+  loop:
+    - "{{ jmeter_ext_jar_qpid_jms_artifact_id }}"
+    - "{{ jmeter_ext_jar_qpid_client_artifact_id }}"
+    - "{{ jmeter_ext_jar_qpid_common_artifact_id }}"
+
+- name: "copy the jmeter {{ jmeter_jmx_file }} file and gen_throughput.sh file."
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ item }}"
+    mode: 0744
+  loop:
+    - "{{ jmeter_jmx_file }}"
+    - gen_throughput.sh
+
+- name: Copy jmeter jndi.properties config file.
+  template:
+    src: "jndi.properties.j2"
+    dest: "/tmp/jndi.properties"
+    mode: 0644
+  register: copy_jmeter_jndi_config_output
+
+- name: Upload runBenchmarkTest.sh script.
+  template:
+    src: "runBenchmarkTest.sh.j2"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest.sh"
+    mode: 0744
+  register: copy_runBenchmarkTest_sh_output
