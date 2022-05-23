@@ -1,0 +1,18 @@
+---
+
+- hosts:
+    - r1-broker04-bak
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: setup_jmeter_client
+      become: true
+      become_user: "{{ user_amq }}"
+      tags:
+        - setup_jmeter
+    - role: run_jmeter
+      become: true
+      become_user: "{{ user_amq }}"
+      tags:
+        - run_jmeter

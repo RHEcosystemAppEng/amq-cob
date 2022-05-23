@@ -502,7 +502,7 @@ Use below command to run the jmeter test on the provided host.
 
 ```shell
 cd $MAIN_CONFIG_DIR/ansible
-ansible-playbook setup_jmeter_client_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook setup_n_run_jmeter_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 Please consider overriding following properties in [variable_override.yml](variable_override.yml) if you want to change the default behaviour. 
