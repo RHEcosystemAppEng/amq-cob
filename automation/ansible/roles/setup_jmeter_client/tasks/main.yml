@@ -11,13 +11,6 @@
     path: "{{ jmeter_remote_bin_dir_full_path }}"
     state: directory
 
-#- name: Prepare JMeter client directory
-#  shell: |
-#    if [ ! -d "{{ jmeter_remote_bin_dir_full_path }}" ]; then
-#      mkdir -p "{{ jmeter_remote_bin_dir_full_path }}"
-#    fi
-#  register: prepare_jmeter_dir_output
-
 - name: "Download jmeter binary {{ jmeter_binary_archive }}"
   get_url:
     url: "{{ jmeter_binary_download_uri }}/{{ jmeter_binary_archive }}"
