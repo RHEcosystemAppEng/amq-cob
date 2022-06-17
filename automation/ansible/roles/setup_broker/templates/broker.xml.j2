@@ -175,14 +175,14 @@ under the License.
             {% if is_live_broker is defined and is_live_broker == true %}
                 <!-- live is main and backup is the backup -->
                 <broker-connections>
-                    <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672" name="{{ amq_mirror_primary_broker_name }}">
+                    <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672#tcp://{{ amq_mirror_backup_broker_ip }}:5672" name="{{ amq_mirror_primary_broker_name }}">
                         <mirror/>
                     </amqp-connection>
                 </broker-connections>
             {% else %}
                 <!-- backup is main and live is the backup -->
                 <broker-connections>
-                    <amqp-connection uri="tcp://{{ amq_mirror_backup_broker_ip }}:5672" name="{{ amq_mirror_backup_broker_name }}">
+                    <amqp-connection uri="tcp://{{ amq_mirror_backup_broker_ip }}:5672#tcp://{{ amq_mirror_primary_broker_ip }}:5672" name="{{ amq_mirror_backup_broker_name }}">
                         <mirror/>
                     </amqp-connection>
                 </broker-connections>
