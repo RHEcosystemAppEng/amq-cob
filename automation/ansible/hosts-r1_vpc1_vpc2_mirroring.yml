@@ -105,14 +105,6 @@ r1_routers:
       broker_group: r1_vpc1_brokers
       router_config_file_prefix: spoke-router
       ansible_host: "{{ r1_router02_spoke_ip }}"
-    r1-router03-spoke:
-      router_id: router.to.cluster-01
-      router_private_ip: "{{ r1_vpc2_private_ip_prefix }}.0.100"
-      live_broker_01_host: live-broker-03
-      live_broker_02_host: live-broker-04
-      broker_group: r1_vpc2_brokers
-      router_config_file_prefix: spoke-router
-      ansible_host: "{{ r1_router03_spoke_ip }}"
   vars:
     router_group: r1_routers
     live_broker_01_host_idx: 0
