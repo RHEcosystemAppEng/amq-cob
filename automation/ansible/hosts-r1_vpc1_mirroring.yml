@@ -8,71 +8,35 @@ r1_vpc1_brokers:
       broker_name: broker-01
       broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.0.51"
       is_live_broker: true
-      mirror_primary_host_idx: 0
-      mirror_backup_host_idx: 1
+      mirror_primary_host_idx: 2
+      mirror_backup_host_idx: 3
       ansible_host: "{{ r1_broker01_live_ip }}"
     r1-broker02-bak:
       broker_data_directory: one
       broker_name: broker-02
       broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.64.51"
-      mirror_primary_host_idx: 1
-      mirror_backup_host_idx: 0
+      mirror_primary_host_idx: 3
+      mirror_backup_host_idx: 2
       ansible_host: "{{ r1_broker02_bak_ip }}"
     r1-broker03-live:
       broker_data_directory: two
       broker_name: broker-03
       broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.128.51"
       is_live_broker: true
-      mirror_primary_host_idx: 2
-      mirror_backup_host_idx: 3
+      mirror_primary_host_idx: 0
+      mirror_backup_host_idx: 1
       ansible_host: "{{ r1_broker03_live_ip }}"
     r1-broker04-bak:
       broker_data_directory: two
       broker_name: broker-04
       broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.0.52"
-      mirror_primary_host_idx: 3
-      mirror_backup_host_idx: 2
+      mirror_primary_host_idx: 1
+      mirror_backup_host_idx: 0
       ansible_host: "{{ r1_broker04_bak_ip }}"
   vars:
     nfs_server_ip: "{{ r1_vpc1_private_ip_prefix }}.0.50"
-    mirror_group: r2_vpc1_brokers
-
-# Brokers in region 2 - vpc1
-r2_vpc1_brokers:
-  hosts:
-    r2-broker01-live:
-      broker_data_directory: one
-      broker_name: broker-01
-      broker_private_ip: "{{ r2_vpc1_private_ip_prefix }}.0.51"
-      is_live_broker: true
-      mirror_primary_host_idx: 0
-      mirror_backup_host_idx: 1
-      ansible_host: "{{ r2_broker01_live_ip }}"
-    r2-broker02-bak:
-      broker_data_directory: one
-      broker_name: broker-02
-      broker_private_ip: "{{ r2_vpc1_private_ip_prefix }}.64.51"
-      mirror_primary_host_idx: 1
-      mirror_backup_host_idx: 0
-      ansible_host: "{{ r2_broker02_bak_ip }}"
-    r2-broker03-live:
-      broker_data_directory: two
-      broker_name: broker-03
-      broker_private_ip: "{{ r2_vpc1_private_ip_prefix }}.128.51"
-      is_live_broker: true
-      mirror_primary_host_idx: 2
-      mirror_backup_host_idx: 3
-      ansible_host: "{{ r2_broker03_live_ip }}"
-    r2-broker04-bak:
-      broker_data_directory: two
-      broker_name: broker-04
-      broker_private_ip: "{{ r2_vpc1_private_ip_prefix }}.0.52"
-      mirror_primary_host_idx: 3
-      mirror_backup_host_idx: 2
-      ansible_host: "{{ r2_broker04_bak_ip }}"
-  vars:
-    nfs_server_ip: "{{ r2_vpc1_private_ip_prefix }}.0.50"
     mirror_group: r1_vpc1_brokers
+
 
 r1_nfs_servers:
   hosts:
@@ -151,10 +115,13 @@ all:
     # whether to delete AMQ binary when resetting the NFS server
     delete_amq_archive: false
 
+    # Jmeter client setup playbook variables.
+    jmeter_hub_router_ip: "{{ r1_vpc1_private_ip_prefix }}.128.100"
+    jmeter_hub_router_port: 5672
+    jmeter_binary_download_uri: https://dlcdn.apache.org/jmeter/binaries
+    jmeter_binary_version: apache-jmeter-5.4.3
+    jmeter_binary_archive: "{{ jmeter_binary_version }}.zip"
+    jmeter_remote_bin_dir: jmeter
+
     # Private IP prefixes for each region/vpc
-    r1_vpc1_private_ip_prefix: "10.101"
-    r1_vpc2_private_ip_prefix: "10.102"
-    r2_vpc1_private_ip_prefix: "10.201"
-    r2_vpc2_private_ip_prefix: "10.202"
-
-
+    r1_vpc1_private_ip_prefix: "10.70"
