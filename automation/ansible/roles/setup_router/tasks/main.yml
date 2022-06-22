@@ -29,7 +29,7 @@
     block: |
       {{ hub_router_ip }}    amq-{{ hub_router_id }}
       {{ first_live_broker_ip }}    amq-{{ live_broker_01_host }}
-      {{ second_live_broker_ip }}    amq-{{ live_broker_02_host }}
+#      {{ second_live_broker_ip }}    amq-{{ live_broker_02_host }}
   register: etc_hosts_output
 
 - name: Entries added to the /etc/hosts
@@ -38,7 +38,7 @@
     msg:
       - "{{ hub_router_ip }}  amq-{{ hub_router_id }}"
       - "{{ first_live_broker_ip }}  amq-{{ live_broker_01_host }}"
-      - "{{ second_live_broker_ip }} amq-{{ live_broker_02_host }}"
+#      - "{{ second_live_broker_ip }} amq-{{ live_broker_02_host }}"
 
 - name: Copy private key & cert files to router
   when: enable_ssl is defined and enable_ssl

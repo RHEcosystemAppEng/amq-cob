@@ -114,19 +114,19 @@ connector {
     {% endif %}
 }
 
-# Connection to the broker (02)
-connector {
-    name: {{ live_broker_02_host }}
-    host: amq-{{ live_broker_02_host }}
-    port: 61616
-    role: route-container
-
-    {% if enable_ssl is defined and enable_ssl == true %}
-        sslProfile: hub-n-broker-tls
-        verifyHostname: no
-        saslMechanisms: EXTERNAL ANONYMOUS
-    {% endif %}
-}
+## Connection to the broker (02)
+#connector {
+#    name: {{ live_broker_02_host }}
+#    host: amq-{{ live_broker_02_host }}
+#    port: 61616
+#    role: route-container
+#
+#    {% if enable_ssl is defined and enable_ssl == true %}
+#        sslProfile: hub-n-broker-tls
+#        verifyHostname: no
+#        saslMechanisms: EXTERNAL ANONYMOUS
+#    {% endif %}
+#}
 
 {% if enable_ssl is defined and enable_ssl == true %}
 # ----------------------------------------------------------------
@@ -157,20 +157,20 @@ autoLink {
     direction: out
 }
 
-# connect router to broker using autoLink
-# inbound link => message(s) will flow into the router (broker queue -> router)
-autoLink {
-    address: exampleQueue
-    connection: {{ live_broker_02_host }}
-    direction: in
-}
-
-# outbound link => message(s) will flow out of the router (router -> broker queue)
-autoLink {
-    address: exampleQueue
-    connection: {{ live_broker_02_host }}
-    direction: out
-}
+## connect router to broker using autoLink
+## inbound link => message(s) will flow into the router (broker queue -> router)
+#autoLink {
+#    address: exampleQueue
+#    connection: {{ live_broker_02_host }}
+#    direction: in
+#}
+#
+## outbound link => message(s) will flow out of the router (router -> broker queue)
+#autoLink {
+#    address: exampleQueue
+#    connection: {{ live_broker_02_host }}
+#    direction: out
+#}
 
 
 ### ----------------------------------------------------------------
