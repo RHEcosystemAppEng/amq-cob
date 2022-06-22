@@ -18,21 +18,6 @@ r1_vpc1_brokers:
       mirror_primary_host_idx: 1
       mirror_backup_host_idx: 0
       ansible_host: "{{ r1_broker02_bak_ip }}"
-    r1-broker03-live:
-      broker_data_directory: two
-      broker_name: broker-03
-      broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.128.51"
-      is_live_broker: true
-      mirror_primary_host_idx: 2
-      mirror_backup_host_idx: 3
-      ansible_host: "{{ r1_broker03_live_ip }}"
-    r1-broker04-bak:
-      broker_data_directory: two
-      broker_name: broker-04
-      broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.0.52"
-      mirror_primary_host_idx: 3
-      mirror_backup_host_idx: 2
-      ansible_host: "{{ r1_broker04_bak_ip }}"
   vars:
     nfs_server_ip: "{{ r1_vpc1_private_ip_prefix }}.0.50"
     mirror_group: r1_vpc2_brokers
@@ -56,21 +41,6 @@ r1_vpc2_brokers:
       mirror_primary_host_idx: 1
       mirror_backup_host_idx: 0
       ansible_host: "{{ r1_broker06_bak_ip }}"
-    r1-broker07-live:
-      broker_data_directory: four
-      broker_name: broker-07
-      broker_private_ip: "{{ r1_vpc2_private_ip_prefix }}.0.61"
-      is_live_broker: true
-      mirror_primary_host_idx: 2
-      mirror_backup_host_idx: 3
-      ansible_host: "{{ r1_broker07_live_ip }}"
-    r1-broker08-bak:
-      broker_data_directory: four
-      broker_name: broker-08
-      broker_private_ip: "{{ r1_vpc2_private_ip_prefix }}.128.62"
-      mirror_primary_host_idx: 3
-      mirror_backup_host_idx: 2
-      ansible_host: "{{ r1_broker08_bak_ip }}"
   vars:
     nfs_server_ip: "{{ r1_vpc2_private_ip_prefix }}.64.60"
     mirror_group: r1_vpc1_brokers
