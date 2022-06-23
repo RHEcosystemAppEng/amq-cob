@@ -3,16 +3,18 @@
 #jmeter_home_dir: "/root/jmeter/ansible"
 
 jmeter_packages: bc
-jmeter_jmx_file: AMQ_Jmeter_Test_Plan.jmx
+jmeter_jmx_file: AMQ_Jmeter_Test_Plan_Perf.jmx.j2
 jmeter_remote_bin_dir: jmeter
 jmeter_remote_bin_dir_full_path: "/home/{{ user_amq }}/{{ jmeter_remote_bin_dir }}"
+clean_jmeter_home_directory: true
+
 
 jmeter_ext_jar_qpid_jms_artifact_id: "qpid-amqp-1-0-client-jms"
 jmeter_ext_jar_qpid_client_artifact_id: "qpid-amqp-1-0-client"
 jmeter_ext_jar_qpid_common_artifact_id: "qpid-amqp-1-0-common"
 jmeter_ext_jar_qpid_version: "0.32"
 
-# JMX Parameters.
+# JMX Default Parameters.
 producer_duration: 30
 consumer_duration: 60
 producer_samples: 2500
@@ -20,3 +22,4 @@ consumer_samples: 2500
 producer_threads: 1
 consumer_threads: 5
 jms_timeout_ms: 3000
+numberOfMessagesPerMin: 200
