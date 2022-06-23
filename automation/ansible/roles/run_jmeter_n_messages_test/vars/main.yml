@@ -1,0 +1,2 @@
+---
+jmeter_remote_bin_dir_full_path: "/home/{{ user_amq }}/{{ jmeter_remote_bin_dir }}"
