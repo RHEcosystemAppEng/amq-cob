@@ -1,0 +1,71 @@
+#!/bin/bash
+
+RHSM_DIR=/etc/rhsm
+RHSM_BAK_DIR=$RHSM_DIR/BAK
+
+function catch_error() {
+    if [ "$1" != "0" ]; then
+      echo "Error code: $1 occurrred on line $2"
+      echo " Command that failed -> $BASH_COMMAND"
+
+      revert_config
+    fi
+}
+
+function revert_config() {
+    if [ -d $RHSM_BAK_DIR ]; then
+        echo "Reverting config..."
+        sudo cp $RHSM_BAK_DIR/rhsm.conf $RHSM_DIR/rhsm.conf
+    fi
+}
+
+function register_n_install() {
+    REPO_1=interconnect-2-for-rhel-8-x86_64-rpms
+    REPO_2=amq-clients-2-for-rhel-8-x86_64-rpms
+    REPOS_FOUND=`sudo subscription-manager repos --list-enabled | egrep -c "$REPO_1|$REPO_2"`
+
+    if [ "$REPOS_FOUND" != "2" ]; then
+        # e=exit on first error, u=treat unset variables as error, o=propagate intermediate errors as well
+        set -Eeuo pipefail
+        trap 'catch_error $? $LINENO' ERR
+
+        echo "Unregistering the system"
+        # Removes all local system and subscription data without affecting the server (effectively doing an unregister and remove)
+        sudo subscription-manager clean
+
+        RHSM_DIR={{ redhat_subscription_config_dir }}
+
+        if [ ! -d $RHSM_BAK_DIR ]; then
+            echo "Creating $RHSM_BAK_DIR directory..."
+            mkdir $RHSM_BAK_DIR
+
+            sudo cp $RHSM_DIR/rhsm.conf $RHSM_BAK_DIR/rhsm.conf.ORG
+        fi
+
+        echo "Creating backup for rhsm.conf..."
+        sudo cp $RHSM_DIR/rhsm.conf $RHSM_BAK_DIR/rhsm.conf
+
+        echo "Registering the system"
+        sudo subscription-manager register --username '{{ redhat_username }}' --password '{{ redhat_password }}' --auto-attach
+
+        # Fix the "Repositories disabled by configuration" error while enabling repository
+        # https://access.redhat.com/solutions/5225231
+        sudo subscription-manager config --rhsm.manage_repos=1
+
+        echo "Adding router repos..."
+        sudo subscription-manager repos --enable=$REPO_1 --enable=$REPO_2
+
+        echo "Installing router and tools..."
+        sudo dnf install qpid-dispatch-router qpid-dispatch-tools qpid-dispatch-console -y > /dev/null
+
+        if [ -d {{ router_config_dir }} ]; then
+            echo "Changing ownership to amq_runner for {{ router_config_dir }} dir"
+            sudo chown -R amq_runner:amq_runner {{ router_config_dir }}
+        fi
+    else
+        echo "Router repos ($REPO_1 and $REPO_2) already enabled..."
+    fi
+}
+
+register_n_install
+revert_config

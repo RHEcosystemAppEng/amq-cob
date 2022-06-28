@@ -14,5 +14,5 @@ hub_router_ip: "{{ hostvars[groups[router_group][0]]['router_private_ip'] }}"
 first_live_broker_ip: "{{ hostvars[groups[broker_group][live_broker_01_host_idx]]['broker_private_ip'] }}"
 
 # Second live Broker private IP
-#second_live_broker_ip: "{{ hostvars[groups[broker_group][live_broker_02_host_idx]]['broker_private_ip'] }}"
+second_live_broker_ip: "{{ hostvars[groups[broker_group][live_broker_02_host_idx]]['broker_private_ip'] }}"
 

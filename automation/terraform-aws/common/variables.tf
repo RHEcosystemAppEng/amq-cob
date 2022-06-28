@@ -14,15 +14,15 @@ variable "CIDR_BLOCK_ALL" {
   default = "0.0.0.0/0"
 }
 
-variable "SEC_GRP_EGRESS_FROM_PORT" {
+variable "SEC_GRP_FROM_PORT_ALL" {
   default = 0
 }
 
-variable "SEC_GRP_EGRESS_TO_PORT" {
+variable "SEC_GRP_TO_PORT_ALL" {
   default = 0
 }
 
-variable "SEC_GRP_EGRESS_PROTOCOL" {
+variable "SEC_GRP_PROTOCOL_ALL" {
   default = "-1"
 }
 

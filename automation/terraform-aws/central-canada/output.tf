@@ -46,9 +46,13 @@ output "route_table-default-id" {
   value = module.toronto-cluster1.route_table-default-id
 }
 
-#output "vpc1-default_vpc_sg" {
-#  value = module.toronto-cluster1.default_vpc_sg
-#}
+output "vpc1-security_group_default_id" {
+  value = module.toronto-cluster1.security_group_default_id
+}
+
+output "vpc1-security_group_default_name" {
+  value = module.toronto-cluster1.security_group_default_name
+}
 
 output "vpc1-security_group-ping_ssh-id" {
   value = module.toronto-cluster1.security_group_ping_ssh_id

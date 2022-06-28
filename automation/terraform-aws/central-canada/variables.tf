@@ -19,7 +19,8 @@ variable "AMI_NAME_CENTRAL" {
 }
 
 variable "AMI_ID_CENTRAL" {
-  default = "ami-0277fbe7afa8a33a6"
+#  default = "ami-0277fbe7afa8a33a6"    // HA version
+  default = "ami-0c3d3a230b9668c02"
 }
 
 # N. California
@@ -80,15 +81,15 @@ variable "CLUSTER1_PRIVATE_IP_PREFIX" {
 }
 
 variable "SUBNET_1_3RD_OCTET" {
-  default = "100"
+  default = "0"
 }
 
 variable "SUBNET_2_3RD_OCTET" {
-  default = "101"
+  default = "64"
 }
 
 variable "SUBNET_3_3RD_OCTET" {
-  default = "102"
+  default = "128"
 }
 
 variable "SUBNET_ENABLE_AUTO_ASSIGN_PUBLIC_IP" {

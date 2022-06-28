@@ -28,5 +28,6 @@ r1_vpc2_nfs_server_ip:    163.74.92.75
 r1_router03_spoke_ip:     163.66.94.74
 
 
-
-r1_vpc1_private_ip_prefix: "10.73"
+ansible_ssh_private_key_file: ~/Documents/RED/amq_aws-key_pair-TOR.cer
+ansible_user: ec2-user
+cloud_provider: aws
