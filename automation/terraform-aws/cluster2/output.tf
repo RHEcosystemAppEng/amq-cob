@@ -51,6 +51,7 @@ output "route_table-default-id" {
   value = module.common.route_table-default-id
 }
 
+
 output "security_group_default_id" {
   value = module.common.security_group_default_id
 }
@@ -196,54 +197,22 @@ output "broker04-bak-host_id" {
   value = module.broker-04-bak.host_id
 }
 
-#
-##
-## Router - common section
-##
-#output "custom_security_group_3_id" {
-#  value = module.router-common.custom_sg_3_id
-#}
-#
-#output "custom_security_group_3_name" {
-#  value = module.router-common.custom_sg_3_name
-#}
-#
 
 #
-# Router 01 (hub router) section
+# Router 03 (spoke router) section
 #
-output "router-01-hub-private_ip" {
-  value = module.router-01-hub.private_ip
+output "router-03-spoke-private_ip" {
+  value = module.router-03-spoke.private_ip
 }
 
-output "router-01-hub-public_ip" {
-  value = module.router-01-hub.public_ip
+output "router-03-spoke-public_ip" {
+  value = module.router-03-spoke.public_ip
 }
 
-output "router-01-hub-instance_name" {
-  value = module.router-01-hub.instance_name
+output "router-03-spoke-instance_name" {
+  value = module.router-03-spoke.instance_name
 }
 
-output "router-01-hub-host_id" {
-  value = module.router-01-hub.host_id
-}
-
-
-#
-# Router 02 (spoke router) section
-#
-output "router-02-spoke-private_ip" {
-  value = module.router-02-spoke.private_ip
-}
-
-output "router-02-spoke-public_ip" {
-  value = module.router-02-spoke.public_ip
-}
-
-output "router-02-spoke-instance_name" {
-  value = module.router-02-spoke.instance_name
-}
-
-output "router-02-spoke-host_id" {
-  value = module.router-02-spoke.host_id
+output "router-03-spoke-host_id" {
+  value = module.router-03-spoke.host_id
 }
