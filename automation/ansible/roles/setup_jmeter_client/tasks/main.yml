@@ -6,7 +6,13 @@
     name: "{{ jmeter_packages }}"
     state: present
 
-- name: Prepare JMeter client directories if it does not exists.
+- name: Delete jmeter client home directory
+  file:
+    state: absent
+    path: "{{ jmeter_remote_bin_dir_full_path }}"
+  when: (clean_jmeter_home_directory is defined and clean_jmeter_home_directory == true)
+
+- name: Prepare JMeter client directories
   ansible.builtin.file:
     path: "{{ jmeter_remote_bin_dir_full_path }}"
     state: directory
@@ -33,13 +39,14 @@
     - "{{ jmeter_ext_jar_qpid_client_artifact_id }}"
     - "{{ jmeter_ext_jar_qpid_common_artifact_id }}"
 
-- name: "copy the jmeter {{ jmeter_jmx_file }} file and gen_throughput.sh file."
+- name: "copy the jmeter JMX files and gen_throughput.sh file."
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ item }}"
     mode: 0744
   loop:
-    - "{{ jmeter_jmx_file }}"
+    - AMQ_Jmeter_Test_Plan_Perf.jmx
+    - AMQ_Jmeter_Test_Plan_N_Messages.jmx
     - gen_throughput.sh
 
 - name: Copy jmeter jndi.properties config file.
@@ -49,9 +56,16 @@
     mode: 0644
   register: copy_jmeter_jndi_config_output
 
-- name: Upload runBenchmarkTest.sh script.
+- name: Upload runBenchmarkTest_N_Messages.sh script.
   template:
-    src: "runBenchmarkTest.sh.j2"
-    dest: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest.sh"
+    src: "runBenchmarkTest_N_Messages.sh.j2"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages.sh"
     mode: 0744
-  register: copy_runBenchmarkTest_sh_output
+  register: copy_runBenchmarkTest_N_Messages
+
+- name: Upload runBenchmarkTest_Perf.sh script.
+  template:
+    src: "runBenchmarkTest_Perf.sh.j2"
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf.sh"
+    mode: 0744
+  register: copy_runBenchmarkTest_Perf

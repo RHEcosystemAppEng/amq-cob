@@ -11,8 +11,8 @@
       become_user: "{{ user_amq }}"
       tags:
         - setup_jmeter
-    - role: run_jmeter
+    - role: run_jmeter_perf_test
       become: true
       become_user: "{{ user_amq }}"
       tags:
-        - run_jmeter
+        - run_jmeter_perf_test
