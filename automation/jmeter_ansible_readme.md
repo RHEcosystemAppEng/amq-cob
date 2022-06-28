@@ -1,24 +1,63 @@
-### Running Jmeter test using Ansible.
+## Running Jmeter test using Ansible.
 
-There are two Ansible playbooks to preform Jmeter test books. 
+There are multiple Ansible playbooks to preform Jmeter test on Apache AMQ using Ansible.
 
-`setup_n_run_jmeter_perf_client_playbook.yml` - This playbook will run the jmeter test without any throttle on producer and consumer side. Use this playbook to perform actual Jmeter performance test against AMQ Artemis.
-No throttling on the producer and consumer side.
+All the ansible playbooks should be run from following folder.
 
 ```shell
 cd $MAIN_CONFIG_DIR/ansible
+```
+
+
+### Ansible Playbooks to send/consumer messages for the specific duration.
+Use these playbooks to perform actual Jmeter performance test against AMQ Artemis.
+
+
+`setup_n_run_jmeter_perf_client_playbook.yml` - This playbook will run the jmeter test without any throttle on producer and consumer side. 
+No throttling on the producer and consumer side.
+
+```shell
 ansible-playbook setup_n_run_jmeter_perf_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
+
+`setup_n_run_jmeter_perf_producer_playbook.yml` - This playbook will run the jmeter test without any throttle on producer. 
+No Consumers available
+
+```shell
+ansible-playbook setup_n_run_jmeter_perf_producer_playbook.yml --extra-vars "@variable_override.yml"
+```
+
+`setup_n_run_jmeter_perf_consumer_playbook.yml` - This playbook will run the jmeter test without any throttle on the consumer side. Use this playbook to perform actual Jmeter performance test against AMQ Artemis.
+No Producers available.
+
+```shell
+ansible-playbook setup_n_run_jmeter_perf_consumer_playbook.yml --extra-vars "@variable_override.yml"
+```
+
+### Ansible Playbooks to send/consumer specific number of messages.
 
 `setup_n_run_jmeter_n_messages_client_playbook.yml` - This playbook will run the jmeter test and producing only specific number of messages configured as part of the property `numberOfMessagesPerMin`. No throttling on the consumer side. 
 Throttling on the producers - Sends only specified number of messages. 
 No throttling on the consumers. 
 
 ```shell
-cd $MAIN_CONFIG_DIR/ansible
 ansible-playbook setup_n_run_jmeter_n_messages_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
+`setup_n_run_jmeter_n_messages_producer_playbook.yml` - This playbook will setup and run the jmeter test. Producing only specific number of messages configured as part of the property `numberOfMessagesPerMin`. 
+Throttling on the producers - Sends only specified number of messages.
+No consumers available as part of this test.
+
+```shell
+ansible-playbook setup_n_run_jmeter_n_messages_producer_playbook.yml --extra-vars "@variable_override.yml"
+```
+
+`setup_n_run_jmeter_n_messages_consumer_playbook.yml` - This playbook will setup and run the jmeter test. Consuming only specific number of messages configured as part of the property `numberOfMessagesPerMin`.
+No Producers available as part of this test.
+
+```shell
+ansible-playbook setup_n_run_jmeter_n_messages_consumer_playbook.yml --extra-vars "@variable_override.yml"
+```
 
 Please consider overriding following properties in [variable_override.yml](variable_override.yml) if you want to change the default behaviour.
 ```yaml
@@ -31,7 +70,9 @@ Please consider overriding following properties in [variable_override.yml](varia
     jmeter_binary_archive: "{{ jmeter_binary_version }}.zip"
     jmeter_remote_bin_dir: jmeter    
     # Parameters that effects the benchmark test, JMX Parameters.
+    #Duration is in seconds
     producer_duration: 30
+    #Duration is in seconds
     consumer_duration: 60
     producer_samples: 2500
     consumer_samples: 2500

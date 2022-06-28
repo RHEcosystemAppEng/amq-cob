@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Red Hat AMQ Performance Test Plan - Producer and Consumers" enabled="true">
-      <stringProp name="TestPlan.comments">Red Hat AMQ Performance Test Plan - Producer and Consumers</stringProp>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Red Hat AMQ Performance Test - Consumers Only." enabled="true">
+      <stringProp name="TestPlan.comments">Red Hat AMQ Performance Test - Consumers Only.</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -12,45 +12,6 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="AMQ Publisher" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${producerThreads}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time"></stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${producerDuration}</stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-      </ThreadGroup>
-      <hashTree>
-        <PublisherSampler guiclass="JMSPublisherGui" testclass="PublisherSampler" testname="JMS Publisher" enabled="true">
-          <stringProp name="jms.jndi_properties">false</stringProp>
-          <stringProp name="jms.initial_context_factory">org.apache.qpid.amqp_1_0.jms.jndi.PropertiesFileInitialContextFactory</stringProp>
-          <stringProp name="jms.provider_url">/tmp/jndi.properties</stringProp>
-          <stringProp name="jms.connection_factory">QueueConnectionFactory</stringProp>
-          <stringProp name="jms.topic">exampleQueue</stringProp>
-          <stringProp name="jms.expiration"></stringProp>
-          <stringProp name="jms_error_reconnect_on_codes"></stringProp>
-          <stringProp name="jms.priority"></stringProp>
-          <stringProp name="jms.security_principle">amq_user</stringProp>
-          <stringProp name="jms.security_credentials">amq_password</stringProp>
-          <stringProp name="jms.text_message">Sample Text from </stringProp>
-          <stringProp name="jms.input_file"></stringProp>
-          <stringProp name="jms.random_path"></stringProp>
-          <stringProp name="jms.config_choice">jms_use_text</stringProp>
-          <stringProp name="jms.config_msg_type">jms_text_message</stringProp>
-          <stringProp name="jms.iterations">${producerSamples}</stringProp>
-          <boolProp name="jms.authenticate">false</boolProp>
-          <elementProp name="jms.jmsProperties" elementType="JMSProperties">
-            <collectionProp name="JMSProperties.properties"/>
-          </elementProp>
-          <boolProp name="jms.non_persistent">true</boolProp>
-        </PublisherSampler>
-        <hashTree/>
-      </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="AMQ Consumer" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -84,29 +45,14 @@
       </hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
-          <elementProp name="producerDuration" elementType="Argument">
-            <stringProp name="Argument.name">producerDuration</stringProp>
-            <stringProp name="Argument.value">${__P(producerDuration,30)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="consumerDuration" elementType="Argument">
             <stringProp name="Argument.name">consumerDuration</stringProp>
             <stringProp name="Argument.value">${__P(consumerDuration,60)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="producerSamples" elementType="Argument">
-            <stringProp name="Argument.name">producerSamples</stringProp>
-            <stringProp name="Argument.value">${__P(producerSamples,1)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="consumerSamples" elementType="Argument">
             <stringProp name="Argument.name">consumerSamples</stringProp>
             <stringProp name="Argument.value">${__P(consumerSamples,1)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="producerThreads" elementType="Argument">
-            <stringProp name="Argument.name">producerThreads</stringProp>
-            <stringProp name="Argument.value">${__P(producerThreads,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="consumerThreads" elementType="Argument">
