@@ -5,13 +5,10 @@
   rm -rf "${outputDir}"
   mkdir -p -m0744 "${outputDir}"
 
-({{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_version }}/bin/jmeter -n -t "${currentDir}/AMQ_Jmeter_Test_Plan_Perf.jmx" \
-  -JproducerDuration="{{ producer_duration }}" \
+({{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_version }}/bin/jmeter -n -t "${currentDir}/AMQ_Jmeter_Test_Plan_N_Messages_Consumer.jmx" \
   -JconsumerDuration="{{ consumer_duration }}" \
-  -JproducerSamples="{{ producer_samples }}" \
-  -JconsumerSamples="{{ consumer_samples }}" \
+  -JconsumerSamples="1" \
   -JjmsTimeout="{{ jms_timeout_ms }}" \
-  -JproducerThreads="{{ producer_threads }}" \
   -JconsumerThreads="{{ consumer_threads }}" \
   -JnumberOfMessagesPerMin="{{ numberOfMessagesPerMin }}" \
   -l "${outputDir}/results_automated.jtl" \
