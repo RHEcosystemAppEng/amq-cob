@@ -47,10 +47,13 @@ output "route_table-default-id" {
   value = module.common.route_table-default-id
 }
 
+output "security_group_default_id" {
+  value = module.common.security_group_default_id
+}
 
-#output "default_vpc_sg" {
-#  value = module.common.default_vpc_sg
-#}
+output "security_group_default_name" {
+  value = module.common.security_group_default_name
+}
 
 output "security_group_ping_ssh_id" {
   value = module.common.security_group_ping_ssh_id

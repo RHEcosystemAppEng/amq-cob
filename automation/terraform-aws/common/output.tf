@@ -39,6 +39,14 @@ output "zone3" {
   value = aws_subnet.all["2"].availability_zone
 }
 
+output "security_group_default_id" {
+  value = aws_default_security_group.default.id
+}
+
+output "security_group_default_name" {
+  value = aws_default_security_group.default.name
+}
+
 output "security_group_ping_ssh_id" {
   value = aws_security_group.ping_ssh.id
 }

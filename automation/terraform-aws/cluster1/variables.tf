@@ -12,7 +12,7 @@ variable "CIDR_BLOCKS" {
 }
 
 variable "PREFIX" {}
-variable "ssh_key" {}
+variable "SSH_KEY" {}
 variable "AMI_ID" {}
 variable "AMI_NAME" {}
 variable "PRIVATE_IP_PREFIX" {}

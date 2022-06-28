@@ -16,7 +16,7 @@ module "common" {
 module "nfs-server" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.NFS_MAIN_ZONE}-${local.NFS_SUFFIX}-01"
 
   AMI_ID             = var.AMI_ID
@@ -24,7 +24,7 @@ module "nfs-server" {
   INSTANCE_TYPE      = var.INSTANCE_TYPE
   SUBNET_ID          = local.NFS_MAIN_SUBNET_ID
   PRIVATE_IP         = local.NFS_PRIVATE_IP
-  SECURITY_GROUP_IDS = [local.SEC_GRP_PING_SSH_ID]
+  SECURITY_GROUP_IDS = [local.SEC_GRP_PING_SSH_ID, local.SEC_GRP_DEFAULT_ID]
 
   TAGS = merge(
     local.tags,
@@ -37,7 +37,7 @@ module "nfs-server" {
 module "broker-01-live" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.BROKER_01_SUFFIX}"
 
   AMI_ID             = var.AMI_ID
@@ -60,7 +60,7 @@ module "broker-01-live" {
 module "broker-02-bak" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.BROKER_02_SUFFIX}"
 
   AMI_ID             = var.AMI_ID
@@ -82,7 +82,7 @@ module "broker-02-bak" {
 module "broker-03-live" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.BROKER_03_SUFFIX}"
 
   AMI_ID             = var.AMI_ID
@@ -104,7 +104,7 @@ module "broker-03-live" {
 module "broker-04-bak" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.BROKER_04_SUFFIX}"
 
   AMI_ID             = var.AMI_ID
@@ -126,7 +126,7 @@ module "broker-04-bak" {
 module "router-01-hub" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.HUB_ROUTER_01_SUFFIX}"
 
   AMI_ID             = var.AMI_ID
@@ -148,7 +148,7 @@ module "router-01-hub" {
 module "router-02-spoke" {
   source = "../instance"
 
-  SSH_KEY       = var.ssh_key
+  SSH_KEY       = var.SSH_KEY
   INSTANCE_NAME = "${var.NAME_PREFIX}-${local.SPOKE_ROUTER_02_SUFFIX}"
 
   AMI_ID             = var.AMI_ID

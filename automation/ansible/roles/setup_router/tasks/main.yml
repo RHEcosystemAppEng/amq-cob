@@ -1,8 +1,17 @@
 ---
 
 - name: Copy router setup script
+  when: cloud_provider is not defined or cloud_provider != "aws"
   template:
     src: "{{ router_install_script_basename }}.j2"
+    dest: "{{ router_install_script }}"
+    mode: 0755
+  register: copy_router_setup_output
+
+- name: Copy router setup script
+  when: cloud_provider is defined and cloud_provider == "aws"
+  template:
+    src: "{{ router_install_script_basename }}.aws.j2"
     dest: "{{ router_install_script }}"
     mode: 0755
   register: copy_router_setup_output
