@@ -1,4 +1,8 @@
 ---
+# This playbook
+# 1) setups jmeter client
+# 2) runs the jmeter test -
+# the consumer which consumes unlimited number of messages for the specified duration.
 
 - hosts:
     - r1-broker02-bak
@@ -11,8 +15,8 @@
       become_user: "{{ user_amq }}"
       tags:
         - setup_jmeter
-    - role: run_jmeter
+    - role: run_jmeter_perf_consumer_test
       become: true
       become_user: "{{ user_amq }}"
       tags:
-        - run_jmeter
+        - run_jmeter_perf_consumer_test

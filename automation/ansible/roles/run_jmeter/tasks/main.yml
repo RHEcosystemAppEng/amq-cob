@@ -1,8 +1,0 @@
----
-- name: Run the runBenchmarkTest.sh to perform benchmarking.
-  command: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest.sh"
-  register: runBenchmarkTest_console_output
-
-- name: Print benchmark results to console
-  debug:
-    msg: "{{runBenchmarkTest_console_output.stdout}}"

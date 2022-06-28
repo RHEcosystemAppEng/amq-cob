@@ -1,0 +1,23 @@
+---
+# This playbook
+# 1) setups jmeter client
+# 2) runs the jmeter test -
+# the producer which produces unlimited number of messages for the specified duration.
+# the consumer which consumes unlimited number of messages for the specified duration.
+
+- hosts:
+    - r1-broker02-bak
+  become: 'yes'
+  become_method: sudo
+  gather_facts: false
+  roles:
+    - role: setup_jmeter_client
+      become: true
+      become_user: "{{ user_amq }}"
+      tags:
+        - setup_jmeter
+    - role: run_jmeter_perf_test
+      become: true
+      become_user: "{{ user_amq }}"
+      tags:
+        - run_jmeter_perf_test

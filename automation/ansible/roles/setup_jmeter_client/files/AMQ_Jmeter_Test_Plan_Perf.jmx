@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Red Hat AMQ Test Plan" enabled="true">
-      <stringProp name="TestPlan.comments">Test plan for testing Red Hat AMQ</stringProp>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Red Hat AMQ Performance Test Plan - Producer and Consumers" enabled="true">
+      <stringProp name="TestPlan.comments">Red Hat AMQ Performance Test Plan - Producer and Consumers</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -86,22 +86,22 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="producerDuration" elementType="Argument">
             <stringProp name="Argument.name">producerDuration</stringProp>
-            <stringProp name="Argument.value">${__P(producerDuration,15)}</stringProp>
+            <stringProp name="Argument.value">${__P(producerDuration,30)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="consumerDuration" elementType="Argument">
             <stringProp name="Argument.name">consumerDuration</stringProp>
-            <stringProp name="Argument.value">${__P(consumerDuration,30)}</stringProp>
+            <stringProp name="Argument.value">${__P(consumerDuration,60)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="producerSamples" elementType="Argument">
             <stringProp name="Argument.name">producerSamples</stringProp>
-            <stringProp name="Argument.value">${__P(producerSamples,500)}</stringProp>
+            <stringProp name="Argument.value">${__P(producerSamples,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="consumerSamples" elementType="Argument">
             <stringProp name="Argument.name">consumerSamples</stringProp>
-            <stringProp name="Argument.value">${__P(consumerSamples,500)}</stringProp>
+            <stringProp name="Argument.value">${__P(consumerSamples,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="producerThreads" elementType="Argument">
@@ -111,7 +111,7 @@
           </elementProp>
           <elementProp name="consumerThreads" elementType="Argument">
             <stringProp name="Argument.name">consumerThreads</stringProp>
-            <stringProp name="Argument.value">${__P(consumerThreads,5)}</stringProp>
+            <stringProp name="Argument.value">${__P(consumerThreads,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="jmsTimeout" elementType="Argument">
@@ -121,6 +121,80 @@
           </elementProp>
         </collectionProp>
       </Arguments>
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
       <hashTree/>
     </hashTree>
   </hashTree>

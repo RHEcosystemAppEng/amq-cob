@@ -1,0 +1,17 @@
+#!/bin/sh
+
+  currentDir="{{ jmeter_remote_bin_dir_full_path }}"
+  outputDir="{{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output"
+  rm -rf "${outputDir}"
+  mkdir -p -m0744 "${outputDir}"
+
+({{ jmeter_remote_bin_dir_full_path }}/{{ jmeter_binary_version }}/bin/jmeter -n -t "${currentDir}/AMQ_Jmeter_Test_Plan_Perf_Producer.jmx" \
+  -JproducerDuration="{{ producer_duration }}" \
+  -JproducerSamples="{{ producer_samples }}" \
+  -JjmsTimeout="{{ jms_timeout_ms }}" \
+  -JproducerThreads="{{ producer_threads }}" \
+  -JnumberOfMessagesPerMin="{{ numberOfMessagesPerMin }}" \
+  -l "${outputDir}/results_automated.jtl" \
+  -j "${outputDir}/out.log") > ${outputDir}/jmeter_exec.out
+
+{{ jmeter_remote_bin_dir_full_path }}/gen_throughput.sh "-i" "${outputDir}/results_automated.jtl" -z
