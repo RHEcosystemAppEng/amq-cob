@@ -1,0 +1,8 @@
+---
+- name: Run the runBenchmarkTest_N_Messages_Consumer.sh to perform benchmarking.
+  command: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages_Consumer.sh"
+  register: runBenchmarkTest_N_Messages_Consumer_console_output
+
+- name: Print benchmark results to console
+  debug:
+    msg: "{{runBenchmarkTest_N_Messages_Consumer_console_output.stdout}}"

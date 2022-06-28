@@ -1,8 +1,8 @@
 ---
-- name: Run the runBenchmarkTest_Perf.sh to perform benchmarking.
-  command: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf.sh"
-  register: runBenchmarkTest_Perf_console_output
+- name: Run the runBenchmarkTest_N_Messages.sh to perform benchmarking.
+  command: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages.sh"
+  register: runBenchmarkTest_N_Messages_console_output
 
 - name: Print benchmark results to console
   debug:
-    msg: "{{runBenchmarkTest_Perf_console_output.stdout}}"
+    msg: "{{runBenchmarkTest_N_Messages_console_output.stdout}}"
