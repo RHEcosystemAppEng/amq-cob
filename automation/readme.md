@@ -412,8 +412,8 @@ To configure the instances using ansible, we need to extract the public ip for a
   cd $MAIN_CONFIG_DIR/ansible
 
   # Below commands will NOT setup mirroring between the two regions
-  ansible-playbook setup_playbook.yml --extra-vars "@variable_override.yml"
-  ansible-playbook run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts/hosts.yml playbooks/setup_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts/hosts.yml playbooks/run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will configure following resources:
   * `amq_runner` user will be created in all the instances of brokers and routers
@@ -424,23 +424,7 @@ To configure the instances using ansible, we need to extract the public ip for a
   * All the routers will start
 
 ## Run performance tests
-JMeter is being used to run the performance tests on the AMQ brokers and routers
-
-### Prerequisites - install JMeter
-Create another virtual instance (manually) and install JMeter on it by using following commands: 
-```shell
-  sudo dnf install -y wget bc
-  wget https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.4.3.zip
-```
-
-### Run tests
-* Copy following files to any directory on your client instance:
-  * `AMQ_Jmeter_Test_Plan.jmx` - JMeter config
-  * `gen_throughput.sh` - script to generate throughput numbers for producer/consumer
-* Run JMeter:
-  * `runBenchmarkTest.sh`
-* Execute the script
-  * `./gen_throughput.sh -i ~/jmeter.jtl`
+JMeter is being used to run the performance tests on the AMQ brokers and routers.
 
 ### Running Jmeter test using Ansible.
 Refer this documentation to [perform Jmeter tests using Ansible](jmeter_ansible_readme.md)
@@ -455,7 +439,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * One can reset the brokers/routers/nfs server to bring them to the initial state by running following commands: 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
-  ansible-playbook reset_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts/hosts.yml playbooks/reset_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will perform following tasks:
   * Stop broker instances
@@ -469,7 +453,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * To stop the running brokers/routers, execute following commands 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
-  ansible-playbook stop_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts/hosts.yml playbooks/stop_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will perform following tasks:
   * Stop broker instances
@@ -479,7 +463,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * To stop the running brokers/routers, execute following commands 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
-  ansible-playbook run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts/hosts.yml playbooks/run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will perform following tasks:
   * Run broker instances
@@ -490,7 +474,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
   1. Using ansible scripts:
     ```shell
     cd $MAIN_CONFIG_DIR/ansible
-    ansible-playbook purge_queue_playbook.yml --extra-vars "@variable_override.yml"
+    ansible-playbook -i hosts/hosts.yml playbooks/purge_queue_playbook.yml --extra-vars "@variable_override.yml"
     ```
   2. **TODO - will be provided by Kamlesh**
 * Above command(s) will purge `exampleQueue` on all the live AMQ brokers in region 1 and 2.

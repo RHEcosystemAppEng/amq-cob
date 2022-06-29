@@ -1,33 +1,33 @@
 enable_amq_mirroring: true
 
 ### Start - SSL Variables
-enable_ssl: true
-ssl_generate_ca: true
-ssl_generate_certs: true
-
-CA_CERT_FILE_PREFIX: server-ca
-INPUT_FILES_BASE_DIR: './generated'
-CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
-KEY_PASS: redhat
-STORE_PASS: redhat
+#enable_ssl: true
+#ssl_generate_ca: true
+#ssl_generate_certs: true
+#
+#CA_CERT_FILE_PREFIX: server-ca
+#INPUT_FILES_BASE_DIR: './generated'
+#CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
+#KEY_PASS: redhat
+#STORE_PASS: redhat
 ### END - SSL Variables
 
 # Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      163.66.94.75
-r1_broker02_bak_ip:       163.74.85.119
-r1_broker03_live_ip:      163.75.84.23
-r1_broker04_bak_ip:       163.66.90.34
-r1_vpc1_nfs_server_ip:    163.66.94.73
-r1_router01_hub_ip:       163.75.95.11
-r1_router02_spoke_ip:     163.74.81.155
-r1_broker05_live_ip:      163.75.84.21
-r1_broker06_bak_ip:       163.74.85.122
-r1_broker07_live_ip:      163.66.87.248
-r1_broker08_bak_ip:       163.75.95.14
-r1_vpc2_nfs_server_ip:    163.74.92.75
-r1_router03_spoke_ip:     163.66.94.74
+r1_broker01_live_ip:      15.223.71.112
+r1_broker02_bak_ip:       3.99.214.21
+r1_broker03_live_ip:      99.79.7.11
+r1_broker04_bak_ip:       3.99.167.28
+r1_vpc1_nfs_server_ip:    3.96.203.99
+r1_router01_hub_ip:       35.182.254.255
+r1_router02_spoke_ip:     35.183.62.196
+r1_broker05_live_ip:      15.223.4.196
+r1_broker06_bak_ip:       99.79.77.144
+r1_broker07_live_ip:      3.99.188.252
+r1_broker08_bak_ip:       3.99.219.119
+r1_vpc2_nfs_server_ip:    35.183.184.142
+r1_router03_spoke_ip:     3.96.154.90
 
-
-ansible_ssh_private_key_file: ~/Documents/RED/amq_aws-key_pair-TOR.cer
-ansible_user: ec2-user
-cloud_provider: aws
+# Variables for AWS setup. Please un-comment these when setting up on AWS
+#ansible_ssh_private_key_file: "<fully qualified Location of private key for your account>"
+#ansible_user: ec2-user
+#cloud_provider: aws

@@ -19,9 +19,12 @@ module "toronto-cluster1" {
   TAGS = merge(
     var.tags,
     {
-      Name : "${local.NAME_PREFIX}-1",
+      Name : "${local.NAME_PREFIX}-1"
+      Cluster : "cluster 1"
     }
   )
+
+  INSTANCE_INFO = local.CLUSTER1_INSTANCE_INFO
 }
 
 module "toronto-cluster2" {
@@ -45,9 +48,11 @@ module "toronto-cluster2" {
   TAGS = merge(
     var.tags,
     {
-      Name : "${local.NAME_PREFIX}-2",
+      Name : "${local.NAME_PREFIX}-2"
+      Cluster : "cluster 2"
     }
   )
+  INSTANCE_INFO = local.CLUSTER2_INSTANCE_INFO
 }
 
 # Add the VPC peering connection
