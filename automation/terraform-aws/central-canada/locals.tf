@@ -1,6 +1,7 @@
 locals {
 
-  MAIN_CIDR_BLOCK = "${var.CLUSTER1_PRIVATE_IP_PREFIX}.0.0/16"
+  CLUSTER1_MAIN_CIDR_BLOCK = "${var.CLUSTER1_PRIVATE_IP_PREFIX}.0.0/16"
+  CLUSTER2_MAIN_CIDR_BLOCK = "${var.CLUSTER2_PRIVATE_IP_PREFIX}.0.0/16"
 
   NAME_PREFIX = "${var.PREFIX}-AMQ_COB"
 
@@ -27,30 +28,73 @@ locals {
     }
   }
 
-  IP_NUMBER_PREFIX = {
+  CLUSTER1_IP_NUMBER_PREFIX = {
     "0" : "${var.CLUSTER1_PRIVATE_IP_PREFIX}.${var.SUBNET_1_3RD_OCTET}"
     "1" : "${var.CLUSTER1_PRIVATE_IP_PREFIX}.${var.SUBNET_2_3RD_OCTET}"
     "2" : "${var.CLUSTER1_PRIVATE_IP_PREFIX}.${var.SUBNET_3_3RD_OCTET}"
   }
 
-  CIDR_BLOCKS = {
-    "0" : { cidr : "${local.IP_NUMBER_PREFIX.0}.0/24" }  # 255 addresses
-    "1" : { cidr : "${local.IP_NUMBER_PREFIX.1}.0/24" }  # 255 addresses
-    "2" : { cidr : "${local.IP_NUMBER_PREFIX.2}.0/24" }  # 255 addresses
+  CLUSTER1_CIDR_BLOCKS = {
+    "0" : { cidr : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.0/24" }  # 255 addresses
+    "1" : { cidr : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.0/24" }  # 255 addresses
+    "2" : { cidr : "${local.CLUSTER1_IP_NUMBER_PREFIX.2}.0/24" }  # 255 addresses
   }
 
-  MAIN_TAGS = merge(
-    var.tags,
-    {
-      Name : local.NAME_PREFIX
+  CLUSTER2_IP_NUMBER_PREFIX = {
+    "0" : "${var.CLUSTER2_PRIVATE_IP_PREFIX}.${var.SUBNET_1_3RD_OCTET}"
+    "1" : "${var.CLUSTER2_PRIVATE_IP_PREFIX}.${var.SUBNET_2_3RD_OCTET}"
+    "2" : "${var.CLUSTER2_PRIVATE_IP_PREFIX}.${var.SUBNET_3_3RD_OCTET}"
+  }
+
+  CLUSTER2_CIDR_BLOCKS = {
+    "0" : { cidr : "${local.CLUSTER2_IP_NUMBER_PREFIX.0}.0/24" }  # 255 addresses
+    "1" : { cidr : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.0/24" }  # 255 addresses
+    "2" : { cidr : "${local.CLUSTER2_IP_NUMBER_PREFIX.2}.0/24" }  # 255 addresses
+  }
+
+
+  CLUSTER1_INSTANCE_INFO = {
+    nfs : {
+      suffix : "nfs-server-01", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.50", main_zone : "1"
     }
-  )
+    broker_01 : {
+      suffix : "broker01-live1", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.51", main_zone : "1"
+    }
+    broker_02 : {
+      suffix : "broker02-bak1", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.51", main_zone : "2"
+    }
+    broker_03 : {
+      suffix : "broker03-live2", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.52", main_zone : "2"
+    }
+    broker_04 : {
+      suffix : "broker04-bak2", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.52", main_zone : "1"
+    }
+    router_01 : {
+      suffix : "hub-router1", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.100", main_zone : "2"
+    }
+    router_02 : {
+      suffix : "spoke-router2", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.101", main_zone : "1"
+    }
+  }
 
-
-#  VPC_NAME_PREFIX       = "${var.PREFIX}-vpc-${var.REGION}"
-#  SUBNET_PREFIX         = "${local.VPC_NAME_PREFIX}-subnet"
-#  SECURITY_GROUP_PREFIX = "${local.VPC_NAME_PREFIX}-sec-grp"
-#
-#  CLUSTER1_VPC_NAME = "${local.VPC_NAME_PREFIX}-1"
-#  CLUSTER2_VPC_NAME = "${local.VPC_NAME_PREFIX}-2"
+  CLUSTER2_INSTANCE_INFO = {
+    nfs : {
+      suffix : "nfs-server-02", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.60", main_zone : "2"
+    }
+    broker_01 : {
+      suffix : "broker05-live1", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.61", main_zone : "2"
+    }
+    broker_02 : {
+      suffix : "broker06-bak1", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.0}.61", main_zone : "1"
+    }
+    broker_03 : {
+      suffix : "broker07-live2", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.0}.62", main_zone : "1"
+    }
+    broker_04 : {
+      suffix : "broker08-bak2", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.62", main_zone : "2"
+    }
+    router_03 : {
+      suffix : "spoke-router3", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.102", main_zone : "2"
+    }
+  }
 }

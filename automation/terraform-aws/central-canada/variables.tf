@@ -34,6 +34,7 @@ variable "AMI_NAME_US_WEST_1" {
 
 variable "AMI_ID_US_WEST_1" {
   default = "ami-054965c6cd7c6e462"
+  # ami-0186e3fec9b0283ee
 }
 
 # Oregon
@@ -47,6 +48,7 @@ variable "AMI_NAME_US_WEST_2" {
 
 variable "AMI_ID_US_WEST_2" {
   default = "ami-0b28dfc7adc325ef4"
+  # ami-08970fb2e5767e3b8
 }
 
 # N. Virginia
@@ -60,6 +62,7 @@ variable "AMI_NAME_US_EAST_1" {
 
 variable "AMI_ID_US_EAST_1" {
   default = "ami-0b0af3577fe5e3532"
+  # ami-06640050dc3f556bb
 }
 
 # Ohio
@@ -73,11 +76,17 @@ variable "AMI_NAME_US_EAST_2" {
 
 variable "AMI_ID_US_EAST_2" {
   default = "ami-0ba62214afa52bec7"
+  # ami-092b43193629811af
 }
 
 # This variable should be defined on the cli
 variable "CLUSTER1_PRIVATE_IP_PREFIX" {
   #  default = "10.101"
+}
+
+# This variable should be defined on the cli
+variable "CLUSTER2_PRIVATE_IP_PREFIX" {
+  #  default = "10.102"
 }
 
 variable "SUBNET_1_3RD_OCTET" {

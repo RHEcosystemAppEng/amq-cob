@@ -3,6 +3,10 @@ output "prefix" {
   value = var.PREFIX
 }
 
+output "region" {
+  value = local.REGION
+}
+
 output "ami_id" {
   value = var.AMI_ID
 }
@@ -15,12 +19,28 @@ output "zone1" {
   value = module.common.zone1
 }
 
+output "subnet_1_id" {
+  value = module.common.subnet_1_id
+}
+
 output "zone2" {
   value = module.common.zone2
 }
 
+output "subnet_2_id" {
+  value = module.common.subnet_2_id
+}
+
 output "zone3" {
   value = module.common.zone3
+}
+
+output "subnet_3_id" {
+  value = module.common.subnet_3_id
+}
+
+output "zone_n_subnet_map" {
+  value = local.ZONE_N_SUBNET
 }
 
 output "vpc_cidr" {
@@ -95,39 +115,41 @@ output "vpc_name" {
 #  NFS server section
 #
 output "nfs-server-private_ip" {
-  value = module.common.nfs-server-private_ip
+  value = module.nfs-server.private_ip
 }
 
 output "nfs-server-public_ip" {
-  value = module.common.nfs-server-public_ip
+  value = module.nfs-server.public_ip
 }
 
 output "nfs-server-instance_name" {
-  value = module.common.nfs-server-instance_name
+  value = module.nfs-server.instance_name
 }
 
 output "nfs-server-host_id" {
-  value = module.common.nfs-server-host_id
+  value = module.nfs-server.host_id
 }
+
+
 
 
 #
 # Broker 01 (live 01) section
 #
 output "broker01-live-private_ip" {
-  value = module.common.broker01-live-private_ip
+  value = module.broker-01-live.private_ip
 }
 
 output "broker01-live-public_ip" {
-  value = module.common.broker01-live-public_ip
+  value = module.broker-01-live.public_ip
 }
 
 output "broker01-live-instance_name" {
-  value = module.common.broker01-live-instance_name
+  value = module.broker-01-live.instance_name
 }
 
 output "broker01-live-host_id" {
-  value = module.common.broker01-live-host_id
+  value = module.broker-01-live.host_id
 }
 
 
@@ -135,19 +157,19 @@ output "broker01-live-host_id" {
 # Broker 02 (bak 01) section
 #
 output "broker02-bak-private_ip" {
-  value = module.common.broker02-bak-private_ip
+  value = module.broker-02-bak.private_ip
 }
 
 output "broker02-bak-public_ip" {
-  value = module.common.broker02-bak-public_ip
+  value = module.broker-02-bak.public_ip
 }
 
 output "broker02-bak-instance_name" {
-  value = module.common.broker02-bak-instance_name
+  value = module.broker-02-bak.instance_name
 }
 
 output "broker02-bak-host_id" {
-  value = module.common.broker02-bak-host_id
+  value = module.broker-02-bak.host_id
 }
 
 
@@ -155,19 +177,19 @@ output "broker02-bak-host_id" {
 # Broker 03 (live 02) section
 #
 output "broker03-live-private_ip" {
-  value = module.common.broker03-live-private_ip
+  value = module.broker-03-live.private_ip
 }
 
 output "broker03-live-public_ip" {
-  value = module.common.broker03-live-public_ip
+  value = module.broker-03-live.public_ip
 }
 
 output "broker03-live-instance_name" {
-  value = module.common.broker03-live-instance_name
+  value = module.broker-03-live.instance_name
 }
 
 output "broker03-live-host_id" {
-  value = module.common.broker03-live-host_id
+  value = module.broker-03-live.host_id
 }
 
 
@@ -175,57 +197,18 @@ output "broker03-live-host_id" {
 # Broker 04 (bak 02) section
 #
 output "broker04-bak-private_ip" {
-  value = module.common.broker04-bak-private_ip
+  value = module.broker-04-bak.private_ip
 }
 
 output "broker04-bak-public_ip" {
-  value = module.common.broker04-bak-public_ip
+  value = module.broker-04-bak.public_ip
 }
 
 output "broker04-bak-instance_name" {
-  value = module.common.broker04-bak-instance_name
+  value = module.broker-04-bak.instance_name
 }
 
 output "broker04-bak-host_id" {
-  value = module.common.broker04-bak-host_id
+  value = module.broker-04-bak.host_id
 }
 
-
-#
-# Router 01 (hub router) section
-#
-output "router-01-hub-private_ip" {
-  value = module.router-01-hub.private_ip
-}
-
-output "router-01-hub-public_ip" {
-  value = module.router-01-hub.public_ip
-}
-
-output "router-01-hub-instance_name" {
-  value = module.router-01-hub.instance_name
-}
-
-output "router-01-hub-host_id" {
-  value = module.router-01-hub.host_id
-}
-
-
-#
-# Router 02 (spoke router) section
-#
-output "router-02-spoke-private_ip" {
-  value = module.router-02-spoke.private_ip
-}
-
-output "router-02-spoke-public_ip" {
-  value = module.router-02-spoke.public_ip
-}
-
-output "router-02-spoke-instance_name" {
-  value = module.router-02-spoke.instance_name
-}
-
-output "router-02-spoke-host_id" {
-  value = module.router-02-spoke.host_id
-}

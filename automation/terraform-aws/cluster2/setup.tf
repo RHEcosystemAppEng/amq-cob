@@ -21,45 +21,23 @@ module "common" {
   TAGS = var.TAGS
 }
 
-module "router-01-hub" {
+module "router-03-spoke" {
   source = "../instance"
 
   SSH_KEY       = var.SSH_KEY
-  INSTANCE_NAME = "${var.NAME_PREFIX}-${local.HUB_ROUTER_01_SUFFIX}"
+  INSTANCE_NAME = "${var.NAME_PREFIX}-${local.SPOKE_ROUTER_03_SUFFIX}"
 
   AMI_ID             = var.AMI_ID
   AMI_NAME           = var.AMI_NAME
   INSTANCE_TYPE      = var.INSTANCE_TYPE
-  SUBNET_ID          = local.HUB_ROUTER_01_MAIN_SUBNET_ID
-  PRIVATE_IP         = local.HUB_ROUTER_01_PRIVATE_IP
+  SUBNET_ID          = local.SPOKE_ROUTER_03_MAIN_SUBNET_ID
+  PRIVATE_IP         = local.SPOKE_ROUTER_03_PRIVATE_IP
   SECURITY_GROUP_IDS = local.ROUTER_SECURITY_GROUP_IDS
 
   TAGS = merge(
     var.TAGS,
     {
-      Router : "Hub 01"
-      Setup : "amq_router"
-    }
-  )
-}
-
-module "router-02-spoke" {
-  source = "../instance"
-
-  SSH_KEY       = var.SSH_KEY
-  INSTANCE_NAME = "${var.NAME_PREFIX}-${local.SPOKE_ROUTER_02_SUFFIX}"
-
-  AMI_ID             = var.AMI_ID
-  AMI_NAME           = var.AMI_NAME
-  INSTANCE_TYPE      = var.INSTANCE_TYPE
-  SUBNET_ID          = local.SPOKE_ROUTER_02_MAIN_SUBNET_ID
-  PRIVATE_IP         = local.SPOKE_ROUTER_02_PRIVATE_IP
-  SECURITY_GROUP_IDS = local.ROUTER_SECURITY_GROUP_IDS
-
-  TAGS = merge(
-    var.TAGS,
-    {
-      Router : "Spoke 01"
+      Router : "Spoke 02"
       Setup : "amq_router"
     }
   )

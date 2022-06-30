@@ -1,0 +1,13 @@
+---
+
+- name: Remove NFS data directory (for brokers)
+  ansible.builtin.file:
+    path: "{{ amq_advanced_topology_dir }}"
+    state: absent
+  register: remove_broker_data_dir
+
+- name: Outout of Remove NFS data directory (for brokers)
+  when: remove_broker_data_dir.changed is true
+  debug:
+#    var: remove_broker_data_dir
+    msg: "{{ amq_advanced_topology_dir }} recursively deleted..."
