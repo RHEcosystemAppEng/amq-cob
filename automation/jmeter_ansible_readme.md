@@ -17,21 +17,21 @@ Use these playbooks to perform actual Jmeter performance test against AMQ Artemi
 No throttling on the producer and consumer side.
 
 ```shell
-ansible-playbook setup_n_run_jmeter_perf_client_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_n_messages_in_parallel_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 `setup_n_run_jmeter_perf_producer_playbook.yml` - This playbook will run the jmeter test without any throttle on producer. 
 No Consumers available
 
 ```shell
-ansible-playbook setup_n_run_jmeter_perf_producer_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_perf_producer_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 `setup_n_run_jmeter_perf_consumer_playbook.yml` - This playbook will run the jmeter test without any throttle on the consumer side. Use this playbook to perform actual Jmeter performance test against AMQ Artemis.
 No Producers available.
 
 ```shell
-ansible-playbook setup_n_run_jmeter_perf_consumer_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_perf_consumer_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 ### Ansible Playbooks to send/consumer specific number of messages.
@@ -41,7 +41,7 @@ Throttling on the producers - Sends only specified number of messages.
 No throttling on the consumers. 
 
 ```shell
-ansible-playbook setup_n_run_jmeter_n_messages_client_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_n_messages_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 `setup_n_run_jmeter_n_messages_producer_playbook.yml` - This playbook will setup and run the jmeter test. Producing only specific number of messages configured as part of the property `numberOfMessagesPerMin`. 
@@ -49,15 +49,23 @@ Throttling on the producers - Sends only specified number of messages.
 No consumers available as part of this test.
 
 ```shell
-ansible-playbook setup_n_run_jmeter_n_messages_producer_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_n_messages_producer_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 `setup_n_run_jmeter_n_messages_consumer_playbook.yml` - This playbook will setup and run the jmeter test. Consuming only specific number of messages configured as part of the property `numberOfMessagesPerMin`.
 No Producers available as part of this test.
 
 ```shell
-ansible-playbook setup_n_run_jmeter_n_messages_consumer_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_n_messages_consumer_playbook.yml --extra-vars "@variable_override.yml"
 ```
+
+### Ansible Playbooks to perform test in parallel
+
+```shell
+ansible-playbook -i hosts/hosts-r1_vpc1.yml playbooks/setup_n_run_jmeter_n_messages_in_parallel_client_playbook.yml --extra-vars "@variable_override.yml"
+```
+
+
 
 Please consider overriding following properties in [variable_override.yml](variable_override.yml) if you want to change the default behaviour.
 ```yaml
