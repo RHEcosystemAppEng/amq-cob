@@ -13,7 +13,7 @@ resource "aws_route_table" "main" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - public"
+      Name : "${var.TAGS.Name} - public"
     }
   )
 }
@@ -25,7 +25,7 @@ resource "aws_default_route_table" "main" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - default"
+      Name : "${var.TAGS.Name} - default"
     }
   )
 }
@@ -48,6 +48,8 @@ resource "aws_route_table_association" "main" {
 
   route_table_id = aws_route_table.main.id
   subnet_id      = aws_subnet.all[tostring(count.index)].id
+  # TODO(SG): try following to see if this works
+  # subnet_id      = aws_subnet.all.*.id[count.index]
 }
 
 # Associate VPC with main route table. By default it is associated with the "default" route table

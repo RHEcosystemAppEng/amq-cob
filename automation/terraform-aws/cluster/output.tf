@@ -111,6 +111,16 @@ output "vpc_name" {
   value = module.common.vpc_name
 }
 
+
+output "efs_fs_id" {
+  value = module.common.efs_fs_id
+}
+
+output "efs_fs_dns" {
+  value = module.common.efs_fs_dns
+}
+
+
 #
 #  NFS server section
 #
@@ -129,8 +139,6 @@ output "nfs-server-instance_name" {
 output "nfs-server-host_id" {
   value = module.nfs-server.host_id
 }
-
-
 
 
 #

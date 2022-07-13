@@ -3,8 +3,8 @@ resource "aws_vpc" "main" {
   cidr_block       = var.MAIN_CIDR_BLOCK
   instance_tenancy = "default"
 
-  #  enable_dns_hostnames = true
-  #  enable_dns_support = true
+  enable_dns_hostnames = true
+  enable_dns_support = true
 
   tags = var.TAGS
 }
@@ -21,7 +21,7 @@ resource "aws_subnet" "all" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - ${count.index}",
+      Name : "${var.TAGS.Name} - ${count.index}",
     }
   )
 }

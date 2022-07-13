@@ -52,48 +52,56 @@ locals {
     "2" : { cidr : "${local.CLUSTER2_IP_NUMBER_PREFIX.2}.0/24" }  # 255 addresses
   }
 
+  KEY_NFS = "nfs"
+  KEY_BROKER_01 = "broker_01"
+  KEY_BROKER_02 = "broker_02"
+  KEY_BROKER_03 = "broker_03"
+  KEY_BROKER_04 = "broker_04"
+  KEY_ROUTER_01 = "router_01"
+  KEY_ROUTER_02 = "router_02"
+  KEY_ROUTER_03 = "router_03"
 
   CLUSTER1_INSTANCE_INFO = {
-    nfs : {
+    (local.KEY_NFS) : {
       suffix : "nfs-server-01", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.50", main_zone : "1"
     }
-    broker_01 : {
+    (local.KEY_BROKER_01) : {
       suffix : "broker01-live1", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.51", main_zone : "1"
     }
-    broker_02 : {
+    (local.KEY_BROKER_02) : {
       suffix : "broker02-bak1", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.51", main_zone : "2"
     }
-    broker_03 : {
+    (local.KEY_BROKER_03) : {
       suffix : "broker03-live2", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.52", main_zone : "2"
     }
-    broker_04 : {
+    (local.KEY_BROKER_04) : {
       suffix : "broker04-bak2", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.52", main_zone : "1"
     }
-    router_01 : {
+    (local.KEY_ROUTER_01) : {
       suffix : "hub-router1", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.1}.100", main_zone : "2"
     }
-    router_02 : {
+    (local.KEY_ROUTER_02) : {
       suffix : "spoke-router2", private_ip : "${local.CLUSTER1_IP_NUMBER_PREFIX.0}.101", main_zone : "1"
     }
   }
 
   CLUSTER2_INSTANCE_INFO = {
-    nfs : {
+    (local.KEY_NFS) : {
       suffix : "nfs-server-02", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.60", main_zone : "2"
     }
-    broker_01 : {
+    (local.KEY_BROKER_01) : {
       suffix : "broker05-live1", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.61", main_zone : "2"
     }
-    broker_02 : {
+    (local.KEY_BROKER_02) : {
       suffix : "broker06-bak1", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.0}.61", main_zone : "1"
     }
-    broker_03 : {
+    (local.KEY_BROKER_03) : {
       suffix : "broker07-live2", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.0}.62", main_zone : "1"
     }
-    broker_04 : {
+    (local.KEY_BROKER_04) : {
       suffix : "broker08-bak2", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.62", main_zone : "2"
     }
-    router_03 : {
+    (local.KEY_ROUTER_03) : {
       suffix : "spoke-router3", private_ip : "${local.CLUSTER2_IP_NUMBER_PREFIX.1}.102", main_zone : "2"
     }
   }

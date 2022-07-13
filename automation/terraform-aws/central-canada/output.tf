@@ -418,6 +418,23 @@ output "peering_connection_accept_status" {
   value = aws_vpc_peering_connection.vpc1-vpc2.accept_status
 }
 
+output "vpc1-efs_fs_id" {
+  value = module.toronto-cluster1.efs_fs_id
+}
+
+output "vpc1-efs_fs_dns" {
+  value = module.toronto-cluster1.efs_fs_dns
+}
+
+output "vpc2-efs_fs_id" {
+  value = module.toronto-cluster2.efs_fs_id
+}
+
+output "vpc2-efs_fs_dns" {
+  value = module.toronto-cluster2.efs_fs_dns
+}
+
+
 #
 ##
 ## Local Transit Gateway section

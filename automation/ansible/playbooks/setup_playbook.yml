@@ -7,9 +7,13 @@
   gather_facts: false
   roles:
     - role: setup_nfs_server
-      tags: setup_nfs
+      tags: setup_nfs_server
+      when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
     - role: setup_hostname
-      tags: setup_nfs
+      tags:
+        - setup_nfs_server
+        - setup_nfs_server_hostname
+      when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
 
 - hosts:
     - brokers
@@ -18,14 +22,22 @@
   gather_facts: false
   roles:
     - role: setup_common
-      tags: setup_broker
+      tags:
+        - setup_broker
+        - setup_common
     - role: setup_hostname
-      tags: setup_broker
+      tags:
+        - setup_broker
+        - setup_broker_hostname
     - role: setup_broker-common
-      tags: setup_broker
+      tags:
+        - setup_broker
+        - setup_broker_common
     # Add "amq_user" to sudoers to allow invoking "sudo" without password prompt
     - role: setup_broker-sudoer-add
-      tags: setup_broker
+      tags:
+        - setup_broker
+        - setup_broker_sudoer_add
     - role: setup_broker
       become_user: "{{ user_amq }}"
       tags:
@@ -33,7 +45,9 @@
         - update_broker_config
     # Remove "amq_user" from sudoers so that password prompt is shown when invoking "sudo"
     - role: setup_broker-sudoer-remove
-      tags: setup_broker
+      tags:
+        - setup_broker
+        - setup_broker_sudoer_remove
 
 - hosts:
     - routers
@@ -42,9 +56,13 @@
   gather_facts: false
   roles:
     - role: setup_common
-      tags: setup_router_common
+      tags:
+        - setup_router
+        - setup_router_common
     - role: setup_hostname
-      tags: setup_router_hostname
+      tags:
+        - setup_router
+        - setup_router_hostname
     - role: setup_router
       tags:
         - setup_router

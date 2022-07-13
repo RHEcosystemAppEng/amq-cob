@@ -1,0 +1,29 @@
+---
+
+- name: Remove "files" directory
+  when: |
+    (delete_amq_archive is defined and delete_amq_archive is true)
+    and (inventory_hostname in amq_binary_dest_list)
+  ansible.builtin.file:
+    path: "{{ broker_files_mount_dir }}"
+    state: absent
+  register: remove_broker_files_mount_dir
+
+- name: Remove AMQ broker and install directory recursively
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ amq_broker_dir }}"
+    - "{{ amq_install_dir }}"
+
+# We need to delete the top level directory and all the brokers in the same VPC will have their data dir deleted
+- name: Remove AMQ broker data files directory recursively
+  when: inventory_hostname in amq_binary_dest_list
+  ansible.builtin.file:
+    path: "{{ amq_advanced_topology_dir }}"
+    state: absent
+
+# Unmount at the very end as all the files are actually on the mount point and won't be available once the mount is deleted
+- include_role:
+    name: unmount_nfs

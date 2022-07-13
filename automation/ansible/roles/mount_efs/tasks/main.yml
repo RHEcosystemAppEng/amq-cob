@@ -1,0 +1,102 @@
+---
+
+# With EFS any directory under the mount point doesn't show up after mount is created
+- name: Create AMQ mount directory
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  ansible.builtin.file:
+    path: "{{ broker_mount_base_dir }}"
+    state: directory
+    recurse: yes
+    mode: '0777'
+    owner: "{{ user_amq }}"
+    group: "{{ user_amq }}"
+  register: create_mount_dir_output
+
+- name: Show the "amq" mount directory creation output
+  when: create_mount_dir_output.changed is true
+  debug:
+    msg: "{{broker_mount_base_dir}} directory is owned by '{{ user_amq }}' and is world writable..."
+
+# Needed for running aws command (to find existing EFS)
+- name: Install boto3 python package
+  ansible.builtin.pip:
+    name: boto3
+  delegate_to: localhost
+  become: no
+
+- name: Find all existing EFS
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  community.aws.efs_info:
+    profile: "{{ aws_profile_name }}"
+    tags:
+      Name: "{{resource_prefix}}-AMQ_COB-{{cluster_idx}}"
+      Cluster: "cluster {{cluster_idx}}"
+  register: efs_output
+  delegate_to: localhost
+  become: no
+
+- name: Retrieve EFS dns
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  debug:
+    msg: "{{ efs_output['efs'][0].filesystem_address }}"
+
+- name: Mount EFS
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  ansible.posix.mount:
+    src: "{{ efs_output['efs'][0].filesystem_address }}"
+    path: "{{ broker_mount_base_dir }}"
+    opts: "{{ efs_options }}"
+    fstype: nfs
+    state: mounted
+  register: mount_efs_output
+
+- name: Run mount command
+  when: mount_efs_output.changed is true
+  ansible.builtin.command: mount -a
+  register: run_mount_output
+
+- name: Show mount point entries to fstab
+  when: mount_efs_output.changed is true
+  debug:
+    msg: "Mount entry point created for '{{broker_mount_dir}}'"
+
+- name: Show mount command output
+  when: run_mount_output.changed is true
+  debug:
+    msg: "EFS Mount points successfully created"
+
+
+# With EFS, creating the amq directories AFTER the mount is created otherwise they doesn't show up after mount is created
+- name: Create AMQ mount directory for AMQ binary
+  when: (inventory_hostname in amq_binary_dest_list) and (nfs_or_efs is defined and nfs_or_efs == "efs")
+  ansible.builtin.file:
+    path: "{{ broker_files_mount_dir }}"
+    state: directory
+    recurse: yes
+    mode: '0777'
+    owner: "{{ user_amq }}"
+    group: "{{ user_amq }}"
+#  loop:
+#    - "{{ broker_mount_dir }}"
+#    - "{{ broker_files_mount_dir }}"
+  register: create_mount_dir_output
+
+- name: Create AMQ mount directory for AMQ binary output
+  when: create_mount_dir_output.changed is true
+  debug:
+    msg: "{{ create_mount_dir_output.path }} created/updated with {{ create_mount_dir_output.mode }} mode"
+
+- name: Copy AMQ binary to EFS
+  when: (inventory_hostname in amq_binary_dest_list) and (nfs_or_efs is defined and nfs_or_efs == "efs")
+  copy:
+    src: "{{ amq_binary_archive }}"
+    dest: "{{ broker_files_mount_dir }}"
+    owner: "{{ user_amq }}"
+    group: "{{ user_amq }}"
+#    mode: 0644
+  register: cp_amq_binary_output
+
+- name: Copy AMQ binary to EFS output
+  when: cp_amq_binary_output.changed is true
+  debug:
+    msg: "AMQ binary '{{ cp_amq_binary_output }}' copied to EFS mount"

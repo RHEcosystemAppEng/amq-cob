@@ -14,7 +14,7 @@ resource "aws_default_security_group" "default" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - default"
+      Name : "${var.TAGS.Name} - default"
     }
   )
 }
@@ -32,7 +32,7 @@ resource "aws_security_group_rule" "allow_all" {
 
 resource "aws_security_group" "ping_ssh" {
   # Security Group Name (not the same as name of the resource)
-  name        = "${var.NAME_PREFIX} - ping_ssh"
+  name        = "${var.TAGS.Name} - ping_ssh"
   description = "Allows ping and ssh"
   vpc_id      = aws_vpc.main.id
 
@@ -55,13 +55,13 @@ resource "aws_security_group" "ping_ssh" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - Allow ping and ssh"
+      Name : "${var.TAGS.Name} - Allow ping and ssh"
     }
   )
 }
 
 resource "aws_security_group" "amq_broker" {
-  name        = "${var.NAME_PREFIX} - amq_broker"
+  name        = "${var.TAGS.Name} - amq_broker"
   description = "Allows access to AMQ Broker console as well as default and amqp ports"
   vpc_id      = aws_vpc.main.id
 
@@ -92,13 +92,13 @@ resource "aws_security_group" "amq_broker" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - brokers"
+      Name : "${var.TAGS.Name} - brokers"
     }
   )
 }
 
 resource "aws_security_group" "amq_router" {
-  name        = "${var.NAME_PREFIX} - amq_router"
+  name        = "${var.TAGS.Name} - amq_router"
   description = "Allows access to AMQ router listen port"
   vpc_id      = aws_vpc.main.id
 
@@ -113,7 +113,7 @@ resource "aws_security_group" "amq_router" {
   tags = merge(
     var.TAGS,
     {
-      Name : "${var.NAME_PREFIX} - router"
+      Name : "${var.TAGS.Name} - router"
     }
   )
 }

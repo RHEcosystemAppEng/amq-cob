@@ -22,4 +22,11 @@ variable "AMI_NAME" {}
 variable "PRIVATE_IP_PREFIX" {}
 variable "INSTANCE_TYPE" {}
 
+variable "KEY_NFS" {}
+variable "KEY_BROKER_01" {}
+variable "KEY_BROKER_02" {}
+variable "KEY_BROKER_03" {}
+variable "KEY_BROKER_04" {}
+variable "KEY_ROUTER_03" {}
+
 variable "TAGS" {}
