@@ -15,10 +15,10 @@
   * [Prerequisites](#prerequisites---region-1)
   * [Setup API key config](#setup-api-key-config)
   * [Setup Region 1 infrastructure](#setup-region-1-infrastructure)
-* [Setup Region 2](#setup-region-2---tbd)
+* [Setup Region 2 - TBD](#setup-region-2---tbd)
   * [Prerequisites](#prerequisites---region-2)
   * [Setup Region 2 infrastructure](#setup-region-2-infrastructure)
-* [Transit Gateway setup](#global-transit-gateway-setup---tbd)
+* [Transit Gateway setup - TBD](#global-transit-gateway-setup---tbd)
   * [Prerequisites](#prerequisites---transit-gateway-setup)
 * [Configure Region 1/2 with Ansible](#configure-region-12---ansible)
   * [Prerequisites](#prerequisites---ansible-config)
@@ -34,36 +34,20 @@
   * [Stop brokers and routers](#stop-brokersrouters)
   * [Run brokers and routers](#run-brokersrouters)
   * [Purge queue](#purge-queue)
-* [Start/stop instances](#startstop-the-instances)
+* [Start/stop instances - TBD](#startstop-the-instances)
   * [Prerequisites](#prerequisites---startstop-instances)
   * [Start stopped instances](#start-instances---region-12)
   * [Stop running instances](#stop-instances---region-12)
 * [Destroy the resources](#destroy-the-resources)
   * [Prerequisites](#prerequisites---destroy-resources)
-  * [Global Transit Gateway](#destroy-global-transit-gateway)
+  * [Global Transit Gateway - TBD](#destroy-global-transit-gateway)
   * [Region 1](#destroy-resources---region-1)
-  * [Region 2](#destroy-resources---region-2)
+  * [Region 2 - TBD](#destroy-resources---region-2)
 * [Instance info](#instance-info)
-
-<details>
-<summary>TMP section for setting up cluster 1 in Toronto region</summary>
-
-* [TMP - Setup Region 1](#setup-region-1---tmp)
-  * [TMP - Prerequisites](#prerequisites---region-1---tmp)
-  * [TMP - Setup API key config](#setup-config-for-ibm-api-key---tmp)
-  * [TMP - Setup Region 1 infrastructure](#setup-region-1-infrastructure---tmp)
-* [TMP - Configure Region 1 with Ansible](#configure-region-1---ansible---tmp)
-  * [TMP - Create vault password](#create-vault-password---tmp)
-  * [TMP - Configure region](#configure-region---tmp)
-* [TMP - Destroy the resources](#destroy-the-resources---tmp)
-  * [TMP - Region 1](#destroy-resources---region-1---tmp)
-
-</details>
-
 * [References](#references)
 
-Configuring AMQ advanced topology for DR, in **IBM Cloud**, following setup was used:
-* Region 1 (Toronto)
+Configuring AMQ for DR, in **AWS**, following setup was used:
+* Region 1 (Canada)
   * Two clusters
   * Hub Router
   * Routers to connect to live brokers in each clusters
@@ -108,7 +92,7 @@ Install the following Ansible collections for configuring the instances by runni
 * `community.general` is needed for subscription
 
 ### Checkout Setup config
-Clone this repo to setup brokers/routers in IBM Cloud:
+Clone this repo to setup brokers/routers in AWS:
 * `git clone https://github.com/RHEcosystemAppEng/amq-cob.git`
 * Open up a terminal and run following commands
   ```shell
@@ -131,15 +115,15 @@ Clone this repo to setup brokers/routers in IBM Cloud:
 ### Create SSH key for each region
 * Create a new SSH key by following instructions at [Create SSH key](https://docs.aws.amazon.com/ground-station/latest/ug/create-ec2-ssh-key-pair.html)
 * _This step has to be repeated for each region_
-* For Toronto, save the key as `~/.ssh/amq_aws-key_pair-TOR.cer`
+* For Canada, save the key as `~/.ssh/amq_aws-key_pair-TOR.cer`
   * _Please skip these steps if a SSH key is already created and added to the account_
 
 
 <br>
 
 
-## Setup Region 1 - IBM Cloud
-Region 1 is setup in **Toronto** that has two clusters:
+## Setup Region 1
+Region 1 is setup in **Canada** that has two clusters:
 * **Cluster1** - consisting of following four brokers:
   * `broker01` - live/primary
   * `broker02` - backup of broker01
@@ -277,7 +261,7 @@ As part of cluster2 config, following interconnect router is also created and se
 
 ### Prerequisites - Region 2
 * _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
-* IBM API key should have been setup as part of [setting up API key config](#setup-config-for-ibm-api-key)
+* AWS API key should have been setup as part of [setting up API key config](#setup-api-key-config)
 * Make sure the ssh key for Region 2 VPC is created as part of [create SSH key](#create-ssh-key-to-work-with-vpc)
 
 ### Setup Region 2 infrastructure
@@ -368,11 +352,11 @@ This section contains information on setting up transit gateways for communicati
   ```
 * Above command will take around 5-7 minutes and should create following Global Transit Gateways:
   * `cob-test-amq-us-south-ca-central-1a`
-    * Facilitates communications between Cluster1 (Toronto) and Cluster3 (Dallas)
+    * Facilitates communications between Cluster1 (Canada) and Cluster3 (Dallas)
     * _This gateway is located in Dallas_
   * `cob-test-amq-ca-tor-us-south-2`
-    * Facilitates communications between Cluster2 (Toronto) and Cluster4 (Dallas)
-    * _This gateway is located in Toronto_
+    * Facilitates communications between Cluster2 (Canada) and Cluster4 (Dallas)
+    * _This gateway is located in Canada_
 
 <br>
 
