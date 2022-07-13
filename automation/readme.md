@@ -390,7 +390,7 @@ To configure the instances using ansible, we need to extract the public ip for a
 * Create a file named `.vault_password` in `$MAIN_CONFIG_DIR/ansible` directory with it contents set to following text
   * `password`
 * Run following command to set the correct username/password for Red Hat login:
-  * `ansible-vault edit group_vars/routers/vault`
+  * `ansible-vault edit hosts/group_vars/routers/vault`
     * _Above command will open up an editor_
   * Provide values for following keys (**_This is the Red Hat SSO user/password and not the Mac/Linux user/password_**):
     * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)

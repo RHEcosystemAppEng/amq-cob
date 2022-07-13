@@ -1,0 +1,43 @@
+---
+- name: Run the runBenchmarkTest_N_Messages.sh to perform benchmarking.
+  command: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages.sh"
+  register: runBenchmarkTest_N_Messages_console_output
+
+- name: Delete/cleanup local jmeter downloaded folder.
+  run_once: yes
+  delegate_to: localhost
+  become: yes
+  become_user: "{{ lookup('env','USER') }}"
+  file:
+    state: absent
+    path: "/tmp/downloaded"
+    mode: 0744
+
+- name: Download peformance test result JSON file from remote to local.
+  fetch:
+    src: "{{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/throughput_output.json"
+    flat: yes
+    dest: "/tmp/downloaded/{{ inventory_hostname }}.json"
+
+- name: Merge files
+  run_once: yes
+  delegate_to: localhost
+  become: yes
+  become_user: "{{ lookup('env','USER') }}"
+  shell: "cat /tmp/downloaded/{{ item }}.json >> /tmp/downloaded/allnodes.json"
+  #shell: "echo {{ item }}"
+  with_items: "{{ play_hosts }}"
+
+- name: print merged metrics to console.
+  shell: "cat /tmp/downloaded/allnodes.json"
+  run_once: yes
+  delegate_to: localhost
+  become: yes
+  become_user: "{{ lookup('env','USER') }}"
+  register: "merged_metrics_console_output"
+
+
+- name: Print merged benchmark results to console
+  run_once: yes
+  debug:
+    msg: "{{merged_metrics_console_output.stdout}}"
