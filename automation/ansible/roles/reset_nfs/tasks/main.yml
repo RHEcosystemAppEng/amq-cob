@@ -1,52 +1,18 @@
 ---
 
-- name: Stop NFS service
-  ansible.builtin.service:
-    name: "{{ nfs_service }}"
-    state: stopped
+- include_role:
+    name: unmount_nfs
 
-- name: Disable NFS service
-  ansible.builtin.service:
-    name: "{{ nfs_service }}"
-    enabled: no
-
-- name: Remove nfs packages
-  dnf:
-    name: "{{ packages }}"
-    state: absent
-    update_cache: yes
-
-- name: Remove NFS mount directory (for brokers) recursively
-  when: delete_amq_archive is not defined or delete_amq_archive is false
-  ansible.builtin.file:
-    path: "{{ amq_advanced_topology_dir }}"
-    state: absent
-  register: remove_nfs_mount_broker_dir
-
-- name: Remove NFS mount "root" directory recursively
-  when: delete_amq_archive is defined and delete_amq_archive is true
-  ansible.builtin.file:
-    path: "{{ nfs_files_mount }}"
-    state: absent
-  register: remove_nfs_mount_root_dir
-
-- name: Remove etc/exportfs entries
+- name: Remove NFS server from hosts
   blockinfile:
-    path: /etc/exports
-    # empty block == remove
-    block: ""
+    path: /etc/hosts
+    state: absent
 
-- name: Outout of Remove NFS mount directory (for brokers) recursively
-  when: (delete_amq_archive is false) and (remove_nfs_mount_broker_dir.changed is true)
-  debug:
-    msg: "NFS mount directory (for brokers only) - [{{ amq_advanced_topology_dir }}] recursively deleted..."
-
-- name: Output of Remove NFS mount "root" directory recursively
-  when: (delete_amq_archive is true) and (remove_nfs_mount_root_dir.changed is true)
-  debug:
-    msg: "NFS mount directory - [{{ nfs_files_mount }}] recursively deleted..."
-    var: remove_nfs_mount_root_dir
-
-- name: All done!!!
-  debug:
-    msg: "NFS server config removed completely..."
+- name: Remove AMQ broker and install directory recursively
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ amq_broker_dir }}"
+    - "{{ amq_install_dir }}"
+    - "{{ amq_advanced_topology_dir }}"

@@ -7,31 +7,25 @@
 #      - "ansible_address = {{ ansible_eth0.ipv4.address }}"
       - "hostname = {{ inventory_hostname }}"
 
-- include_role:
+- name: Stop broker
+  include_role:
     name: stop_broker
 
-- include_role:
-    name: unmount_nfs
+- name: Reset EFS
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  include_role:
+    name: reset_efs
 
-- name: Remove NFS server from hosts
-  blockinfile:
-    path: /etc/hosts
-    state: absent
+- name: Reset NFS
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
+  include_role:
+    name: reset_nfs
 
 - name: Remove broker packages
   dnf:
     name: "{{ packages }}"
     state: absent
     update_cache: yes
-
-- name: Remove AMQ broker and install directory recursively
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  loop:
-    - "{{ amq_broker_dir }}"
-    - "{{ amq_install_dir }}"
-    - "{{ broker_mount_dir }}"
 
 - name: Delete AMQ user
   ansible.builtin.user:

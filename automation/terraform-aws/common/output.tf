@@ -106,3 +106,11 @@ output "route_table-main-id" {
 output "route_table-default-id" {
   value = aws_default_route_table.main.id
 }
+
+output "efs_fs_id" {
+  value = aws_efs_file_system.efs_fs.id
+}
+
+output "efs_fs_dns" {
+  value = aws_efs_file_system.efs_fs.dns_name
+}

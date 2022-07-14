@@ -24,5 +24,6 @@
   become_method: sudo
   gather_facts: false
   roles:
-    - role: reset_nfs
-      tags: reset_nfs
+    - role: reset_nfs_server
+      tags: reset_nfs_server
+      when: nfs_or_efs is not defined or nfs_or_efs == "nfs"

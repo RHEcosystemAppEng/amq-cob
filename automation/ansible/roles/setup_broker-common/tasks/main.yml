@@ -1,7 +1,5 @@
 ---
 
-# Tasks listed here have to be run as "root"
-
 - name: Ensure the packages needed are installed on the Broker(s)
   dnf:
     name: "{{ packages }}"
@@ -9,64 +7,24 @@
     update_cache: yes
   register: dnf_output
 
-- include_role:
+- name: Unmount existing mount point (if any)
+  include_role:
     name: unmount_nfs
 
-# May want to uncomment "Unmount NFS volume" task if this fails due to the dir already in existence and is used as mount point
-- name: Check if "amq" mount directory exists
-  stat:
-    path: "{{broker_mount_dir}}"
-  register: mount_dir_output
+- name: Mount NFS
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
+  include_role:
+    name: mount_nfs
 
-- name: Create "amq" mount directory and chgrp on its parent recursively
-  shell: |
-    if [ ! -d "{{broker_mount_dir}}" ]; then
-      mkdir -p "{{broker_mount_dir}}"
-    fi
-    sudo chown -R "{{ user_amq }}":"{{ user_amq }}" "{{broker_mount_base_dir}}"
-  register: create_mount_dir_output
-
-- name: Add NFS server to hosts
-  when: (mount_dir_output.stat.exists is true) or (create_mount_dir_output.changed is true)
-  blockinfile:
-    path: /etc/hosts
-    block: |
-      {{ nfs_server_ip }} {{ nfs_server_host }}
-  register: etc_hosts_output
-
-- name: Mount NFS volume
-  ansible.posix.mount:
-    src: "{{nfs_server_host}}:{{nfs_mount_point}}"
-    path: "{{broker_mount_dir}}"
-    opts: defaults
-    fstype: nfs
-    state: mounted
-  register: mount_nfs_output
-
-- name: Run mount command
-  when: mount_nfs_output.changed is true
-  ansible.builtin.command: mount -a
-  register: run_mount_output
+- name: Mount EFS
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  include_role:
+    name: mount_efs
 
 - name: Show the dnf output
   when: dnf_output.changed is true
   debug:
     msg: "Broker packages {{ packages }} installed successfully..."
-
-- name: Show NFS server addition to hosts
-  when: etc_hosts_output.changed is true
-  debug:
-    msg: "Host entry inserted: {{ nfs_server_ip }} {{ nfs_server_host }}"
-
-- name: Show mount point entries to fstab
-  when: mount_nfs_output.changed is true
-  debug:
-    msg: "Mount entry inserted: {{nfs_server_host}}:{{nfs_mount_point}} {{broker_mount_dir}}"
-
-- name: Show mount command output
-  when: run_mount_output.changed is true
-  debug:
-    msg: "Mount points successfully created against NFS server"
 
 - name: All done!!!
   when: (dnf_output.changed is true) or (create_mount_dir_output.changed is true) or (mount_nfs_output.changed is true) or (etc_hosts_output.changed is true)

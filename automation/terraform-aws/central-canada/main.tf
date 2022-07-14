@@ -16,6 +16,16 @@ module "toronto-cluster1" {
   MAIN_CIDR_BLOCK  = local.CLUSTER1_MAIN_CIDR_BLOCK
   NAME_PREFIX      = local.NAME_PREFIX
 
+  INSTANCE_INFO = local.CLUSTER1_INSTANCE_INFO
+
+  KEY_NFS       = local.KEY_NFS
+  KEY_BROKER_01 = local.KEY_BROKER_01
+  KEY_BROKER_02 = local.KEY_BROKER_02
+  KEY_BROKER_03 = local.KEY_BROKER_03
+  KEY_BROKER_04 = local.KEY_BROKER_04
+  KEY_ROUTER_01 = local.KEY_ROUTER_01
+  KEY_ROUTER_02 = local.KEY_ROUTER_02
+
   TAGS = merge(
     var.tags,
     {
@@ -23,8 +33,6 @@ module "toronto-cluster1" {
       Cluster : "cluster 1"
     }
   )
-
-  INSTANCE_INFO = local.CLUSTER1_INSTANCE_INFO
 }
 
 module "toronto-cluster2" {
@@ -45,6 +53,15 @@ module "toronto-cluster2" {
   MAIN_CIDR_BLOCK  = local.CLUSTER2_MAIN_CIDR_BLOCK
   NAME_PREFIX      = local.NAME_PREFIX
 
+  INSTANCE_INFO = local.CLUSTER2_INSTANCE_INFO
+
+  KEY_NFS       = local.KEY_NFS
+  KEY_BROKER_01 = local.KEY_BROKER_01
+  KEY_BROKER_02 = local.KEY_BROKER_02
+  KEY_BROKER_03 = local.KEY_BROKER_03
+  KEY_BROKER_04 = local.KEY_BROKER_04
+  KEY_ROUTER_03 = local.KEY_ROUTER_03
+
   TAGS = merge(
     var.tags,
     {
@@ -52,7 +69,6 @@ module "toronto-cluster2" {
       Cluster : "cluster 2"
     }
   )
-  INSTANCE_INFO = local.CLUSTER2_INSTANCE_INFO
 }
 
 # Add the VPC peering connection
@@ -82,3 +98,20 @@ resource "aws_route" "peering-vpc2_to_vpc1" {
   destination_cidr_block    = module.toronto-cluster1.vpc_cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.vpc1-vpc2.id
 }
+
+#resource "aws_efs_file_system" "efs_fs" {
+#  tags = var.tags
+#}
+#
+#data "aws_availability_zones" "zones" {
+#  state = "available"
+#}
+#
+#data "aws_subnets" "all" {}
+#
+#resource "aws_efs_mount_target" "efs_mount" {
+#  file_system_id = aws_efs_file_system.efs_fs.id
+#
+#  count     = length(data.aws_availability_zones.zones.names)
+#  subnet_id = data.aws_subnets.all.*.id[count.index]
+#}

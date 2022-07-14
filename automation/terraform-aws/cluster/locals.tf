@@ -15,20 +15,20 @@ locals {
     "2" : { zone : module.common.zone2, subnet: module.common.subnet_2_id }
   }
 
-  NFS_SUFFIX         = var.INSTANCE_INFO["nfs"].suffix
-  NFS_PRIVATE_IP     = var.INSTANCE_INFO["nfs"].private_ip
-  NFS_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO["nfs"].main_zone].zone
-  NFS_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO["nfs"].main_zone].subnet
+  NFS_SUFFIX         = var.INSTANCE_INFO[var.KEY_NFS].suffix
+  NFS_PRIVATE_IP     = var.INSTANCE_INFO[var.KEY_NFS].private_ip
+  NFS_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_NFS].main_zone].zone
+  NFS_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_NFS].main_zone].subnet
 
-  BROKER_01_SUFFIX         = var.INSTANCE_INFO["broker_01"].suffix
-  BROKER_01_PRIVATE_IP     = var.INSTANCE_INFO["broker_01"].private_ip
-  BROKER_01_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_01"].main_zone].zone
-  BROKER_01_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_01"].main_zone].subnet
+  BROKER_01_SUFFIX         = var.INSTANCE_INFO[var.KEY_BROKER_01].suffix
+  BROKER_01_PRIVATE_IP     = var.INSTANCE_INFO[var.KEY_BROKER_01].private_ip
+  BROKER_01_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_01].main_zone].zone
+  BROKER_01_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_01].main_zone].subnet
 
-  BROKER_02_SUFFIX         = var.INSTANCE_INFO["broker_02"].suffix
-  BROKER_02_PRIVATE_IP     = var.INSTANCE_INFO["broker_02"].private_ip
-  BROKER_02_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_02"].main_zone].zone
-  BROKER_02_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_02"].main_zone].subnet
+  BROKER_02_SUFFIX         = var.INSTANCE_INFO[var.KEY_BROKER_02].suffix
+  BROKER_02_PRIVATE_IP     = var.INSTANCE_INFO[var.KEY_BROKER_02].private_ip
+  BROKER_02_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_02].main_zone].zone
+  BROKER_02_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_02].main_zone].subnet
 
   # Using same zone/subnet as bak01 for the medium (or large) instance is not supported in zone3. Running with zone3 gives me following error:
   /*
@@ -42,15 +42,15 @@ locals {
     │
   */
 
-  BROKER_03_SUFFIX         = var.INSTANCE_INFO["broker_03"].suffix
-  BROKER_03_PRIVATE_IP     = var.INSTANCE_INFO["broker_03"].private_ip
-  BROKER_03_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_03"].main_zone].zone
-  BROKER_03_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_03"].main_zone].subnet
+  BROKER_03_SUFFIX         = var.INSTANCE_INFO[var.KEY_BROKER_03].suffix
+  BROKER_03_PRIVATE_IP     = var.INSTANCE_INFO[var.KEY_BROKER_03].private_ip
+  BROKER_03_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_03].main_zone].zone
+  BROKER_03_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_03].main_zone].subnet
 
-  BROKER_04_SUFFIX         = var.INSTANCE_INFO["broker_04"].suffix
-  BROKER_04_PRIVATE_IP     = var.INSTANCE_INFO["broker_04"].private_ip
-  BROKER_04_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_04"].main_zone].zone
-  BROKER_04_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO["broker_04"].main_zone].subnet
+  BROKER_04_SUFFIX         = var.INSTANCE_INFO[var.KEY_BROKER_04].suffix
+  BROKER_04_PRIVATE_IP     = var.INSTANCE_INFO[var.KEY_BROKER_04].private_ip
+  BROKER_04_MAIN_ZONE      = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_04].main_zone].zone
+  BROKER_04_MAIN_SUBNET_ID = local.ZONE_N_SUBNET[var.INSTANCE_INFO[var.KEY_BROKER_04].main_zone].subnet
 
 
 }

@@ -1,0 +1,82 @@
+---
+- name: Ensure the packages needed are installed
+  dnf:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  register: dnf_output
+
+- name: Create "files" directory and change ownership recursively
+  shell: |
+    if [ ! -d "{{nfs_files_mount}}" ]; then
+      mkdir -p "{{nfs_files_mount}}"
+    fi
+    sudo chown -R nobody: "{{nfs_mount_point}}"
+    sudo chmod -R 777 "{{nfs_mount_point}}"
+  register: create_mount_dir_output
+
+- name: Copy AMQ binary to NFS server
+  copy:
+    src: "{{ amq_binary_archive }}"
+    dest: "{{ nfs_files_mount }}"
+    owner: "{{ user_nobody }}"
+    group: "{{ user_nobody }}"
+    mode: 0644
+  register: cp_amq_binary_output
+
+- name: Add broker entries to the /etc/exportfs on the NFS server
+  blockinfile:
+    path: /etc/exports
+    block: |
+      ### For zone1 / zone2 / zone3
+      {{ nfs_mount_point }} {{zone1_cidr}}{{nfs_options}} \
+                            {{zone2_cidr}}{{nfs_options}} \
+                            {{zone3_cidr}}{{nfs_options}}
+  register: nfs_add_exports_output
+
+- name: Start NFS service
+  ansible.builtin.service:
+    name: "{{ nfs_service }}"
+    state: started
+  register: nfs_service_start_output
+
+- name: Enable NFS service
+  ansible.builtin.service:
+    name: "{{ nfs_service }}"
+    enabled: yes
+  register: nfs_service_enable_output
+
+- name: Get exports entries
+  when: nfs_add_exports_output.changed is true
+  ansible.builtin.command: exportfs -arv
+  register: exports_output
+
+- name: Show the dnf output
+  when: dnf_output.changed is true
+  debug:
+    msg: "NFS packages {{ packages }} installed successfully..."
+
+- name: Show the copy AMQ binary output
+  when: cp_amq_binary_output.changed is true
+  debug:
+    msg: "AMQ binary uploaded to {{ cp_amq_binary_output.dest }}"
+
+- name: Directories exported for mount
+  when: nfs_add_exports_output.changed is true
+  debug:
+    var: exports_output.stdout_lines
+
+- name: Start NFS service output
+  when: nfs_service_start_output.state == "started" and nfs_service_start_output.changed is true
+  debug:
+    msg:
+     - "NFS Service started..."
+
+- name: Enable NFS service output
+  when: nfs_service_enable_output.enabled is true
+  debug:
+    msg: "NFS Service enabled..."
+
+- name: All done!!!
+  debug:
+    msg: NFS server setup is complete...

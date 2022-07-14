@@ -1,7 +1,14 @@
 ---
 
 # Unmount NFS (in case it's mounted) as this gives error on checking the mount dir sometimes
-- name: Unmount NFS volume
+- name: Unmount volume - NFS
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
   ansible.posix.mount:
     path: "{{ broker_mount_dir }}"
-    state: unmounted
+    state: absent
+
+- name: Unmount volume - EFS
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  ansible.posix.mount:
+    path: "{{ broker_mount_base_dir }}"
+    state: absent

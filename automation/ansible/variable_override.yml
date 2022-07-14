@@ -27,7 +27,13 @@ r1_broker08_bak_ip:       3.99.219.119
 r1_vpc2_nfs_server_ip:    35.183.184.142
 r1_router03_spoke_ip:     3.96.154.90
 
-# Variables for AWS setup. Please un-comment these when setting up on AWS
-#ansible_ssh_private_key_file: "<fully qualified Location of private key for your account>"
+## Variables for AWS setup. Please un-comment these when setting up on AWS
+# todo(sg): update readme to add the AWS private key info
+#ansible_ssh_private_key_file: ~/.ssh/amq_aws-key_pair-TOR.cer
 #ansible_user: ec2-user
 #cloud_provider: aws
+nfs_or_efs: nfs
+# todo(sg): update readme to add the AWS profile info
+aws_profile_name: terraform_redhat
+efs_options: "defaults,vers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+resource_prefix: "tmp-sg"

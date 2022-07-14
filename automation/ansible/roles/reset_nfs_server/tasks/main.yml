@@ -1,4 +1,5 @@
 ---
+
 - name: Execute actual tasks
   include_tasks: tasks.yml
   when: nfs_or_efs is not defined or nfs_or_efs == "nfs"

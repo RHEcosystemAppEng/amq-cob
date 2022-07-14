@@ -21,6 +21,7 @@ r1_vpc1_brokers:
   vars:
     nfs_server_ip: "{{ r1_vpc1_private_ip_prefix }}.0.50"
     mirror_group: r1_vpc2_brokers
+    cluster_idx: 1
 
 
 # Brokers in region 1 - vpc2
@@ -44,6 +45,7 @@ r1_vpc2_brokers:
   vars:
     nfs_server_ip: "{{ r1_vpc2_private_ip_prefix }}.64.60"
     mirror_group: r1_vpc1_brokers
+    cluster_idx: 2
 
 
 r1_nfs_servers:
@@ -121,11 +123,15 @@ all:
     nfs_files_mount: "{{nfs_mount_point}}/files"
     nfs_server_host: "nfs-server"
     broker_mount_base_dir: "/mnt/nfs_mount"
-    broker_mount_dir: "{{broker_mount_base_dir}}/amq"
-    amq_advanced_topology_dir: "{{ nfs_mount_point }}/advanced_topology"
+    broker_mount_dir: "{{ broker_mount_base_dir }}/amq"
+    broker_files_mount_dir: "{{ broker_mount_dir }}/files"
+    amq_binary_location: "{{ broker_files_mount_dir }}"
+    amq_advanced_topology_dir: "{{ broker_mount_dir }}/advanced_topology"
     enable_amq_mirroring: true
     amq_binary_version: amq-broker-7.9.0
     amq_binary_archive: "{{ amq_binary_version }}-bin.zip"
+
+    nfs_or_efs: nfs
 
     # whether to delete AMQ binary when resetting the NFS server
     delete_amq_archive: false
@@ -138,6 +144,14 @@ all:
     jmeter_binary_archive: "{{ jmeter_binary_version }}.zip"
     jmeter_remote_bin_dir: jmeter
     clean_jmeter_home_directory: true
+
+    resource_prefix: "cob-test"
+    # for these servers we need to copy the AMQ binary as the other live/backups can simply use the mount point
+    # to use the binary
+    amq_binary_dest_list:
+      - r1-broker01-live
+      - r1-broker05-live
+    amq_live_hosts: "{{ amq_binary_dest_list }}"
 
     # Private IP prefixes for each region/vpc
     r1_vpc1_private_ip_prefix: "10.100"

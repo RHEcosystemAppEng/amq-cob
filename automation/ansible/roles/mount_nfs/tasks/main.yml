@@ -1,0 +1,60 @@
+---
+
+- name: Check if "amq" mount directory exists
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
+  stat:
+    path: "{{broker_mount_dir}}"
+  register: mount_dir_output
+
+- name: Create "amq" mount directory and chgrp on its parent recursively
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
+  shell: |
+    if [ ! -d "{{ broker_mount_dir }}" ]; then
+      mkdir -p "{{ broker_mount_dir }}"
+    fi
+    sudo chown -R "{{ user_amq }}":"{{ user_amq }}" "{{broker_mount_base_dir}}"
+  register: create_mount_dir_output
+
+- name: Show the "amq" mount directory creation output
+  when: (nfs_or_efs is not defined or nfs_or_efs == "nfs") and (create_mount_dir_output.changed is true)
+  debug:
+    msg: "{{broker_mount_base_dir}} directory is owned by '{{ user_amq }}' and is world writable..."
+
+- name: Add NFS server to hosts
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ nfs_server_ip }} {{ nfs_server_host }}
+  register: etc_hosts_output
+
+- name: Mount NFS volume
+  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
+  ansible.posix.mount:
+    src: "{{nfs_server_host}}:{{nfs_mount_point}}"
+    path: "{{broker_mount_dir}}"
+    opts: defaults
+    fstype: nfs
+    state: mounted
+  register: mount_nfs_output
+
+- name: Run mount command
+  when: mount_nfs_output.changed is true
+  ansible.builtin.command: mount -a
+  register: run_mount_output
+
+- name: Show NFS server addition to hosts
+  when: (nfs_or_efs is not defined or nfs_or_efs == "nfs") and (etc_hosts_output.changed is true)
+  debug:
+    msg: "Host entry inserted: {{ nfs_server_ip }} {{ nfs_server_host }}"
+
+- name: Show mount point entries to fstab
+  when: mount_nfs_output.changed is true
+  debug:
+    msg: "Mount entry inserted in {{mount_nfs_output.fstab}} - {{mount_nfs_output.src}} {{mount_nfs_output.name}}"
+
+- name: Show mount command output
+  when: run_mount_output.changed is true
+  debug:
+    msg: "Mount points successfully created against NFS server"
+
