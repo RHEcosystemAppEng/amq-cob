@@ -1,0 +1,22 @@
+---
+
+- name: Install Boto3
+  when: cloud_provider is defined and cloud_provider == "aws"
+  include_role:
+    name: setup_boto
+
+- name: Delete key pair
+  amazon.aws.ec2_key:
+    profile: "{{ aws_profile_name }}"
+    name: "{{ key_pair_name }}"
+    state: absent
+    region: "{{ item }}"
+  with_items: "{{ aws_regions }}"
+  register: ec2_key_pair_output
+
+- name: Delete key pair output
+  debug:
+    msg: "{{ ec2_key_pair_output.results  |
+             json_query('[].[item, msg]') |
+             map('join', '\n') }}"
+

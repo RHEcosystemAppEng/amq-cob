@@ -1,0 +1,17 @@
+---
+
+- name: Create/Delete EC2 key pairs in certain regions
+  hosts: localhost
+  connection: localhost
+  gather_facts: false
+  roles:
+    - role: setup_ssh_key_pair
+      tags:
+        - create
+        - setup
+        - setup_ssh_key_pair
+    - role: reset_ssh_key_pair
+      tags:
+        - delete
+        - reset
+        - reset_ssh_key_pair
