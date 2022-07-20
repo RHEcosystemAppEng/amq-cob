@@ -18,11 +18,9 @@
     msg: "{{broker_mount_base_dir}} directory is owned by '{{ user_amq }}' and is world writable..."
 
 # Needed for running aws command (to find existing EFS)
-- name: Install boto3 python package
-  ansible.builtin.pip:
-    name: boto3
-  delegate_to: localhost
-  become: no
+- name: Install Boto3
+  include_role:
+    name: setup_boto
 
 - name: Find all existing EFS
   when: nfs_or_efs is defined and nfs_or_efs == "efs"

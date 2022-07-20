@@ -1,0 +1,9 @@
+---
+
+# Needed for running aws command(s)
+- name: Install boto3 python package
+  when: cloud_provider is defined and cloud_provider == "aws"
+  ansible.builtin.pip:
+    name: boto3
+  delegate_to: localhost
+  become: no

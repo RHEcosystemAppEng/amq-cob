@@ -13,7 +13,9 @@
   * [Create SSH key](#create-ssh-key-for-each-region)
 * [Setup Region 1](#setup-region-1---ibm-cloud)
   * [Prerequisites](#prerequisites---region-1)
+  * [Declare SSH Key](#ssh-key-name-in-terraformtfvars)
   * [Setup API key config](#setup-api-key-config)
+  * [Setup AWS profile](#setup-aws-profile)
   * [Setup Region 1 infrastructure](#setup-region-1-infrastructure)
 * [Setup Region 2 - TBD](#setup-region-2---tbd)
   * [Prerequisites](#prerequisites---region-2)
@@ -86,10 +88,11 @@ Run `ansible --version` command to verify that `ansible` is installed correctly
 ### Install Ansible collections
 Install the following Ansible collections for configuring the instances by running following commands:
   ```shell
-  ansible-galaxy collection install ansible.posix community.general
+  ansible-galaxy collection install ansible.posix community.general amazon.aws
   ```
 * `ansible.posix` is needed for mount/unmount
 * `community.general` is needed for subscription
+* `amazon.aws` is needed for aws specific operations
 
 ### Checkout Setup config
 Clone this repo to setup brokers/routers in AWS:
@@ -113,10 +116,21 @@ Clone this repo to setup brokers/routers in AWS:
   * _Please skip these steps if an API key is already created_
 
 ### Create SSH key for each region
-* Create a new SSH key by following instructions at [Create SSH key](https://docs.aws.amazon.com/ground-station/latest/ug/create-ec2-ssh-key-pair.html)
-* _This step has to be repeated for each region_
-* For Canada, save the key as `~/.ssh/amq_aws-key_pair-TOR.cer`
-  * _Please skip these steps if a SSH key is already created and added to the account_
+* _**Please skip these steps if a SSH key is already created and added to the account**_
+* Update `variable_override.yml` by providing name for key_pair (_make sure it is unique in each of the regions_)
+* `key_pair_name: amq_cob-key_pair-<SUFFIX>`
+* Create SSH key pairs for each of the regions by running following commands:
+  ```shell
+  cd $MAIN_CONFIG_DIR/ansible
+
+  ansible-playbook playbooks/ec2_key_pair-aws.yml \
+    --extra-vars "@variable_override.yml" \
+    --tags create
+  ```
+* Above command(s) will create SSH key pairs in following regions:
+  * us-east-2
+  * ca-central-1
+
 
 
 <br>
@@ -149,7 +163,26 @@ As part of cluster2 config, following interconnect router is also created and se
 
 <br>
 
+### SSH key name in terraform.tfvars
+* Update `$MAIN_CONFIG_DIR/terraform-aws/central-canada/terraform.tfvars` by providing SSH key name. It should be the
+  same name that was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
+  ```shell
+  SSH_KEY = <SSH_KEY_NAME_CREATED_BY_ANSIBLE_OR_MANUALLY>
+  ```
+
+<br>
+
 ### Setup API key config
+* Create (or modify) `~/.aws/credentials` file, with following content:
+  ```shell
+  [terraform_redhat]
+  aws_access_key_id = <AWS_ACCESS_KEY_ID_VALUE>
+  aws_secret_access_key = <AWS_SECRET_ACCESS_KEY_VALUE>
+  ```
+
+<br>
+
+### Setup AWS profile
 * Create (or modify) `~/.aws/credentials` file, with following content:
   ```shell
   [terraform_redhat]
