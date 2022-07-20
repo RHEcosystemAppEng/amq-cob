@@ -13,6 +13,7 @@
   * [Create SSH key](#create-ssh-key-for-each-region)
 * [Setup Region 1](#setup-region-1---ibm-cloud)
   * [Prerequisites](#prerequisites---region-1)
+  * [Declare SSH Key](#ssh-key-name-in-terraformtfvars)
   * [Setup API key config](#setup-api-key-config)
   * [Setup Region 1 infrastructure](#setup-region-1-infrastructure)
 * [Setup Region 2 - TBD](#setup-region-2---tbd)
@@ -162,8 +163,8 @@ As part of cluster2 config, following interconnect router is also created and se
 <br>
 
 ### SSH key name in terraform.tfvars
-* Update `$MAIN_CONFIG_DIR/terraform-aws/central-canada/terraform.tfvars` by providing SSH key name. It should be the same name that 
-  was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
+* Update `$MAIN_CONFIG_DIR/terraform-aws/central-canada/terraform.tfvars` by providing SSH key name. It should be the
+  same name that was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
   ```shell
   SSH_KEY = <SSH_KEY_NAME_CREATED_BY_ANSIBLE_OR_MANUALLY>
   ```
