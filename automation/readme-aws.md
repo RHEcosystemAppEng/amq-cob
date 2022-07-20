@@ -10,12 +10,11 @@
   * [Checkout config repo](#checkout-setup-config)
   * [Download AMQ archive](#download-rhamq-archive-file)
   * [Create API key](#create-api-key)
+  * [Setup AWS profile](#setup-aws-profile)
   * [Create SSH key](#create-ssh-key-for-each-region)
 * [Setup Region 1](#setup-region-1---ibm-cloud)
   * [Prerequisites](#prerequisites---region-1)
   * [Declare SSH Key](#ssh-key-name-in-terraformtfvars)
-  * [Setup API key config](#setup-api-key-config)
-  * [Setup AWS profile](#setup-aws-profile)
   * [Setup Region 1 infrastructure](#setup-region-1-infrastructure)
 * [Setup Region 2 - TBD](#setup-region-2---tbd)
   * [Prerequisites](#prerequisites---region-2)
@@ -115,6 +114,15 @@ Clone this repo to setup brokers/routers in AWS:
 * Save the API key on your system as you'll need it later on to run Terraform config
   * _Please skip these steps if an API key is already created_
 
+### Setup AWS profile
+* Create (or modify) `~/.aws/credentials` file, with following content:
+  ```shell
+  [terraform_redhat]
+  aws_access_key_id = <AWS_ACCESS_KEY_ID_VALUE>
+  aws_secret_access_key = <AWS_SECRET_ACCESS_KEY_VALUE>
+  ```
+* _`terraform_redhat` is the profile that will be referenced by both Ansible as well as Terraform_
+
 ### Create SSH key for each region
 * _**Please skip these steps if a SSH key is already created and added to the account**_
 * Update `variable_override.yml` by providing name for key_pair (_make sure it is unique in each of the regions_)
@@ -168,26 +176,6 @@ As part of cluster2 config, following interconnect router is also created and se
   same name that was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
   ```shell
   SSH_KEY = <SSH_KEY_NAME_CREATED_BY_ANSIBLE_OR_MANUALLY>
-  ```
-
-<br>
-
-### Setup API key config
-* Create (or modify) `~/.aws/credentials` file, with following content:
-  ```shell
-  [terraform_redhat]
-  aws_access_key_id = <AWS_ACCESS_KEY_ID_VALUE>
-  aws_secret_access_key = <AWS_SECRET_ACCESS_KEY_VALUE>
-  ```
-
-<br>
-
-### Setup AWS profile
-* Create (or modify) `~/.aws/credentials` file, with following content:
-  ```shell
-  [terraform_redhat]
-  aws_access_key_id = <AWS_ACCESS_KEY_ID_VALUE>
-  aws_secret_access_key = <AWS_SECRET_ACCESS_KEY_VALUE>
   ```
 
 <br>
