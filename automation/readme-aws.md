@@ -15,6 +15,7 @@
   * [Prerequisites](#prerequisites---region-1)
   * [Declare SSH Key](#ssh-key-name-in-terraformtfvars)
   * [Setup API key config](#setup-api-key-config)
+  * [Setup AWS profile](#setup-aws-profile)
   * [Setup Region 1 infrastructure](#setup-region-1-infrastructure)
 * [Setup Region 2 - TBD](#setup-region-2---tbd)
   * [Prerequisites](#prerequisites---region-2)
