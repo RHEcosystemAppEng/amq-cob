@@ -13,19 +13,19 @@ enable_amq_mirroring: true
 ### END - SSL Variables
 
 # Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      15.223.71.112
-r1_broker02_bak_ip:       3.99.214.21
-r1_broker03_live_ip:      99.79.7.11
-r1_broker04_bak_ip:       3.99.167.28
-r1_vpc1_nfs_server_ip:    3.96.203.99
-r1_router01_hub_ip:       35.182.254.255
-r1_router02_spoke_ip:     35.183.62.196
-r1_broker05_live_ip:      15.223.4.196
-r1_broker06_bak_ip:       99.79.77.144
-r1_broker07_live_ip:      3.99.188.252
-r1_broker08_bak_ip:       3.99.219.119
-r1_vpc2_nfs_server_ip:    35.183.184.142
-r1_router03_spoke_ip:     3.96.154.90
+r1_broker01_live_ip:      18.118.162.114
+r1_broker02_bak_ip:       18.191.182.65
+r1_broker03_live_ip:      3.17.143.51
+r1_broker04_bak_ip:       3.145.46.4
+r1_vpc1_nfs_server_ip:    13.58.180.156
+r1_router01_hub_ip:       18.222.211.159
+r1_router02_spoke_ip:     3.135.207.68
+r1_broker05_live_ip:      3.17.131.93
+r1_broker06_bak_ip:       18.189.193.44
+r1_broker07_live_ip:      18.221.89.25
+r1_broker08_bak_ip:       13.59.111.87
+r1_vpc2_nfs_server_ip:    3.14.7.156
+r1_router03_spoke_ip:     18.224.169.162
 
 ## Variables for AWS setup. Please un-comment these when setting up on AWS
 # todo(sg): update readme to add the AWS private key info
@@ -40,8 +40,11 @@ efs_options: "defaults,vers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retra
 resource_prefix: "tmp-sg"
 
 # For SSH key pair
-key_pair_name: amq_aws-key_pair-<SUFFIX>    # This name should match what's used in Terraform
+key_pair_name: amq_aws-key_pair-SG    # This name should match what's used in Terraform
 pub_key_location: "{{ private_key_location }}.pub"
 aws_regions:
   - us-east-2   #US East (Ohio)
   - ca-central-1
+
+r1_vpc1_private_ip_prefix: "10.110"
+r1_vpc2_private_ip_prefix: "10.111"
