@@ -172,12 +172,11 @@ As part of cluster2 config, following interconnect router is also created and se
 <br>
 
 ### SSH key name in terraform.tfvars
-* Update `$MAIN_CONFIG_DIR/terraform-aws/central-canada/terraform.tfvars` by providing SSH key name. It should be the
-  same name that was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
+* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform-aws/central-canada` directory_, with following content:
   ```shell
   SSH_KEY = <SSH_KEY_NAME_CREATED_BY_ANSIBLE_OR_MANUALLY>
   ```
-
+  The `SSH_KEY` value should be same that was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
 <br>
 
 ### Setup Region 1 infrastructure
@@ -259,7 +258,7 @@ As part of cluster2 config, following interconnect router is also created and se
 
 
 ## Setup Region 2 - TBD
-Region 1 is setup in **Dallas** that has two clusters:
+Region 2 is setup in **one of the US regions** that has two clusters:
 * **Cluster1** - consisting of following four brokers:
   * `broker01` - live/primary
   * `broker02` - backup of broker01

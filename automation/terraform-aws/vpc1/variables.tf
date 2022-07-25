@@ -7,14 +7,6 @@ variable "IP_NUMBER_PREFIX" {
   type = map
 }
 
-variable "CIDR_BLOCKS" {
-  type = map
-}
-
-variable "INSTANCE_INFO" {
-  type = map
-}
-
 variable "PREFIX" {}
 variable "SSH_KEY" {}
 variable "AMI_ID" {}

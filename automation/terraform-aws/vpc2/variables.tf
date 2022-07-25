@@ -7,14 +7,6 @@ variable "IP_NUMBER_PREFIX" {
   type = map
 }
 
-variable "CIDR_BLOCKS" {
-  type = map
-}
-
-variable "INSTANCE_INFO" {
-  type = map
-}
-
 variable "PREFIX" {}
 variable "SSH_KEY" {}
 variable "AMI_ID" {}
@@ -27,6 +19,5 @@ variable "KEY_BROKER_01" {}
 variable "KEY_BROKER_02" {}
 variable "KEY_BROKER_03" {}
 variable "KEY_BROKER_04" {}
-variable "KEY_ROUTER_03" {}
 
 variable "TAGS" {}

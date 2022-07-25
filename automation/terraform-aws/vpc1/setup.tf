@@ -1,5 +1,9 @@
 module "common" {
-  source = "../cluster"
+  source = "../vpc"
+
+  providers = {
+    aws = aws
+  }
 
   PREFIX            = var.PREFIX
   PRIVATE_IP_PREFIX = var.PRIVATE_IP_PREFIX
@@ -11,14 +15,13 @@ module "common" {
   AMI_NAME      = var.AMI_NAME
   INSTANCE_TYPE = var.INSTANCE_TYPE
 
-  CIDR_BLOCKS      = var.CIDR_BLOCKS
   IP_NUMBER_PREFIX = var.IP_NUMBER_PREFIX
   MAIN_CIDR_BLOCK  = var.MAIN_CIDR_BLOCK
   NAME_PREFIX      = var.NAME_PREFIX
 
-  INSTANCE_INFO = var.INSTANCE_INFO
+  INSTANCE_INFO = local.INSTANCE_INFO
 
-  KEY_NFS = var.KEY_NFS
+  KEY_NFS       = var.KEY_NFS
   KEY_BROKER_01 = var.KEY_BROKER_01
   KEY_BROKER_02 = var.KEY_BROKER_02
   KEY_BROKER_03 = var.KEY_BROKER_03

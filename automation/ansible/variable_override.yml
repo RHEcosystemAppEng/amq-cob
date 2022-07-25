@@ -13,19 +13,19 @@ enable_amq_mirroring: true
 ### END - SSL Variables
 
 # Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      18.118.162.114
-r1_broker02_bak_ip:       18.191.182.65
-r1_broker03_live_ip:      3.17.143.51
-r1_broker04_bak_ip:       3.145.46.4
-r1_vpc1_nfs_server_ip:    13.58.180.156
-r1_router01_hub_ip:       18.222.211.159
-r1_router02_spoke_ip:     3.135.207.68
-r1_broker05_live_ip:      3.17.131.93
-r1_broker06_bak_ip:       18.189.193.44
-r1_broker07_live_ip:      18.221.89.25
-r1_broker08_bak_ip:       13.59.111.87
-r1_vpc2_nfs_server_ip:    3.14.7.156
-r1_router03_spoke_ip:     18.224.169.162
+r1_broker01_live_ip:      18.118.144.133
+r1_broker02_bak_ip:       3.19.57.138
+r1_broker03_live_ip:      3.143.141.138
+r1_broker04_bak_ip:       3.138.135.173
+r1_vpc1_nfs_server_ip:    3.135.215.71
+r1_router01_hub_ip:       3.144.170.170
+r1_router02_spoke_ip:     18.220.16.127
+r1_broker05_live_ip:      18.117.140.36
+r1_broker06_bak_ip:       18.191.150.51
+r1_broker07_live_ip:      18.217.34.138
+r1_broker08_bak_ip:       18.216.156.33
+r1_vpc2_nfs_server_ip:    18.118.197.206
+r1_router03_spoke_ip:     3.143.226.139
 
 ## Variables for AWS setup. Please un-comment these when setting up on AWS
 # todo(sg): update readme to add the AWS private key info
