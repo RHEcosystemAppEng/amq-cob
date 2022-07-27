@@ -11,7 +11,7 @@ resource "aws_vpc_peering_connection" "r1-r2-vpc1" {
   tags = merge(
     var.tags,
     {
-      Name : "${local.NAME_PREFIX} - peering - inter_region"
+      Name : "${local.NAME_PREFIX} - peering - inter_region - 01"
       Type : "Inter-region"
       Region1 : var.REGION_1
       Region2 : var.REGION_2
@@ -27,7 +27,7 @@ resource "aws_vpc_peering_connection_accepter" "r2-vpc1-peer-acceptor" {
   tags = merge(
     var.tags,
     {
-      Name : "${local.NAME_PREFIX} - peering acceptor"
+      Name : "${local.NAME_PREFIX} - peering acceptor - 01"
       Type : "Acceptor in R2"
       Region1 : var.REGION_1
       Region2 : var.REGION_2
@@ -63,7 +63,7 @@ resource "aws_vpc_peering_connection" "r1-r2-vpc2" {
   tags = merge(
     var.tags,
     {
-      Name : "${local.NAME_PREFIX} - peering - inter_region"
+      Name : "${local.NAME_PREFIX} - peering - inter_region - 02"
       Type : "Inter-region"
       Region1 : var.REGION_1
       Region2 : var.REGION_2
@@ -79,7 +79,7 @@ resource "aws_vpc_peering_connection_accepter" "r2-vpc2-peer-acceptor" {
   tags = merge(
     var.tags,
     {
-      Name : "${local.NAME_PREFIX} - peering acceptor"
+      Name : "${local.NAME_PREFIX} - peering acceptor - 02"
       Type : "Acceptor in R2"
       Region1 : var.REGION_1
       Region2 : var.REGION_2

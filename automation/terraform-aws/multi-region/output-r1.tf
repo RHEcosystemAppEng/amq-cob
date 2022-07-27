@@ -428,9 +428,9 @@ output "r1-vpc2-efs_fs_dns" {
 }
 
 output "r1-peering_connection" {
-  value = aws_vpc_peering_connection.r1-vpc1-vpc2.id
+  value = module.r1-vpc1-vpc2.peering-info.id
 }
 
 output "r1-peering_connection_accept_status" {
-  value = aws_vpc_peering_connection.r1-vpc1-vpc2.accept_status
+  value = module.r1-vpc1-vpc2.peering-info.accept_status
 }
