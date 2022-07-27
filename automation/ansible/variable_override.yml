@@ -12,20 +12,33 @@ enable_amq_mirroring: true
 #STORE_PASS: redhat
 ### END - SSL Variables
 
-# Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      18.118.144.133
-r1_broker02_bak_ip:       3.19.57.138
-r1_broker03_live_ip:      3.143.141.138
-r1_broker04_bak_ip:       3.138.135.173
-r1_vpc1_nfs_server_ip:    3.135.215.71
-r1_router01_hub_ip:       3.144.170.170
-r1_router02_spoke_ip:     18.220.16.127
-r1_broker05_live_ip:      18.117.140.36
-r1_broker06_bak_ip:       18.191.150.51
-r1_broker07_live_ip:      18.217.34.138
-r1_broker08_bak_ip:       18.216.156.33
-r1_vpc2_nfs_server_ip:    18.118.197.206
-r1_router03_spoke_ip:     3.143.226.139
+# Region 1/2 Hosts & IPs
+r1_broker01_live_ip:      3.96.207.11
+r2_broker01_live_ip:      13.59.237.172
+r1_broker02_bak_ip:       3.98.125.33
+r2_broker02_bak_ip:       3.139.91.231
+r1_broker03_live_ip:      3.96.64.47
+r2_broker03_live_ip:      13.59.174.80
+r1_broker04_bak_ip:       15.223.72.96
+r2_broker04_bak_ip:       3.138.34.232
+r1_vpc1_nfs_server_ip:    15.223.71.231
+r2_vpc1_nfs_server_ip:    13.59.79.111
+r1_router01_hub_ip:       99.79.9.121
+r2_router01_hub_ip:       18.189.20.210
+r1_router02_spoke_ip:     35.183.137.177
+r2_router02_spoke_ip:     13.59.218.105
+r1_broker05_live_ip:      35.182.255.3
+r2_broker05_live_ip:      18.117.83.118
+r1_broker06_bak_ip:       3.99.180.57
+r2_broker06_bak_ip:       18.224.67.198
+r1_broker07_live_ip:      35.182.236.0
+r2_broker07_live_ip:      18.119.118.37
+r1_broker08_bak_ip:       15.222.10.17
+r2_broker08_bak_ip:       13.59.172.45
+r1_vpc2_nfs_server_ip:    3.96.67.51
+r2_vpc2_nfs_server_ip:    3.138.203.98
+r1_router03_spoke_ip:     3.96.64.59
+r2_router03_spoke_ip:     3.141.11.98
 
 ## Variables for AWS setup. Please un-comment these when setting up on AWS
 # todo(sg): update readme to add the AWS private key info
@@ -46,5 +59,3 @@ aws_regions:
   - us-east-2   #US East (Ohio)
   - ca-central-1
 
-r1_vpc1_private_ip_prefix: "10.110"
-r1_vpc2_private_ip_prefix: "10.111"

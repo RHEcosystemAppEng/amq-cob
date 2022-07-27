@@ -6,7 +6,7 @@ variable "SSH_KEY" {}
 
 # Override REGION from CLI if they need to be something other than the default value
 variable "REGION" {
-  default = "us-east-2"
+  default = "ca-central-1"
 }
 
 variable "AMI" {
@@ -27,11 +27,11 @@ variable "AMI_NAME" {
 }
 
 variable "VPC1_PRIVATE_IP_PREFIX" {
-  default = "10.110"
+  default = "10.100"
 }
 
 variable "VPC2_PRIVATE_IP_PREFIX" {
-  default = "10.111"
+  default = "10.101"
 }
 
 variable "SUBNET_1_3RD_OCTET" {
@@ -46,38 +46,10 @@ variable "SUBNET_3_3RD_OCTET" {
   default = "128"
 }
 
-variable "SUBNET_ENABLE_AUTO_ASSIGN_PUBLIC_IP" {
-  default = true
-}
-
 # https://aws.amazon.com/ec2/instance-types/
 variable "INSTANCE_TYPE" {
 #  default = "t3.xlarge"
     default = "c4.xlarge"
-}
-
-variable "CIDR_BLOCK_ALL" {
-  default = "0.0.0.0/0"
-}
-
-variable "SEC_GRP_EGRESS_FROM_PORT" {
-  default = 0
-}
-
-variable "SEC_GRP_EGRESS_TO_PORT" {
-  default = 0
-}
-
-variable "SEC_GRP_EGRESS_PROTOCOL" {
-  default = "-1"
-}
-
-variable "SEC_GRP_EGRESS_PROTOCOL_ALL" {
-  default = "all"
-}
-
-variable "SEC_GRP_EGRESS_IPV6_CIDR_BLOCK" {
-  default = ["::/0"]
 }
 
 variable "tags" {
@@ -87,5 +59,5 @@ variable "tags" {
     project : "fsi-amq_cob_team",
     created_by : "terraform"
   }
-  description = "provides tags for all the resources crated here"
+  description = "provides tags for all the resources created here"
 }

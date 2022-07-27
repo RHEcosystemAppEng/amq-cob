@@ -67,13 +67,29 @@ function print_ip_and_hostname() {
   echo "Running terraform output for getting public_ip in [$region_dir]..."
   printf "\nPaste the ip + hostname given below (between START and END tags) to ${host_file}\n[START] Copy from next line -->>\n\n"
 
+  local region_org=$region
+  # Handle both regions
+  if [ "$region" == "both" ]; then
+    region="r1 r2"
+  fi
+
   for i in vpc1-broker01-live-public_ip vpc1-broker02-bak-public_ip vpc1-broker03-live-public_ip \
            vpc1-broker04-bak-public_ip vpc1-nfs-server-public_ip vpc1-router01-hub-public_ip \
            vpc1-router02-spoke-public_ip vpc2-broker05-live-public_ip vpc2-broker06-bak-public_ip \
            vpc2-broker07-live-public_ip vpc2-broker08-bak-public_ip vpc2-nfs-server-public_ip \
            vpc2-router03-spoke-public_ip
   do
-      ip=`terraform output $i 2>&1 | sed 's/"//g'`
+    for rgn in $region
+    do
+
+      # If both regions are specified, use region prefix before the output. Otherwise use the output as is
+      if [ "$region_org" == "both" ]; then
+        ip=`terraform output "$rgn-$i" 2>&1 | sed 's/"//g'`
+      else
+        ip=`terraform output $i 2>&1 | sed 's/"//g'`
+      fi
+
+#      echo "Region=[$rgn], ip=[$ip]"
       if [ ! -z "$ip" ]; then
         instance_name=`echo $i | sed 's/-public_ip//'`   # remove "-public_ip" from the instance name
         case $ip in
@@ -88,10 +104,10 @@ function print_ip_and_hostname() {
           *)
             case $instance_name in
               "vpc1-nfs-server"|"vpc2-nfs-server")
-                instance_name="$region-$instance_name"
+                instance_name="$rgn-$instance_name"
                 ;;
               *)
-                instance_name="$region-`echo $instance_name | sed 's/vpc[12]-//'`"  # remove vpc info from instance name
+                instance_name="$rgn-`echo $instance_name | sed 's/vpc[12]-//'`"  # remove vpc info from instance name
             esac
 
             if [ "$ansible_yaml_format" == "yes" ]; then
@@ -104,6 +120,7 @@ function print_ip_and_hostname() {
       else
         echo "error: Unable to find the IP for $i"
       fi
+    done
   done
 
   printf "\n<<-- [END] Select till previous line\n"
@@ -142,6 +159,9 @@ function process_cmd_args() {
           r|R)
             case "${OPTARG}" in
                 [rR][12])
+                    region="$OPTARG"
+                    ;;
+                "both")
                     region="$OPTARG"
                     ;;
                 *)

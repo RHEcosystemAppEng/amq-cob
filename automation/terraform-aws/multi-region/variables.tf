@@ -4,9 +4,13 @@ variable "PREFIX" {
 
 variable "SSH_KEY" {}
 
-# Override REGION from CLI if they need to be something other than the default value
-variable "REGION" {
+# Override REGIONs from CLI if they need to be something other than the default values
+variable "REGION_1" {
   default = "ca-central-1"
+}
+
+variable "REGION_2" {
+  default = "us-east-2"
 }
 
 variable "AMI" {
@@ -26,12 +30,20 @@ variable "AMI_NAME" {
   default = "RHEL-8.6.0_HVM-20220503-x86_64-2-Hourly2-GP2"
 }
 
-variable "VPC1_PRIVATE_IP_PREFIX" {
+variable "R1_VPC1_PRIVATE_IP_PREFIX" {
   default = "10.100"
 }
 
-variable "VPC2_PRIVATE_IP_PREFIX" {
+variable "R1_VPC2_PRIVATE_IP_PREFIX" {
   default = "10.101"
+}
+
+variable "R2_VPC1_PRIVATE_IP_PREFIX" {
+  default = "10.110"
+}
+
+variable "R2_VPC2_PRIVATE_IP_PREFIX" {
+  default = "10.111"
 }
 
 variable "SUBNET_1_3RD_OCTET" {
@@ -87,5 +99,5 @@ variable "tags" {
     project : "fsi-amq_cob_team",
     created_by : "terraform"
   }
-  description = "provides tags for all the resources crated here"
+  description = "provides tags for all the resources created here"
 }
