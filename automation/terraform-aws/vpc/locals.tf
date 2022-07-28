@@ -7,7 +7,6 @@ locals {
   SEC_GRP_AMQ_ROUTER_ID = module.common.security_group_amq_router_id
 
   BROKER_SECURITY_GROUP_IDS = [local.SEC_GRP_PING_SSH_ID, local.SEC_GRP_AMQ_BROKER_ID, local.SEC_GRP_DEFAULT_ID]
-  ROUTER_SECURITY_GROUP_IDS = [local.SEC_GRP_PING_SSH_ID, local.SEC_GRP_AMQ_BROKER_ID, local.SEC_GRP_AMQ_ROUTER_ID, local.SEC_GRP_DEFAULT_ID]
 
   // Map to point to the two zones and corresponding subnets (Subnet should match zone)
   ZONE_N_SUBNET = {

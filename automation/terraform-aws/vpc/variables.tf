@@ -7,10 +7,6 @@ variable "IP_NUMBER_PREFIX" {
   type = map
 }
 
-variable "CIDR_BLOCKS" {
-  type = map
-}
-
 variable "INSTANCE_INFO" {
   type = map
 }
@@ -27,7 +23,5 @@ variable "KEY_BROKER_01" {}
 variable "KEY_BROKER_02" {}
 variable "KEY_BROKER_03" {}
 variable "KEY_BROKER_04" {}
-variable "KEY_ROUTER_01" {}
-variable "KEY_ROUTER_02" {}
 
 variable "TAGS" {}

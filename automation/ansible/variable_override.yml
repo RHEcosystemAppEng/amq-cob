@@ -12,20 +12,33 @@ enable_amq_mirroring: true
 #STORE_PASS: redhat
 ### END - SSL Variables
 
-# Region 1 TOR Hosts & IPs
-r1_broker01_live_ip:      15.223.71.112
-r1_broker02_bak_ip:       3.99.214.21
-r1_broker03_live_ip:      99.79.7.11
-r1_broker04_bak_ip:       3.99.167.28
-r1_vpc1_nfs_server_ip:    3.96.203.99
-r1_router01_hub_ip:       35.182.254.255
-r1_router02_spoke_ip:     35.183.62.196
-r1_broker05_live_ip:      15.223.4.196
-r1_broker06_bak_ip:       99.79.77.144
-r1_broker07_live_ip:      3.99.188.252
-r1_broker08_bak_ip:       3.99.219.119
-r1_vpc2_nfs_server_ip:    35.183.184.142
-r1_router03_spoke_ip:     3.96.154.90
+# Region 1/2 Hosts & IPs
+r1_broker01_live_ip:      3.96.207.11
+r2_broker01_live_ip:      13.59.237.172
+r1_broker02_bak_ip:       3.98.125.33
+r2_broker02_bak_ip:       3.139.91.231
+r1_broker03_live_ip:      3.96.64.47
+r2_broker03_live_ip:      13.59.174.80
+r1_broker04_bak_ip:       15.223.72.96
+r2_broker04_bak_ip:       3.138.34.232
+r1_vpc1_nfs_server_ip:    15.223.71.231
+r2_vpc1_nfs_server_ip:    13.59.79.111
+r1_router01_hub_ip:       99.79.9.121
+r2_router01_hub_ip:       18.189.20.210
+r1_router02_spoke_ip:     35.183.137.177
+r2_router02_spoke_ip:     13.59.218.105
+r1_broker05_live_ip:      35.182.255.3
+r2_broker05_live_ip:      18.117.83.118
+r1_broker06_bak_ip:       3.99.180.57
+r2_broker06_bak_ip:       18.224.67.198
+r1_broker07_live_ip:      35.182.236.0
+r2_broker07_live_ip:      18.119.118.37
+r1_broker08_bak_ip:       15.222.10.17
+r2_broker08_bak_ip:       13.59.172.45
+r1_vpc2_nfs_server_ip:    3.96.67.51
+r2_vpc2_nfs_server_ip:    3.138.203.98
+r1_router03_spoke_ip:     3.96.64.59
+r2_router03_spoke_ip:     3.141.11.98
 
 ## Variables for AWS setup. Please un-comment these when setting up on AWS
 # todo(sg): update readme to add the AWS private key info
@@ -40,8 +53,9 @@ efs_options: "defaults,vers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retra
 resource_prefix: "tmp-sg"
 
 # For SSH key pair
-key_pair_name: amq_aws-key_pair-<SUFFIX>    # This name should match what's used in Terraform
+key_pair_name: amq_aws-key_pair-SG    # This name should match what's used in Terraform
 pub_key_location: "{{ private_key_location }}.pub"
 aws_regions:
   - us-east-2   #US East (Ohio)
   - ca-central-1
+

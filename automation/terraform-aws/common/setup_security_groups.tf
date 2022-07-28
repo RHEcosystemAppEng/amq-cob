@@ -65,28 +65,14 @@ resource "aws_security_group" "amq_broker" {
   description = "Allows access to AMQ Broker console as well as default and amqp ports"
   vpc_id      = aws_vpc.main.id
 
-  # AMQ Console
-  ingress {
-    cidr_blocks = [var.CIDR_BLOCK_ALL]
-    from_port   = 8161
-    to_port     = 8161
-    protocol    = "tcp"
-  }
-
-  # AMQ Broker
-  ingress {
-    cidr_blocks = [var.CIDR_BLOCK_ALL]
-    from_port   = 61616
-    to_port     = 61616
-    protocol    = "tcp"
-  }
-
-  # AMQ Broker - amqp port
-  ingress {
-    cidr_blocks = [var.CIDR_BLOCK_ALL]
-    from_port   = 5672
-    to_port     = 5672
-    protocol    = "tcp"
+  dynamic "ingress" {
+    for_each = var.BROKER_INGRESS_PORTS
+    content {
+      cidr_blocks = [var.CIDR_BLOCK_ALL]
+      from_port = ingress.value
+      to_port = ingress.value
+      protocol = "tcp"
+    }
   }
 
   tags = merge(

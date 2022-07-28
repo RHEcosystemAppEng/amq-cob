@@ -33,3 +33,9 @@ variable "SEC_GRP_EGRESS_PROTOCOL_ALL" {
 variable "SEC_GRP_EGRESS_IPV6_CIDR_BLOCK" {
   default = ["::/0"]
 }
+
+variable "BROKER_INGRESS_PORTS" {
+  type = list(number)
+  // AMQ Console, AMQ Broker and amqp port
+  default = [8161, 61616, 5672]
+}
