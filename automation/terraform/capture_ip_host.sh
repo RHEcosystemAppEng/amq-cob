@@ -60,18 +60,22 @@ function print_ip_and_hostname() {
   local curr_dir=`pwd`
   cd "$region_dir"
 
-  if [ "$ansible_yaml_format" == "yes" ]; then
-    host_file="hosts.yml under global vars"
+  if [ -z "$region" ]; then
+    region="both"
   fi
-
-  echo "Running terraform output for getting public_ip in [$region_dir]..."
-  printf "\nPaste the ip + hostname given below (between START and END tags) to ${host_file}\n[START] Copy from next line -->>\n\n"
 
   local region_org=$region
   # Handle both regions
   if [ "$region" == "both" ]; then
     region="r1 r2"
   fi
+
+  if [ "$ansible_yaml_format" == "yes" ]; then
+    host_file="hosts.yml under global vars"
+  fi
+
+  echo "Running terraform output for getting public_ip in [$region_dir]..."
+  printf "\nPaste the ip + hostname given below (between START and END tags) to ${host_file}\n[START] Copy from next line -->>\n\n"
 
   for i in vpc1-broker01-live-public_ip vpc1-broker02-bak-public_ip vpc1-broker03-live-public_ip \
            vpc1-broker04-bak-public_ip vpc1-nfs-server-public_ip vpc1-router01-hub-public_ip \
@@ -165,7 +169,7 @@ function process_cmd_args() {
                     region="$OPTARG"
                     ;;
                 *)
-                    incorrectUsageMessage="** INVALID region: [$OPTARG]. Only r1 or r2 are supported.";;
+                    incorrectUsageMessage="** INVALID region: [$OPTARG]. Only r1 or r2 or both are supported.";;
             esac
             ;;
           d|D)
@@ -189,7 +193,7 @@ function process_cmd_args() {
         USAGE "${incorrectUsageMessage}"
     fi
 
-    print_ip_and_hostname $region $region_dir $ansible_format $suffix
+    print_ip_and_hostname "$region" "$region_dir" "$ansible_format" "$suffix"
 }
 
 process_cmd_args "$@"

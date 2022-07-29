@@ -30,7 +30,7 @@ r1_vpc2_brokers:
     r1-broker05-live:
       broker_data_directory: three
       broker_name: broker-05
-      broker_private_ip: "{{ r1_vpc2_private_ip_prefix }}.128.61"
+      broker_private_ip: "{{ r1_vpc2_private_ip_prefix }}.64.61"
       is_live_broker: true
       mirror_primary_host_idx: 0
       mirror_backup_host_idx: 1
@@ -38,7 +38,7 @@ r1_vpc2_brokers:
     r1-broker06-bak:
       broker_data_directory: three
       broker_name: broker-06
-      broker_private_ip: "{{ r1_vpc2_private_ip_prefix }}.64.61"
+      broker_private_ip: "{{ r1_vpc2_private_ip_prefix }}.0.61"
       mirror_primary_host_idx: 1
       mirror_backup_host_idx: 0
       ansible_host: "{{ r1_broker06_bak_ip }}"
@@ -66,12 +66,12 @@ r1_routers:
   hosts:
     r1-router01-hub:
       router_id: router.hub-01
-      router_private_ip: "{{ r1_vpc1_private_ip_prefix }}.128.100"
+      router_private_ip: "{{ r1_vpc1_private_ip_prefix }}.64.100"
       router_config_file_prefix: hub-router
       ansible_host: "{{ r1_router01_hub_ip }}"
     r1-router02-spoke:
       router_id: router.to.cluster-01
-      router_private_ip: "{{ r1_vpc1_private_ip_prefix }}.64.100"
+      router_private_ip: "{{ r1_vpc1_private_ip_prefix }}.0.101"
       live_broker_01_host: live-broker-01
       live_broker_02_host: live-broker-02
       broker_group: r1_vpc1_brokers
@@ -137,7 +137,7 @@ all:
     delete_amq_archive: false
 
     # Jmeter client setup playbook variables.
-    jmeter_hub_router_ip: "{{ r1_vpc1_private_ip_prefix }}.128.100"
+    jmeter_hub_router_ip: "{{ r1_vpc1_private_ip_prefix }}.64.100"
     jmeter_hub_router_port: 5672
     jmeter_binary_download_uri: https://dlcdn.apache.org/jmeter/binaries
     jmeter_binary_version: apache-jmeter-5.4.3
@@ -146,9 +146,13 @@ all:
     clean_jmeter_home_directory: true
 
     resource_prefix: "cob-test"
-
+    # for these servers we need to copy the AMQ binary as the other live/backups can simply use the mount point
+    # to use the binary
     amq_binary_dest_list:
+      - r1-broker01-live
+      - r1-broker05-live
+    amq_live_hosts: "{{ amq_binary_dest_list }}"
 
     # Private IP prefixes for each region/vpc
-    r1_vpc1_private_ip_prefix: "10.70"
-    r1_vpc2_private_ip_prefix: "10.71"
+    r1_vpc1_private_ip_prefix: "10.100"
+    r1_vpc2_private_ip_prefix: "10.101"

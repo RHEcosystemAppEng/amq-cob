@@ -1,25 +1,41 @@
-variable "ibmcloud_api_key" {}
 
-variable "PREFIX" {}
+variable "NAME_PREFIX" {}
 
-variable "REGION" {}
+variable "MAIN_CIDR_BLOCK" {}
+variable "CIDR_BLOCKS" {}
 
-variable "ZONE1" {}
-variable "ZONE2" {}
-variable "ZONE3" {}
+variable "TAGS" {}
 
-variable "ZONE1_CIDR" {}
-variable "ZONE2_CIDR" {}
-variable "ZONE3_CIDR" {}
+variable "SUBNET_ENABLE_AUTO_ASSIGN_PUBLIC_IP" {
+  default = true
+}
 
-variable "VPC_NAME" {}
-variable "VPC_DEFAULT_SECURITY_GROUP_NAME" {}
+variable "CIDR_BLOCK_ALL" {
+  default = "0.0.0.0/0"
+}
 
-variable "SUBNET_1_NAME" {}
-variable "SUBNET_2_NAME" {}
-variable "SUBNET_3_NAME" {}
+variable "SEC_GRP_FROM_PORT_ALL" {
+  default = 0
+}
 
-variable "SECURITY_GROUP_1_NAME" {}
-variable "SECURITY_GROUP_2_NAME" {}
+variable "SEC_GRP_TO_PORT_ALL" {
+  default = 0
+}
 
-variable "tags" {}
+variable "SEC_GRP_PROTOCOL_ALL" {
+  default = "-1"
+}
+
+variable "SEC_GRP_EGRESS_PROTOCOL_ALL" {
+  default = "all"
+}
+
+variable "SEC_GRP_EGRESS_IPV6_CIDR_BLOCK" {
+  default = ["::/0"]
+}
+
+variable "BROKER_INGRESS_PORTS" {
+  type = list(number)
+  // AMQ Console, AMQ Broker and amqp port
+  default = [8161, 61616, 5672]
+}

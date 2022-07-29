@@ -162,7 +162,7 @@ As part of cluster2 config, following interconnect router is also created and se
 <br>
 
 ### Setup config for IBM API key
-* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform/toronto` directory_, with following content:
+* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform-ibm/toronto` directory_, with following content:
   ```shell
   ibmcloud_api_key = "<YOUR_IBM_CLOUD_API_KEY>"
   ssh_key = "<NAME_OF_YOUR_SSH_KEY>"
@@ -175,7 +175,7 @@ As part of cluster2 config, following interconnect router is also created and se
 * Terraform is used to setup the infrastructure for region1. Perform infrastructure setup of region 1
   (cluster1/cluster2) by running following commands
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform/toronto
+  cd $MAIN_CONFIG_DIR/terraform-ibm/toronto
   terraform init
   terraform apply -auto-approve \
     -var PREFIX="cob-test" \
@@ -271,8 +271,8 @@ As part of cluster2 config, following interconnect router is also created and se
 * Terraform is used to setup the infrastructure for region1. Perform setup of region 2 (cluster1/cluster2)
   by running following commands
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform/dallas
-  cp $MAIN_CONFIG_DIR/terraform/toronto/terraform.tfvars .
+  cd $MAIN_CONFIG_DIR/terraform-ibm/dallas
+  cp $MAIN_CONFIG_DIR/terraform-ibm/toronto/terraform.tfvars .
   terraform init
   terraform apply -auto-approve \
     -var PREFIX="cob-test" \
@@ -348,9 +348,9 @@ This section contains information on setting up transit gateways for communicati
 ### Transit Gateway config
 * Perform setup of Transit Gateways by running following commands
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform/transit-gateway/global
+  cd $MAIN_CONFIG_DIR/terraform-ibm/transit-gateway/global
   terraform init
-  cp $MAIN_CONFIG_DIR/terraform/toronto/terraform.tfvars .
+  cp $MAIN_CONFIG_DIR/terraform-ibm/toronto/terraform.tfvars .
   terraform apply -auto-approve -var PREFIX="cob-test"
   ```
 * Above command will take around 5-7 minutes and should create following Global Transit Gateways:
@@ -375,7 +375,7 @@ them. _For this purpose, we need to run two manual steps before we can use ansib
 To configure the instances using ansible, we need to extract the public ip for all the instances first.
 * Execute following commands to retrieve public ip for region 1 and 2:
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform
+  cd $MAIN_CONFIG_DIR/terraform-ibm
 
   # Command given below will extract the public IP for all the instances running in region 1
   ./capture_ip_host.sh -r r1 -d toronto -s "_ip" -a
@@ -494,7 +494,7 @@ information on that process
 ### Start instances - Region 1/2
 * To start instances in region 1 and 2, use following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
+    cd $MAIN_CONFIG_DIR/terraform-ibm/start-stop-instance
     terraform apply -auto-approve \
       -var PREFIX="cob-test" \
       -var INSTANCE_ACTION="start" \
@@ -505,7 +505,7 @@ information on that process
 * To perform a graceful shutdown, first execute steps given in [Stop broker and routers](#stop-brokersrouters)
 * Stop running instances in region 1 and 2 by perform following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
+    cd $MAIN_CONFIG_DIR/terraform-ibm/start-stop-instance
     terraform apply -auto-approve \
       -var PREFIX="cob-test" \
       -var INSTANCE_ACTION="stop" \
@@ -526,7 +526,7 @@ the two regions
 ### Destroy Global Transit Gateway
 * To delete the Global Transit Gateway, use following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform/transit-gateway/global
+    cd $MAIN_CONFIG_DIR/terraform-ibm/transit-gateway/global
     terraform plan -destroy -out=destroy.plan \
       -var PREFIX="cob-test"
     terraform apply destroy.plan
@@ -535,7 +535,7 @@ the two regions
 ### Destroy resources - Region 1
 * To delete resources setup in region 1 (cluster 1/2), use following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform/toronto
+    cd $MAIN_CONFIG_DIR/terraform-ibm/toronto
     terraform plan -destroy -out=destroy.plan \
       -var PREFIX="cob-test" \
       -var CLUSTER1_PRIVATE_IP_PREFIX="10.70" \
@@ -546,7 +546,7 @@ the two regions
 ### Destroy resources - Region 2
 * To delete resources setup in region 2 (cluster 1/2), use following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform/dallas
+    cd $MAIN_CONFIG_DIR/terraform-ibm/dallas
     terraform plan -destroy -out=destroy.plan \
       -var PREFIX="cob-test" \
       -var CLUSTER1_PRIVATE_IP_PREFIX="10.75" \
@@ -613,7 +613,7 @@ As part of cluster1 config, following interconnect routers are also created and 
 <br>
 
 ### Setup config for IBM API key - tmp
-* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform/toronto-vpc1` directory_, with following content:
+* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform-ibm/toronto-vpc1` directory_, with following content:
   ```shell
   ibmcloud_api_key = "<YOUR_IBM_CLOUD_API_KEY>"
   ssh_key = "<NAME_OF_YOUR_SSH_KEY>"
@@ -626,7 +626,7 @@ As part of cluster1 config, following interconnect routers are also created and 
 * Terraform is used to setup the infrastructure for region1. Perform infrastructure setup of region 1
   (cluster1/cluster2) by running following commands
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform/toronto-vpc1
+  cd $MAIN_CONFIG_DIR/terraform-ibm/toronto-vpc1
   terraform init
   terraform apply -auto-approve \
     -var PREFIX="appeng-381" \
@@ -674,7 +674,7 @@ them.
 #### Configure region - tmp
 * Perform configuration setup of cluster1 in region 1 by running following commands
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform
+  cd $MAIN_CONFIG_DIR/terraform-ibm
 
   # Command given below will extract the public IP for all the instances running in VPC1 (cluster1)
   ./capture_ip_host.sh -r r1 -d toronto-vpc1 -s "_ip" -a
@@ -706,7 +706,7 @@ the Toronto region (cluster 1)
 ### Destroy resources - Region 1 - tmp
 * To delete resources setup in region 1 (cluster 1), use following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform/toronto-vpc1
+    cd $MAIN_CONFIG_DIR/terraform-ibm/toronto-vpc1
     terraform plan -destroy -out=destroy.plan \
       -var PREFIX="appeng-381" \
       -var CLUSTER1_PRIVATE_IP_PREFIX="10.101" \

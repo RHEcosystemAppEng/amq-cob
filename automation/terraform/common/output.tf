@@ -1,87 +1,116 @@
-output "key" {
-  value = var.ibmcloud_api_key
-}
 
-output "region" {
-  value = var.REGION
-}
+#output "region" {
+#  value = var.REGION
+#}
 
 output "vpc" {
-  value = ibm_is_vpc.amq_vpc
+  value = aws_vpc.main
 }
 
 output "vpc_name" {
-  value = ibm_is_vpc.amq_vpc.name
+  value = aws_vpc.main.tags.Name
 }
 
 output "vpc_id" {
-  value = ibm_is_vpc.amq_vpc.id
+  value = aws_vpc.main.id
 }
 
-output "zone1" {
-  value = ibm_is_subnet.amq_subnet_01.zone
-}
-
-output "zone2" {
-  value = ibm_is_subnet.amq_subnet_02.zone
-}
-
-output "zone3" {
-  value = ibm_is_subnet.amq_subnet_03.zone
+output "vpc_cidr" {
+  value = aws_vpc.main.cidr_block
 }
 
 output "zone1_cidr" {
-  value = ibm_is_subnet.amq_subnet_01.ipv4_cidr_block
+  value = aws_subnet.all["0"].cidr_block
 }
 
 output "zone2_cidr" {
-  value = ibm_is_subnet.amq_subnet_02.ipv4_cidr_block
+  value = aws_subnet.all["1"].cidr_block
 }
 
 output "zone3_cidr" {
-  value = ibm_is_subnet.amq_subnet_03.ipv4_cidr_block
+  value = aws_subnet.all["2"].cidr_block
 }
 
-output "default_vpc_sg" {
-  value = ibm_is_vpc.amq_vpc.default_security_group
+output "zone1" {
+  value = aws_subnet.all["0"].availability_zone
 }
 
-output "custom_sg_1_id" {
-  value = ibm_is_security_group.amq_sec_grp_01.id
+output "zone2" {
+  value = aws_subnet.all["1"].availability_zone
 }
 
-output "custom_sg_1_name" {
-  value = ibm_is_security_group.amq_sec_grp_01.name
+output "zone3" {
+  value = aws_subnet.all["2"].availability_zone
 }
 
-output "custom_sg_2_id" {
-  value = ibm_is_security_group.amq_sec_grp_02.id
+output "security_group_default_id" {
+  value = aws_default_security_group.default.id
 }
 
-output "custom_sg_2_name" {
-  value = ibm_is_security_group.amq_sec_grp_02.name
+output "security_group_default_name" {
+  value = aws_default_security_group.default.name
+}
+
+output "security_group_ping_ssh_id" {
+  value = aws_security_group.ping_ssh.id
+}
+
+output "security_group_ping_ssh_name" {
+  value = aws_security_group.ping_ssh.name
+}
+
+output "security_group_amq_broker_id" {
+  value = aws_security_group.amq_broker.id
+}
+
+output "security_group_amq_broker_name" {
+  value = aws_security_group.amq_broker.name
+}
+
+output "security_group_amq_router_id" {
+  value = aws_security_group.amq_router.id
+}
+
+output "security_group_amq_router_name" {
+  value = aws_security_group.amq_router.name
 }
 
 output "subnet_1_id" {
-  value = ibm_is_subnet.amq_subnet_01.id
+  value = aws_subnet.all["0"].id
 }
 
 output "subnet_1_name" {
-  value = ibm_is_subnet.amq_subnet_01.name
+  value =aws_subnet.all["0"].tags.Name
 }
 
 output "subnet_2_id" {
-  value = ibm_is_subnet.amq_subnet_02.id
+  value = aws_subnet.all["1"].id
 }
 
 output "subnet_2_name" {
-  value = ibm_is_subnet.amq_subnet_02.name
+  value =aws_subnet.all["1"].tags.Name
 }
 
 output "subnet_3_id" {
-  value = ibm_is_subnet.amq_subnet_03.id
+  value = aws_subnet.all["2"].id
 }
 
 output "subnet_3_name" {
-  value = ibm_is_subnet.amq_subnet_03.name
+  value =aws_subnet.all["2"].tags.Name
+}
+
+output "route_table-main-id" {
+  value = aws_route_table.main.id
+}
+
+output "route_table-default-id" {
+  value = aws_default_route_table.main.id
+}
+
+output "efs_fs_id" {
+  value = aws_efs_file_system.efs_fs.id
+}
+
+output "efs_fs_dns" {
+  value = aws_efs_file_system.efs_fs.dns_name
 }

@@ -16,6 +16,7 @@
   * [Prerequisites](#prerequisites---region-setup)
   * [Declare SSH Key](#ssh-key-name-in-terraformtfvars)
   * [Setup Region 1 and 2 infrastructure](#setup-region-12-infrastructure)
+  * [Override options](#override-options)
 * [Configure Region 1/2 with Ansible](#configure-region-12---ansible)
   * [Prerequisites](#prerequisites---ansible-config)
   * [Capture public IP](#capture-public-ip---manual-step)
@@ -128,7 +129,7 @@ Clone this repo to setup brokers/routers in AWS:
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
 
-  ansible-playbook playbooks/ec2_key_pair-aws.yml \
+  ansible-playbook playbooks/ec2_key_pair.yml \
     --extra-vars "@variable_override.yml" \
     --tags create
   ```
@@ -144,10 +145,12 @@ Clone this repo to setup brokers/routers in AWS:
 ## Setup Regions
 This section provides information about setting up both region1 and region2.
 
-_By default the first region is **Canada** (`ca-central-1`) and second region is
-**Ohio** (`us-east-2`) but they can be overridden from command line by specifying
-`-var REGION_1=<REGION_1_CODE>` and `-var REGION_2=<REGION_2_CODE>` when running
-the setup._
+* _By default the first region is **Canada** (`ca-central-1`) and second region is
+  **Ohio** (`us-east-2`) but they can be overridden from command line by specifying
+  `-var REGION_1=<REGION_1_CODE>` and `-var REGION_2=<REGION_2_CODE>` when running
+  the setup._
+
+  * _[Option override](#override-options) section contains information on these and other options that can be overridden._
 
 Region 1 and region 2 have similar setup. Both regions have two clusters:
 * **Cluster1** - consisting of following four brokers:
@@ -173,23 +176,26 @@ As part of cluster2 config, following interconnect router is also created and se
 <br>
 
 ### SSH key name in terraform.tfvars
-* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform-aws/multi-region` directory_, with 
+* Create a file named `terraform.tfvars`, _in `$MAIN_CONFIG_DIR/terraform/multi-region` directory_, with 
   the following content:
   ```shell
   SSH_KEY = "<SSH_KEY_NAME_CREATED_BY_ANSIBLE_OR_MANUALLY>"
   ```
-  The `SSH_KEY` value should be same that was created by Ansible in [Create SSH key](#create-ssh-key-for-each-region) step
+  * _The `SSH_KEY` value should be same that was created by Ansible in
+    [Create SSH key](#create-ssh-key-for-each-region) step_
+  * _The key name should be enclosed in double quotes_
 <br>
 
 ### Setup Region 1/2 infrastructure
 * Terraform is used to setup the infrastructure for region1. Perform infrastructure setup of 
   region 1 and region 2 (cluster1/cluster2) by running following commands
   ```shell
-  cd $MAIN_CONFIG_DIR/terraform-aws/multi-region 
+  cd $MAIN_CONFIG_DIR/terraform/multi-region 
   terraform init
   terraform apply -auto-approve
   ```
   * _All resources created will have the PREFIX of 'cob-test'_
+  * _Specify the `PREFIX` if more than one person is going to use the same region(s)_
 
 * Above command will take around 5-7 minutes and should create following resources:
   * **VPC**: `cob-test-AMQ_COB-1`
@@ -298,7 +304,7 @@ To configure the instances using ansible, we need to extract the public ip for a
   cd $MAIN_CONFIG_DIR/terraform
 
   # Command given below will extract the public IP for all the instances running in region 1 and region 2
-  ./capture_ip_host.sh -r both -d ../terraform-aws/multi-region -s "_ip" -a
+  ./capture_ip_host.sh -d multi-region -s "_ip" -a
   ```
   Copy the `<hostname>: <ip_address>` output (_between START and END tags_), for each of the above commands,
   to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
@@ -334,10 +340,8 @@ To configure the instances using ansible, we need to extract the public ip for a
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
 
-  ansible-playbook -i hosts/hosts-aws.yml playbooks/setup_playbook.yml \
-    --extra-vars "@variable_override.yml"
-  ansible-playbook -i hosts/hosts-aws.yml playbooks/run_broker_n_router_playbook.yml \
-    --extra-vars "@variable_override.yml"
+  ansible-playbook playbooks/setup_playbook.yml --extra-vars "@variable_override.yml"
+  ansible-playbook playbooks/run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will configure following resources:
   * `amq_runner` user will be created in all the instances of brokers and routers
@@ -364,8 +368,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * One can reset the brokers/routers/nfs server to bring them to the initial state by running following commands: 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
-  ansible-playbook -i hosts/hosts-aws.yml playbooks/reset_playbook.yml \
-    --extra-vars "@variable_override.yml"
+  ansible-playbook playbooks/reset_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will perform following tasks:
   * Stop broker instances
@@ -379,8 +382,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * To stop the running brokers/routers, execute following commands 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
-  ansible-playbook -i hosts/hosts-aws.yml playbooks/stop_broker_n_router_playbook.yml \
-    --extra-vars "@variable_override.yml"
+  ansible-playbook playbooks/stop_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will perform following tasks:
   * Stop broker instances
@@ -390,8 +392,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 * To stop the running brokers/routers, execute following commands 
   ```shell
   cd $MAIN_CONFIG_DIR/ansible
-  ansible-playbook -i hosts/hosts-aws.yml playbooks/run_broker_n_router_playbook.yml \
-    --extra-vars "@variable_override.yml"
+  ansible-playbook playbooks/run_broker_n_router_playbook.yml --extra-vars "@variable_override.yml"
   ```
 * Above command(s) will perform following tasks:
   * Run broker instances
@@ -402,8 +403,7 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
   1. Using ansible scripts:
     ```shell
     cd $MAIN_CONFIG_DIR/ansible
-    ansible-playbook -i hosts/hosts-aws.yml playbooks/purge_queue_playbook.yml \
-      --extra-vars "@variable_override.yml"
+    ansible-playbook playbooks/purge_queue_playbook.yml --extra-vars "@variable_override.yml"
     ```
   2. **TODO - will be provided by Kamlesh**
 * Above command(s) will purge `exampleQueue` on all the live AMQ brokers in region 1 and 2.
@@ -455,10 +455,12 @@ the two regions
 ### Destroy resources - Region 1/2
 * To delete resources setup in region 1 (cluster 1/2), use following commands:
   ```shell
-    cd $MAIN_CONFIG_DIR/terraform-aws/multi-region
+    cd $MAIN_CONFIG_DIR/terraform/multi-region
     terraform plan -destroy -out=destroy.plan
     terraform apply destroy.plan
   ```
+  
+  _Specify the `PREFIX` if one was specified at the resource creation time_
 
 <br>
 
