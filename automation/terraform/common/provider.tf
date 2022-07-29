@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    ibm = {
-      source  = "IBM-Cloud/ibm"
-      version = "~> 1.37.1"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
     }
   }
 }
