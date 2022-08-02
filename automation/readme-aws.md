@@ -11,6 +11,7 @@
   * [Download AMQ archive](#download-rhamq-archive-file)
   * [Create API key](#create-api-key)
   * [Setup AWS profile](#setup-aws-profile)
+  * [Create vault password](#create-vault-password---manual-step)
   * [Create SSH key](#create-ssh-key-for-each-region)
 * [Setup Region 1 and 2 with Terraform](#setup-regions)
   * [Prerequisites](#prerequisites---region-setup)
@@ -20,7 +21,6 @@
 * [Configure Region 1/2 with Ansible](#configure-region-12---ansible)
   * [Prerequisites](#prerequisites---ansible-config)
   * [Capture public IP](#capture-public-ip---manual-step)
-  * [Create vault password](#create-vault-password---manual-step)
   * [Setup SSL](#ssl-setup)
   * [Configure regions](#configure-regions)
 * [Run performance tests using JMeter](#run-performance-tests)
@@ -120,6 +120,18 @@ Clone this repo to setup brokers/routers in AWS:
   aws_secret_access_key = <AWS_SECRET_ACCESS_KEY_VALUE>
   ```
 * _`terraform_redhat` is the profile that will be referenced by both Ansible as well as Terraform_
+
+### Create vault password - Manual step
+* Create a file (_if it doesn't already exists_) named `.vault_password` in `$MAIN_CONFIG_DIR/ansible` directory
+  with it contents set to following text
+  * `password`
+* Run following commands to set the correct username/password for Red Hat login:
+  * `cd $MAIN_CONFIG_DIR/ansible`
+  * `ansible-vault edit hosts/group_vars/routers/vault`
+    * _Above command will open up an editor_
+  * Provide values for following keys (**_This is the Red Hat SSO user/password and not the Mac/Linux user/password_**):
+    * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)
+    * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
 
 ### Create SSH key for each region
 * _**Please skip these steps if a SSH key is already created and added to the account**_
@@ -308,18 +320,6 @@ To configure the instances using ansible, we need to extract the public ip for a
   ```
   Copy the `<hostname>: <ip_address>` output (_between START and END tags_), for each of the above commands,
   to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
-
-### Create vault password - Manual step
-* Create a file (_if it doesn't already exists_) named `.vault_password` in `$MAIN_CONFIG_DIR/ansible` directory
-  with it contents set to following text
-  * `password`
-* Run following commands to set the correct username/password for Red Hat login:
-  * `cd $MAIN_CONFIG_DIR/ansible`
-  * `ansible-vault edit hosts/group_vars/routers/vault`
-    * _Above command will open up an editor_
-  * Provide values for following keys (**_This is the Red Hat SSO user/password and not the Mac/Linux user/password_**):
-    * `redhat_username`  (_replace `PROVIDE_CORRECT_USERNAME` with correct username_)
-    * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
 
 ### SSL Setup
 * You can setup Brokers & Routers with SSL and the SSL behavior is determined by the SSL variables in `$MAIN_CONFIG_DIR/ansible/variable_override.yml`. 
