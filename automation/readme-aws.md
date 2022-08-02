@@ -135,7 +135,8 @@ Clone this repo to setup brokers/routers in AWS:
 
 ### Create SSH key for each region
 * _**Please skip these steps if a SSH key is already created and added to the account**_
-* Update `variable_override.yml` by providing name for key_pair (_make sure it is unique in each of the regions_)
+* Update `variable_override.yml` by providing name for key_pair (_Make sure it is unique in each of the regions.
+  Simply changing the SUFFIX should make it unique_)
 * `key_pair_name: amq_cob-key_pair-<SUFFIX>`
 * Create SSH key pairs for each of the regions by running following commands:
   ```shell

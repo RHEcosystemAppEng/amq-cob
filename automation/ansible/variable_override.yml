@@ -1,16 +1,16 @@
 enable_amq_mirroring: true
 
-### Start - SSL Variables
-#enable_ssl: true
-#ssl_generate_ca: true
-#ssl_generate_certs: true
-#
-#CA_CERT_FILE_PREFIX: server-ca
-#INPUT_FILES_BASE_DIR: './generated'
-#CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
-#KEY_PASS: redhat
-#STORE_PASS: redhat
-### END - SSL Variables
+## Start - SSL Variables
+enable_ssl: true
+ssl_generate_ca: true
+ssl_generate_certs: true
+
+CA_CERT_FILE_PREFIX: server-ca
+INPUT_FILES_BASE_DIR: './generated'
+CA_CERT_DIR: "{{ INPUT_FILES_BASE_DIR }}/ca-certs"
+KEY_PASS: redhat
+STORE_PASS: redhat
+## END - SSL Variables
 
 # Region 1/2 Hosts & IPs
 r1_broker01_live_ip:      3.96.207.11
@@ -50,10 +50,11 @@ nfs_or_efs: nfs
 
 aws_profile_name: terraform_redhat
 efs_options: "defaults,vers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
-resource_prefix: "tmp-sg"
+# Specify correct prefix value (for your resources). This should match what was specified in Terraform
+#resource_prefix: "tmp-sg"
 
-# For SSH key pair
-key_pair_name: amq_aws-key_pair-SG    # This name should match what's used in Terraform
+# For SSH key pair - PROVIDE YOUR OWN SUFFIX
+key_pair_name: amq_aws-key_pair-<SUFFIX>    # This name should match what's used in Terraform
 pub_key_location: "{{ private_key_location }}.pub"
 aws_regions:
   - us-east-2   #US East (Ohio)

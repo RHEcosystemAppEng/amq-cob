@@ -1,5 +1,5 @@
 variable "PREFIX" {
-  default = "PROVIDE_VALUE_ON_CLI"
+  default = "cob-test"
 }
 
 variable "SSH_KEY" {}
@@ -48,8 +48,7 @@ variable "SUBNET_3_3RD_OCTET" {
 
 # https://aws.amazon.com/ec2/instance-types/
 variable "INSTANCE_TYPE" {
-#  default = "t3.xlarge"
-    default = "c4.xlarge"
+  default = "t2.large"
 }
 
 variable "tags" {
