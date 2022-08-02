@@ -1,5 +1,8 @@
 ---
-
+- name: SSL Cert Tasks
+  import_playbook: ssl-cert-gen-full-playbook.yml
+  when:
+    - enable_ssl
 - hosts:
     - nfs_servers
   become: 'yes'
