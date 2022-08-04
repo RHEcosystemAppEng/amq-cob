@@ -22,6 +22,7 @@ r1_vpc1_brokers:
     nfs_server_ip: "{{ r1_vpc1_private_ip_prefix }}.0.50"
     mirror_group: r2_vpc1_brokers
     cluster_idx: 1
+    region: "{{ aws_regions.0 }}"
 
 # Brokers in region 1 - vpc2
 r1_vpc2_brokers:
@@ -45,6 +46,7 @@ r1_vpc2_brokers:
     nfs_server_ip: "{{ r1_vpc2_private_ip_prefix }}.64.60"
     mirror_group: r2_vpc2_brokers
     cluster_idx: 2
+    region: "{{ aws_regions.0 }}"
 
 # Brokers in region 2 - vpc1
 r2_vpc1_brokers:
@@ -68,6 +70,7 @@ r2_vpc1_brokers:
     nfs_server_ip: "{{ r2_vpc1_private_ip_prefix }}.0.50"
     mirror_group: r1_vpc1_brokers
     cluster_idx: 1
+    region: "{{ aws_regions.1 }}"
 
 # Brokers in region 2 - vpc2
 r2_vpc2_brokers:
@@ -91,6 +94,7 @@ r2_vpc2_brokers:
     nfs_server_ip: "{{ r2_vpc2_private_ip_prefix }}.64.60"
     mirror_group: r1_vpc2_brokers
     cluster_idx: 2
+    region: "{{ aws_regions.1 }}"
 
 r1_nfs_servers:
   hosts:

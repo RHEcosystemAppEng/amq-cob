@@ -22,10 +22,16 @@
   include_role:
     name: setup_boto
 
+- name: EFS region info
+  when: nfs_or_efs is defined and nfs_or_efs == "efs"
+  debug:
+    msg: "EFS information will be retrieved from {{ region }} region..."
+
 - name: Find all existing EFS
   when: nfs_or_efs is defined and nfs_or_efs == "efs"
   community.aws.efs_info:
     profile: "{{ aws_profile_name }}"
+    region: "{{ region }}"
     tags:
       Name: "{{resource_prefix}}-AMQ_COB-{{cluster_idx}}"
       Cluster: "cluster {{cluster_idx}}"
