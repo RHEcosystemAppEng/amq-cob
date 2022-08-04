@@ -41,7 +41,6 @@ r1_router03_spoke_ip:     3.96.64.59
 r2_router03_spoke_ip:     3.141.11.98
 
 ## Variables for AWS setup. Please un-comment these when setting up on AWS
-# todo(sg): update readme to add the AWS private key info
 private_key_location: "~/.ssh/id_rsa"
 ansible_ssh_private_key_file: "{{ private_key_location }}"
 ansible_user: ec2-user
@@ -50,13 +49,18 @@ nfs_or_efs: nfs
 
 aws_profile_name: terraform_redhat
 efs_options: "defaults,vers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
-# Specify correct prefix value (for your resources). This should match what was specified in Terraform
-#resource_prefix: "tmp-sg"
 
-# For SSH key pair - PROVIDE YOUR OWN SUFFIX
+### resource_prefix is ONLY used for EFS setup
+# Specify correct prefix value (for your resources). This should match what was specified in Terraform setup
+#resource_prefix: "<PREFIX_SPECIFIED_DURING_TERRAFORM_SETUP>"
+
+### For SSH key pair - PROVIDE YOUR OWN SUFFIX
 key_pair_name: amq_aws-key_pair-<SUFFIX>    # This name should match what's used in Terraform
 pub_key_location: "{{ private_key_location }}.pub"
-aws_regions:
-  - us-east-2   #US East (Ohio)
-  - ca-central-1
 
+### List of regions. Used primarily for SSH key setup and EFS info retrieval:
+aws_regions:
+  # Region 1 should ALWAYS come as the 1st entry in this list
+  - ca-central-1
+  # Region 2 should ALWAYS come as the 2nd entry in this list
+  - us-east-2   #US East (Ohio)

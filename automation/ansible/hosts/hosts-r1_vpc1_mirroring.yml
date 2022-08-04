@@ -37,6 +37,7 @@ r1_vpc1_brokers:
     nfs_server_ip: "{{ r1_vpc1_private_ip_prefix }}.0.50"
     mirror_group: r1_vpc1_brokers
     cluster_idx: 1
+    region: "{{ aws_regions.0 }}"
 
 
 r1_nfs_servers:

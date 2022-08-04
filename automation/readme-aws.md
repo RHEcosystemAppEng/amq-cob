@@ -460,6 +460,15 @@ the two regions
     terraform plan -destroy -out=destroy.plan
     terraform apply destroy.plan
   ```
+
+  _Specify the `PREFIX` if one was specified at the resource creation time_
+
+
+* Or, delete all the resources setup in region 1 (cluster 1/2) using a single command:
+  ```shell
+    cd $MAIN_CONFIG_DIR/terraform/multi-region
+    terraform destroy -auto-approve
+  ```
   
   _Specify the `PREFIX` if one was specified at the resource creation time_
 
