@@ -5,8 +5,8 @@ locals {
   R2_VPC2_MAIN_CIDR_BLOCK = "${var.R2_VPC2_PRIVATE_IP_PREFIX}.0.0/16"
 
   NAME_PREFIX = "${var.PREFIX}-AMQ_COB"
-  R1_AMI_ID      = lookup(var.AMI, var.REGION_1)
-  R2_AMI_ID      = lookup(var.AMI, var.REGION_2)
+  R1_AMI_ID   = lookup(var.AMI, var.REGION_1)
+  R2_AMI_ID   = lookup(var.AMI, var.REGION_2)
 
   KEY_NFS       = "nfs"
   KEY_BROKER_01 = "broker_01"
