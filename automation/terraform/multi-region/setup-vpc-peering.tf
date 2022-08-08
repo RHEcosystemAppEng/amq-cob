@@ -1,7 +1,7 @@
 # ------------------------------------------------
 # VPC Peering for region 1 - between vpc1 and vpc2
 # ------------------------------------------------
-module "r1-vpc1-vpc2" {
+module "r1-vpc1-vpc2-peering" {
   source = "../vpc-peering/intra-region"
 
   VPC1_COMMON = module.r1-vpc1.vpc_common
@@ -19,7 +19,7 @@ module "r1-vpc1-vpc2" {
 # ------------------------------------------------
 # VPC Peering for region 2 - between vpc1 and vpc2
 # ------------------------------------------------
-module "r2-vpc1-vpc2" {
+module "r2-vpc1-vpc2-peering" {
   source = "../vpc-peering/intra-region"
 
   providers = {aws = aws.aws_r2}
