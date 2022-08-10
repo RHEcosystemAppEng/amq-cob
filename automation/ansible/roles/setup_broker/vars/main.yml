@@ -17,3 +17,6 @@ amq_mirror_primary_broker_name: "{{ hostvars[groups[mirror_group][mirror_primary
 # Backup mirror broker private IP
 amq_mirror_backup_broker_ip: "{{ hostvars[groups[mirror_group][mirror_backup_host_idx]]['broker_private_ip'] }}"
 amq_mirror_backup_broker_name: "{{ hostvars[groups[mirror_group][mirror_backup_host_idx]]['broker_name'] }}"
+
+# Mirror region is same for all the hosts under a group, so we're simply picking up the 1st host
+amq_mirror_broker_region: "{{ hostvars[groups[mirror_group][0]]['region'] }}"

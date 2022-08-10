@@ -110,18 +110,33 @@ under the License.
         {% if enable_ssl is defined and enable_ssl == true %}
             <!-- For setting up mirroring between brokers -->
             {% if is_live_broker is defined and is_live_broker == true %}
-                <!-- live is main and backup is the backup -->
                 <broker-connections>
-                    <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}#tcp://{{ amq_mirror_backup_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}" name="{{ amq_mirror_primary_broker_name }}">
+                    <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}" name="{{ amq_mirror_broker_region }}-{{ amq_mirror_primary_broker_name }}">
                         <mirror/>
                     </amqp-connection>
+
+        <!--
+           @TODO(SG): Can't connect to the backup broker. Keeps on getting "Retrying Server AMQP Connection connectionID on IP retry 1..N of -1"
+
+                    <amqp-connection uri="tcp://{{ amq_mirror_backup_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}" name="{{ amq_mirror_broker_region }}-{{ amq_mirror_backup_broker_name }}">
+                        <mirror/>
+                    </amqp-connection>
+         -->
                 </broker-connections>
             {% else %}
                 <!-- backup is main and live is the backup -->
                 <broker-connections>
-                    <amqp-connection uri="tcp://{{ amq_mirror_backup_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}#tcp://{{ amq_mirror_primary_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}" name="{{ amq_mirror_backup_broker_name }}">
+                    <amqp-connection uri="tcp://{{ amq_mirror_backup_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}" name="{{ amq_mirror_broker_region }}-{{ amq_mirror_backup_broker_name }}">
                         <mirror/>
                     </amqp-connection>
+
+        <!--
+           @TODO(SG): Can't connect to the live broker. Keeps on getting "Retrying Server AMQP Connection connectionID on IP retry 1..N of -1"
+
+                    <amqp-connection uri="tcp://{{ amq_mirror_primary_broker_ip }}:5672{{ amq_broker_conn_ssl_params }}" name="{{ amq_mirror_broker_region }}-{{ amq_mirror_primary_broker_name }}">
+                        <mirror/>
+                    </amqp-connection>
+         -->
                 </broker-connections>
             {% endif %}
         {% else %}

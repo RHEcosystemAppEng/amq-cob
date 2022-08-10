@@ -55,6 +55,7 @@
     msg:
       - "AMQ config files copied to {{ amq_config_dir }} ..."
       - "Mirroring enabled: {{ enable_amq_mirroring }}"
+      - "Mirror region: {{ amq_mirror_broker_region }}"
 
 - name: All done!!!
   when: (copy_amq_setup_output.changed is true) or (amq_install_script_output.changed is true) or (copy_amq_jgroups_output.changed is true)
