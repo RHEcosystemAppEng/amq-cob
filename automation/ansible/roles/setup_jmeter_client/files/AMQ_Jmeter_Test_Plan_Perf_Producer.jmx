@@ -47,7 +47,7 @@
           <elementProp name="jms.jmsProperties" elementType="JMSProperties">
             <collectionProp name="JMSProperties.properties"/>
           </elementProp>
-          <boolProp name="jms.non_persistent">true</boolProp>
+          <boolProp name="jms.non_persistent">${non_persistent}</boolProp>
         </PublisherSampler>
         <hashTree/>
       </hashTree>
@@ -71,6 +71,11 @@
           <elementProp name="jmsTimeout" elementType="Argument">
             <stringProp name="Argument.name">jmsTimeout</stringProp>
             <stringProp name="Argument.value">${__P(jmsTimeout,3000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="non_persistent" elementType="Argument">
+            <stringProp name="Argument.name">non_persistent</stringProp>
+            <stringProp name="Argument.value">${__P(non_persistent,true)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

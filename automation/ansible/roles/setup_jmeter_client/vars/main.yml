@@ -23,3 +23,4 @@ producer_threads: 1
 consumer_threads: 5
 jms_timeout_ms: 3000
 numberOfMessagesPerMin: 200
+non_persistent: true
