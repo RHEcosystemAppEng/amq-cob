@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Red Hat AMQ Performance Test Plan - Producer and Consumers" enabled="true">
-      <stringProp name="TestPlan.comments">Red Hat AMQ Performance Test Plan - Producer and Consumers</stringProp>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Red Hat AMQ - N messages - Producer and Consumer" enabled="true">
+      <stringProp name="TestPlan.comments">Red Hat AMQ - N messages - Producer and Consumer</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
@@ -16,11 +16,11 @@
         <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
+          <stringProp name="LoopController.loops">${numberOfMessagesPerMin}</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${producerThreads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time"></stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration">${producerDuration}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -37,17 +37,18 @@
           <stringProp name="jms.priority"></stringProp>
           <stringProp name="jms.security_principle">amq_user</stringProp>
           <stringProp name="jms.security_credentials">amq_password</stringProp>
-          <stringProp name="jms.text_message">Sample Text from </stringProp>
+          <stringProp name="jms.text_message">Sample Text from</stringProp>
           <stringProp name="jms.input_file"></stringProp>
           <stringProp name="jms.random_path"></stringProp>
           <stringProp name="jms.config_choice">jms_use_text</stringProp>
           <stringProp name="jms.config_msg_type">jms_text_message</stringProp>
-          <stringProp name="jms.iterations">${producerSamples}</stringProp>
+          <stringProp name="jms.iterations">1</stringProp>
           <boolProp name="jms.authenticate">false</boolProp>
           <elementProp name="jms.jmsProperties" elementType="JMSProperties">
             <collectionProp name="JMSProperties.properties"/>
           </elementProp>
-          <boolProp name="jms.non_persistent">true</boolProp>
+          <boolProp name="jms.non_persistent">{{non_persistent}}</boolProp>
+
         </PublisherSampler>
         <hashTree/>
       </hashTree>
@@ -117,6 +118,11 @@
           <elementProp name="jmsTimeout" elementType="Argument">
             <stringProp name="Argument.name">jmsTimeout</stringProp>
             <stringProp name="Argument.value">${__P(jmsTimeout,3000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="numberOfMessagesPerMin" elementType="Argument">
+            <stringProp name="Argument.name">numberOfMessagesPerMin</stringProp>
+            <stringProp name="Argument.value">${__P(numberOfMessagesPerMin,180)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

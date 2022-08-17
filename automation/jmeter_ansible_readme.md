@@ -17,7 +17,7 @@ Use these playbooks to perform actual Jmeter performance test against AMQ Artemi
 No throttling on the producer and consumer side.
 
 ```shell
-ansible-playbook playbooks/setup_n_run_jmeter_n_messages_in_parallel_client_playbook.yml --extra-vars "@variable_override.yml"
+ansible-playbook playbooks/setup_n_run_jmeter_perf_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
 `setup_n_run_jmeter_perf_producer_playbook.yml` - This playbook will run the jmeter test without any throttle on producer. 
@@ -65,8 +65,6 @@ ansible-playbook playbooks/setup_n_run_jmeter_n_messages_consumer_playbook.yml -
 ansible-playbook playbooks/setup_n_run_jmeter_n_messages_in_parallel_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
-
-
 Please consider overriding following properties in [variable_override.yml](variable_override.yml) if you want to change the default behaviour.
 ```yaml
     # IP address of the hub router or broker to perform the test.
@@ -77,7 +75,7 @@ Please consider overriding following properties in [variable_override.yml](varia
     jmeter_binary_version: apache-jmeter-5.4.3
     jmeter_binary_archive: "{{ jmeter_binary_version }}.zip"
     jmeter_remote_bin_dir: jmeter    
-    # Parameters that effects the benchmark test, JMX Parameters.
+    #Parameters that effects the benchmark test, JMX Parameters.
     #Duration is in seconds
     producer_duration: 30
     #Duration is in seconds
@@ -88,6 +86,8 @@ Please consider overriding following properties in [variable_override.yml](varia
     consumer_threads: 5
     jms_timeout_ms: 3000
     numberOfMessagesPerMin: 200
-    # Delete the jmeter home directory before setting up the client. 
+    #Delete the jmeter home directory before setting up the client. 
     clean_jmeter_home_directory: true
+    #Set to true for durable is false, otherwise set to false for durable is true. 
+    non_persistent: true
 ```

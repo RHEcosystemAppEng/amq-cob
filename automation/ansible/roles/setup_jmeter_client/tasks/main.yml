@@ -46,32 +46,12 @@
     dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ item }}"
     mode: 0744
   loop:
-    - AMQ_Jmeter_Test_Plan_N_Messages.jmx
     - AMQ_Jmeter_Test_Plan_N_Messages_Consumer.jmx
-    - AMQ_Jmeter_Test_Plan_N_Messages_Producer.jmx
-    - AMQ_Jmeter_Test_Plan_Perf.jmx
     - AMQ_Jmeter_Test_Plan_Perf_Consumer.jmx
-    - AMQ_Jmeter_Test_Plan_Perf_Producer.jmx
     - gen_throughput.sh
-
-#- name: "Copy all dependent shell script template files to {{ jmeter_remote_bin_dir_full_path }} "
-#  template: src={{item.src}} dest="{{ jmeter_remote_bin_dir_full_path }}/{{item.dest}}" mode=0744
-#    src: "{{ item }}"
-#    dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ item | basename | regex_replace('\.j2$', '') }}"
-#    mode: 0744
-#  loop:
-#    - runBenchmarkTest_N_Messages.sh.j2
-#    - runBenchmarkTest_N_Messages_Consumer.sh.j2
-#    - runBenchmarkTest_N_Messages_Producer.sh.j2
-#    - runBenchmarkTest_Perf.sh.j2
-#    - runBenchmarkTest_Perf_Consumer.sh.j2
-#    - runBenchmarkTest_Perf_Producer.sh.j2
 
 - name: "Copy all dependent shell script template files and jndi.properties to {{ jmeter_remote_bin_dir_full_path }} "
   template: src={{item.src}} dest={{item.dest}} mode=0744
-#    src: "{{ item }}"
-#    dest: "{{ jmeter_remote_bin_dir_full_path }}/{{ item | basename | regex_replace('\.j2$', '') }}"
-#    mode: 0744
   with_items:
     - { src: 'runBenchmarkTest_N_Messages.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages.sh' }
     - { src: 'runBenchmarkTest_N_Messages_Consumer.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages_Consumer.sh' }
@@ -79,34 +59,9 @@
     - { src: 'runBenchmarkTest_Perf.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf.sh' }
     - { src: 'runBenchmarkTest_Perf_Consumer.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf_Consumer.sh' }
     - { src: 'runBenchmarkTest_Perf_Producer.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf_Producer.sh' }
+    - { src: 'AMQ_Jmeter_Test_Plan_N_Messages.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_N_Messages.jmx' }
+    - { src: 'AMQ_Jmeter_Test_Plan_N_Messages_Producer.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_N_Messages_Producer.jmx' }
+    - { src: 'AMQ_Jmeter_Test_Plan_Perf.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_Perf.jmx' }
+    - { src: 'AMQ_Jmeter_Test_Plan_Perf_Producer.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_Perf_Producer.jmx' }
     - { src: 'jndi.properties.j2', dest: '/tmp/jndi.properties' }
 
-#    - { src: 'templates/bar.j2', dest: '/etc/splat/bar.conf' }
-#    - runBenchmarkTest_N_Messages.sh.j2
-#    - runBenchmarkTest_N_Messages_Consumer.sh.j2
-#    - runBenchmarkTest_N_Messages_Producer.sh.j2
-#    - runBenchmarkTest_Perf.sh.j2
-#    - runBenchmarkTest_Perf_Consumer.sh.j2
-#    - runBenchmarkTest_Perf_Producer.sh.j2
-
-
-#- name: Copy jmeter jndi.properties config file.
-#  template:
-#    src: "jndi.properties.j2"
-#    dest: "/tmp/jndi.properties"
-#    mode: 0644
-#  register: copy_jmeter_jndi_config_output
-
-#- name: Upload runBenchmarkTest_N_Messages.sh script.
-#  template:
-#    src: "runBenchmarkTest_N_Messages.sh.j2"
-#    dest: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_N_Messages.sh"
-#    mode: 0744
-#  register: copy_runBenchmarkTest_N_Messages
-#
-#- name: Upload runBenchmarkTest_Perf.sh script.
-#  template:
-#    src: "runBenchmarkTest_Perf.sh.j2"
-#    dest: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf.sh"
-#    mode: 0744
-#  register: copy_runBenchmarkTest_Perf
