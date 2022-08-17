@@ -1,0 +1,5 @@
+---
+amq_install_dir: /opt/rh-amq-broker
+amq_broker_dir: /var/opt/amq-broker
+amq_broker_install_dir: "{{ amq_broker_dir }}/{{ broker_name }}"
+amq_install_full_dir: "{{ amq_install_dir }}/{{ amq_binary_version }}"

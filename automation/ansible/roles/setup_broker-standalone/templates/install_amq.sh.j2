@@ -1,0 +1,62 @@
+#!/bin/sh
+
+### ******************************************************
+### This script will be run under "amq_runner" account
+### ******************************************************
+
+AMQ_BINARY_ARCHIVE="{{ amq_binary_archive }}"
+AMQ_BINARY_FULL_PATH="{{ amq_binary_location }}/${AMQ_BINARY_ARCHIVE}"
+echo "Checking for existence of ${AMQ_BINARY_FULL_PATH}"
+if [ -f $AMQ_BINARY_FULL_PATH ]; then
+    AMQ_INSTALL_DIR={{ amq_install_dir }}
+    DATE_SUFFIX=`date +"%Y%m%d_%H%M%S"`
+    if [ -d $AMQ_INSTALL_DIR ]; then
+      AMQ_INSTALL_BAK_DIR=${AMQ_INSTALL_DIR}.BAK.$DATE_SUFFIX
+      echo "Moving existing $AMQ_INSTALL_DIR directory to $AMQ_INSTALL_BAK_DIR ..."
+      sudo mv -f $AMQ_INSTALL_DIR $AMQ_INSTALL_BAK_DIR
+    fi
+
+    echo "Creating amq-broker directory and installing AMQ in it..."
+    sudo mkdir $AMQ_INSTALL_DIR
+    sudo chown -R amq_runner:amq_runner $AMQ_INSTALL_DIR
+
+    # Directory where AMQ broker will be installed
+    cd $AMQ_INSTALL_DIR
+
+    cp $AMQ_BINARY_FULL_PATH $AMQ_INSTALL_DIR
+    unzip $AMQ_BINARY_ARCHIVE > /dev/null
+    echo "AMQ installed in `pwd`"
+
+    AMQ_BROKER_DIR={{ amq_broker_dir }}
+    if [ -d $AMQ_BROKER_DIR ]; then
+      AMQ_BROKER_BAK_DIR=${AMQ_BROKER_DIR}.BAK.$DATE_SUFFIX
+      echo "Moving existing $AMQ_BROKER_DIR directory to $AMQ_BROKER_BAK_DIR ..."
+      sudo mv -f $AMQ_BROKER_DIR $AMQ_BROKER_BAK_DIR
+    fi
+
+    echo ""
+    echo "Creating a broker in $AMQ_BROKER_DIR..."
+    sudo mkdir $AMQ_BROKER_DIR
+    sudo chown amq_runner:amq_runner $AMQ_BROKER_DIR
+    cd $AMQ_BROKER_DIR
+
+    # create broker instance
+    $AMQ_INSTALL_DIR/{{ amq_binary_version }}/bin/artemis create \
+      --user amq_user \
+      --password amq_password \
+      --no-hornetq-acceptor \
+      --no-mqtt-acceptor \
+      --no-stomp-acceptor \
+      --allow-anonymous \
+      --host {{ broker_private_ip }} \
+      --name $HOSTNAME \
+      --relax-jolokia \
+      {{ broker_name }}
+else
+    echo "******************************************************************"
+    echo "** -->> AMQ zip is not in it's location ($AMQ_BINARY_FULL_PATH) <<--"
+    echo "** -->> Please fix the above error and re-run"
+    echo "******************************************************************"
+    exit 10
+fi
+

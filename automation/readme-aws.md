@@ -23,6 +23,11 @@
   * [Capture public IP](#capture-public-ip---manual-step)
   * [Setup SSL](#ssl-setup)
   * [Configure regions](#configure-regions)
+* [Alternate - Configure standalone broker with Ansible](#configure-standalone-broker---ansible)
+  * [Prerequisites](#prerequisites---ansible-config-standalone-broker)
+  * [Capture public IP](#capture-public-ip---manual-step-standalone-broker)
+  * [Setup SSL](#ssl-setup-standalone-broker)
+  * [Configure standalone broker](#configure-standalone-broker)
 * [Run performance tests using JMeter](#run-performance-tests)
   * [Prerequisites](#prerequisites---install-jmeter)
   * [Run tests](#run-tests)
@@ -32,15 +37,9 @@
   * [Stop brokers and routers](#stop-brokersrouters)
   * [Run brokers and routers](#run-brokersrouters)
   * [Purge queue](#purge-queue)
-* [Start/stop instances - TBD](#startstop-the-instances)
-  * [Prerequisites](#prerequisites---startstop-instances)
-  * [Start stopped instances](#start-instances---region-12)
-  * [Stop running instances](#stop-instances---region-12)
 * [Destroy the resources](#destroy-the-resources)
   * [Prerequisites](#prerequisites---destroy-resources)
-  * [Global Transit Gateway - TBD](#destroy-global-transit-gateway)
-  * [Region 1](#destroy-resources---region-1)
-  * [Region 2 - TBD](#destroy-resources---region-2)
+  * [Region 1](#destroy-resources---region-12)
 * [Instance info](#instance-info)
 * [References](#references)
 * [Versions](#versions)
@@ -106,6 +105,7 @@ Clone this repo to setup brokers/routers in AWS:
 * Copy the downloaded AMQ archive to following directories:
   * `$MAIN_CONFIG_DIR/ansible/roles/setup_nfs_server/files`
   * `$MAIN_CONFIG_DIR/ansible/roles/mount_efs/files`
+  * `$MAIN_CONFIG_DIR/ansible/roles/setup_broker-standalone/files`
 
 ### Create API key
 * Create a new API key by following instructions at [Create API key](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
@@ -323,7 +323,7 @@ To configure the instances using ansible, we need to extract the public ip for a
   to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
 
 ### SSL Setup
-* You can setup Brokers & Routers with SSL and the SSL behavior is determined by the SSL variables in `$MAIN_CONFIG_DIR/ansible/variable_override.yml`. 
+* You can setup Brokers & Routers with SSL and the SSL behavior is determined by the SSL variables in `$MAIN_CONFIG_DIR/ansible/variable_override.yml`.
 * In most cases just changing (_enable_ssl_) & (_ssl_generate_ca_) should be sufficient and one can change other variables based on specific requirements.
 
 | Variable           | Description                                                                                                                                                                           |
@@ -352,6 +352,57 @@ To configure the instances using ansible, we need to extract the public ip for a
     * Host entries will be added to the brokers (for NFS server) and spoke routers (for hub router and brokers)
   * All the brokers will start
   * All the routers will start
+<br>
+
+
+## Configure Standalone broker - ansible
+Ansible is used to configure brokers/routers and NFS server to install required packages as well as running
+them. _For this purpose, we need to run two manual steps before we can use ansible to configure the system_
+
+### Prerequisites - Ansible config (standalone broker)
+* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
+
+### Capture public IP - Manual step (standalone broker)
+To configure the instances using ansible, we need to extract the public ip for all the instances first.
+* Execute following commands to retrieve public ip for region 1 and 2:
+  ```shell
+  cd $MAIN_CONFIG_DIR/terraform
+
+  # Command given below will extract the public IP for all the instances running in region 1 and region 2
+  ./capture_ip_host.sh -d multi-region -s "_ip" -a
+  ```
+  Copy the `<hostname>: <ip_address>` output (_between START and END tags_), for each of the above commands,
+  to `$MAIN_CONFIG_DIR/ansible/variable_override.yml`
+
+### SSL Setup (standalone broker)
+* This setup has NOT BEEN TESTED with SSL
+* Comment out (or set them to false) following SSL variables in `$MAIN_CONFIG_DIR/ansible/variable_override.yml`. 
+  * enable_ssl
+  * ssl_generate_ca
+  * ssl_generate_certs
+
+### Configure standalone broker
+* Perform configuration setup of cluster1 and cluster2 in region 1/2 by running following commands
+  ```shell
+  cd $MAIN_CONFIG_DIR/ansible
+
+  ansible-playbook -i hosts/hosts-r1_vpc1-standalone_broker.yml \
+     playbooks/setup_playbook-standalone_broker.yml \
+     --extra-vars "@variable_override.yml"
+  ansible-playbook -i hosts/hosts-r1_vpc1-standalone_broker.yml \
+     playbooks/run_broker_n_router_playbook.yml \
+     --extra-vars "@variable_override.yml" \
+     --tags run_broker
+  ```
+* Above command(s) will configure following resources:
+  * `amq_runner` user will be created in all the instances of brokers and routers
+  * Necessary packages will be installed in the brokers and routers
+  * AMQ binary will be copied to broker
+  * All the brokers will start
+  * All the routers will start
+
+
+<br>
 
 ## Run performance tests
 JMeter is being used to run the performance tests on the AMQ brokers and routers.
@@ -413,38 +464,6 @@ Ansible can be used to perform other tasks, e.g. reset the config, stop, run the
 <br>
 <br>
 
-
-## Start/stop the instances - NOT YET DONE
-Sometimes you may need to stop the running instances, or start the instances that are stopped. This section provides
-information on that process
-
-### Prerequisites - start/stop instances
-* _`MAIN_CONFIG_DIR` environment variable should be setup as part of [Checkout config](#checkout-setup-config) step_
-
-### Start instances - Region 1/2
-* To start instances in region 1 and 2, use following commands:
-  ```shell
-    cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
-    terraform apply -auto-approve \
-      -var PREFIX="cob-test" \
-      -var INSTANCE_ACTION="start" \
-      -var FORCE_ACTION="false"
-  ```
-
-### Stop instances - Region 1/2
-* To perform a graceful shutdown, first execute steps given in [Stop broker and routers](#stop-brokersrouters)
-* Stop running instances in region 1 and 2 by perform following commands:
-  ```shell
-    cd $MAIN_CONFIG_DIR/terraform/start-stop-instance
-    terraform apply -auto-approve \
-      -var PREFIX="cob-test" \
-      -var INSTANCE_ACTION="stop" \
-      -var FORCE_ACTION="false"
-  ```
-
-_Above command will take a few minutes and will either start or stop the instances (depending on the action)_
-<br>
-<br>
 
 ## Destroy the resources
 This section provides information on how to cleanup / delete the resources that were setup for all the clusters in
@@ -527,6 +546,7 @@ This setup has been configured and tested using Terraform and Ansible with follo
 * Terraform:
   * `v1.1.7`
   * `v1.2.4`
+  * `v1.2.6`
 * Python:
   * `3.9.10`
   * `3.9.13`

@@ -4,22 +4,11 @@
   debug:
     msg:
       - "ansible_host = {{ ansible_host }}"
-#      - "ansible_address = {{ ansible_eth0.ipv4.address }}"
       - "hostname = {{ inventory_hostname }}"
 
 - name: Stop broker
   include_role:
     name: stop_broker
-
-- name: Reset EFS
-  when: nfs_or_efs is defined and nfs_or_efs == "efs"
-  include_role:
-    name: reset_efs
-
-- name: Reset NFS
-  when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
-  include_role:
-    name: reset_nfs
 
 - name: Delete broker directories
   include_role:

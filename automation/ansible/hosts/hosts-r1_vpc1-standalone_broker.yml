@@ -1,0 +1,95 @@
+---
+
+# Brokers in region 1 - vpc1
+r1_vpc1_brokers:
+  hosts:
+    r1-broker01-live:
+      broker_data_directory: one
+      broker_name: broker-01
+      broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.0.51"
+      is_live_broker: true
+      mirror_primary_host_idx: 0
+      mirror_backup_host_idx: 1
+      ansible_host: "{{ r1_broker01_live_ip }}"
+    r1-broker03-live:
+      broker_data_directory: two
+      broker_name: broker-03
+      broker_private_ip: "{{ r1_vpc1_private_ip_prefix }}.64.52"
+      is_live_broker: true
+      mirror_primary_host_idx: 2
+      mirror_backup_host_idx: 3
+      ansible_host: "{{ r1_broker03_live_ip }}"
+
+r1_routers:
+  hosts:
+    r1-router01-hub:
+      router_id: router.hub-01
+      router_private_ip: "{{ r1_vpc1_private_ip_prefix }}.64.100"
+      router_config_file_prefix: hub-router
+      ansible_host: "{{ r1_router01_hub_ip }}"
+    r1-router02-spoke:
+      router_id: router.to.cluster-01
+      router_private_ip: "{{ r1_vpc1_private_ip_prefix }}.0.100"
+      live_broker_01_host: live-broker-01
+      live_broker_02_host: live-broker-02
+      broker_group: r1_vpc1_brokers
+      router_config_file_prefix: spoke-router
+      ansible_host: "{{ r1_router02_spoke_ip }}"
+  vars:
+    router_group: r1_routers
+    live_broker_01_host_idx: 0
+    live_broker_02_host_idx: 1
+
+
+# Parent for all the broker groups
+brokers:
+  children:
+    r1_vpc1_brokers:
+  vars:
+    packages:
+      - nfs-utils
+      - java-11-openjdk
+      - zip
+      - unzip
+
+
+routers:
+  children:
+    r1_routers:
+  vars:
+    packages:
+      - qpid-dispatch-router
+      - qpid-dispatch-tools
+      - qpid-dispatch-console
+
+all:
+  vars:
+    ansible_connection: ssh
+    ansible_user: root
+    user_amq: "amq_runner"
+
+    amq_binary_location: /tmp
+    enable_amq_mirroring: false
+    amq_binary_version: amq-broker-7.9.0
+    amq_binary_archive: "{{ amq_binary_version }}-bin.zip"
+
+    nfs_or_efs: nfs
+
+    # whether to delete AMQ binary when resetting the NFS server
+    delete_amq_archive: false
+
+    # Jmeter client setup playbook variables.
+    jmeter_hub_router_ip: "{{ r1_vpc1_private_ip_prefix }}.64.100"
+    jmeter_hub_router_port: 5672
+    jmeter_binary_download_uri: https://dlcdn.apache.org/jmeter/binaries
+    jmeter_binary_version: apache-jmeter-5.4.3
+    jmeter_binary_archive: "{{ jmeter_binary_version }}.zip"
+    jmeter_remote_bin_dir: jmeter
+    clean_jmeter_home_directory: true
+
+    resource_prefix: "cob-test"
+
+    amq_binary_dest_list:
+
+    # Private IP prefixes for each region/vpc
+    r1_vpc1_private_ip_prefix: "10.100"

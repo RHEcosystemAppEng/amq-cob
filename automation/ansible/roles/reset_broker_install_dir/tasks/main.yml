@@ -1,0 +1,15 @@
+---
+
+- name: Remove AMQ and Broker install directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ amq_install_full_dir }}"
+    - "{{ amq_broker_install_dir }}"
+  register: remove_broker_dirs
+
+- name: Outout of "Remove AMQ and Broker install directories"
+  when: remove_broker_dirs.changed is true
+  debug:
+    msg: "{{ amq_install_full_dir }} and {{ amq_broker_install_dir }} deleted recursively..."
