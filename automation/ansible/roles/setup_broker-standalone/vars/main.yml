@@ -1,0 +1,8 @@
+---
+amq_install_dir: /opt/rh-amq-broker
+amq_broker_dir: /var/opt/amq-broker
+amq_install_script: "/home/{{ user_amq }}/install_amq.sh"
+amq_broker_install_dir: "{{ amq_broker_dir }}/{{ broker_name }}"
+amq_config_dir: "{{ amq_broker_install_dir }}/etc"
+
+amq_amqp_conn_params: "tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true"

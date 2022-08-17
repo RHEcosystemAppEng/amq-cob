@@ -1,24 +1,4 @@
 ---
-- name: SSL Cert Tasks
-  import_playbook: ssl-cert-gen-full-playbook.yml
-  when:
-    - enable_ssl is defined and enable_ssl is true
-
-- hosts:
-    - nfs_servers
-  become: 'yes'
-  become_method: sudo
-  gather_facts: false
-  roles:
-    - role: setup_nfs_server
-      tags: setup_nfs_server
-      when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
-    - role: setup_hostname
-      tags:
-        - setup_nfs_server
-        - setup_nfs_server_hostname
-      when: nfs_or_efs is not defined or nfs_or_efs == "nfs"
-
 - hosts:
     - brokers
   become: 'yes'
@@ -33,16 +13,13 @@
       tags:
         - setup_broker
         - setup_broker_hostname
-    - role: setup_broker-common
-      tags:
-        - setup_broker
-        - setup_broker_common
     # Add "amq_user" to sudoers to allow invoking "sudo" without password prompt
     - role: setup_broker-sudoer-add
       tags:
         - setup_broker
         - setup_broker_sudoer_add
-    - role: setup_broker
+    - role: setup_broker-standalone
+      become: true
       become_user: "{{ user_amq }}"
       tags:
         - setup_broker
@@ -52,6 +29,7 @@
       tags:
         - setup_broker
         - setup_broker_sudoer_remove
+
 
 - hosts:
     - routers

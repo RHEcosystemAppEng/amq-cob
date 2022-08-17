@@ -13,26 +13,38 @@ cd $MAIN_CONFIG_DIR/ansible
 Use these playbooks to perform actual Jmeter performance test against AMQ Artemis.
 
 
-`setup_n_run_jmeter_perf_client_playbook.yml` - This playbook will run the jmeter test without any throttle on producer and consumer side. 
+* `setup_n_run_jmeter_perf_client_playbook.yml` - This playbook will run the jmeter test without any throttle on producer and consumer side. 
 No throttling on the producer and consumer side.
 
-```shell
-ansible-playbook playbooks/setup_n_run_jmeter_perf_client_playbook.yml --extra-vars "@variable_override.yml"
-```
+  ```shell
+  ansible-playbook playbooks/setup_n_run_jmeter_perf_client_playbook.yml --extra-vars "@variable_override.yml"
+  ```
 
-`setup_n_run_jmeter_perf_producer_playbook.yml` - This playbook will run the jmeter test without any throttle on producer. 
+* `setup_n_run_jmeter_perf_client_playbook-standalone_broker.yml` :
+   ```shell
+    ansible-playbook -i hosts/hosts-r1_vpc1-standalone_broker.yml \
+      playbooks/setup_n_run_jmeter_perf_client_playbook-standalone_broker.yml \
+      --extra-vars "@variable_override.yml"
+   ```
+
+  * _Same as `setup_n_run_jmeter_perf_client_playbook` but installs JMeter on broker-01_
+  * To send messages to the standalone broker directly, instead of hub router, override following 
+    property in `variable_override.yml` and set it to the private IP of broker-01:
+    * `jmeter_hub_router_ip`
+
+* `setup_n_run_jmeter_perf_producer_playbook.yml` - This playbook will run the jmeter test without any throttle on producer. 
 No Consumers available
 
-```shell
-ansible-playbook playbooks/setup_n_run_jmeter_perf_producer_playbook.yml --extra-vars "@variable_override.yml"
-```
+    ```shell
+    ansible-playbook playbooks/setup_n_run_jmeter_perf_producer_playbook.yml --extra-vars "@variable_override.yml"
+    ```
 
-`setup_n_run_jmeter_perf_consumer_playbook.yml` - This playbook will run the jmeter test without any throttle on the consumer side. Use this playbook to perform actual Jmeter performance test against AMQ Artemis.
+* `setup_n_run_jmeter_perf_consumer_playbook.yml` - This playbook will run the jmeter test without any throttle on the consumer side. Use this playbook to perform actual Jmeter performance test against AMQ Artemis.
 No Producers available.
 
-```shell
-ansible-playbook playbooks/setup_n_run_jmeter_perf_consumer_playbook.yml --extra-vars "@variable_override.yml"
-```
+    ```shell
+    ansible-playbook playbooks/setup_n_run_jmeter_perf_consumer_playbook.yml --extra-vars "@variable_override.yml"
+    ```
 
 ### Ansible Playbooks to send/consumer specific number of messages.
 
