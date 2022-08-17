@@ -10,7 +10,6 @@
   -JjmsTimeout="{{ jms_timeout_ms }}" \
   -JproducerThreads="{{ producer_threads }}" \
   -JnumberOfMessagesPerMin="{{ numberOfMessagesPerMin }}" \
-  -Jnon_persistent="{{ non_persistent }}" \
   -l "${outputDir}/results_automated.jtl" \
   -j "${outputDir}/out.log") > ${outputDir}/jmeter_exec.out
 
