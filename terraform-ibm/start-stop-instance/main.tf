@@ -1,6 +1,6 @@
 
 module "toronto" {
-  source = "./common"
+  source = "common"
 
   providers = {
     ibm = ibm.tor
@@ -15,7 +15,7 @@ module "toronto" {
 }
 
 module "dallas" {
-  source = "./common"
+  source = "common"
 
   providers = {
     ibm = ibm

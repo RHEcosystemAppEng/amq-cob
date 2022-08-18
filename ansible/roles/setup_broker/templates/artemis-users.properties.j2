@@ -3,5 +3,5 @@
         {{ host }}=CN={{ host }},O=RedHat,C=CA
     {% endfor %}
 {% else %}
-    admin=amq_user
+    admin={{ broker_user }}
 {% endif %}

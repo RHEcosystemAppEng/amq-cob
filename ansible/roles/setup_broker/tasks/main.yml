@@ -40,6 +40,7 @@
     src: "{{ item }}.j2"    # iterate over all the template files specified in the loop
     dest: "{{ amq_config_dir }}/{{ item }}"
     mode: 0644
+    backup: yes
   loop:
     - broker.xml
     - jgroups-ping.xml

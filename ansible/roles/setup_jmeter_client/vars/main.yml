@@ -2,6 +2,9 @@
 #jmeter_archive_download_url: "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.4.3.zip"
 #jmeter_home_dir: "/root/jmeter/ansible"
 
+broker_user: amq_user
+broker_pass: amq_password
+
 jmeter_packages: bc
 jmeter_jmx_file: AMQ_Jmeter_Test_Plan_Perf.jmx.j2
 jmeter_remote_bin_dir: jmeter
