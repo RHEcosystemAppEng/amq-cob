@@ -42,8 +42,8 @@ if [ -f $AMQ_BINARY_FULL_PATH ]; then
 
     # create broker instance
     $AMQ_INSTALL_DIR/{{ amq_binary_version }}/bin/artemis create \
-      --user amq_user \
-      --password amq_password \
+      --user {{ broker_user }} \
+      --password {{ broker_pass }} \
       --no-hornetq-acceptor \
       --no-mqtt-acceptor \
       --no-stomp-acceptor \

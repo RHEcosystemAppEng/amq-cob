@@ -5,6 +5,8 @@ amq_install_script: "/home/{{ user_amq }}/install_amq.sh"
 amq_broker_install_dir: "{{ amq_broker_dir }}/{{ broker_name }}"
 amq_config_dir: "{{ amq_broker_install_dir }}/etc"
 amq_jgroups_config: "{{ amq_config_dir }}/jgroups-ping.xml"
+broker_user: amq_user
+broker_pass: amq_password
 
 amq_broker_conn_ssl_params: "?sslEnabled=true;trustStorePath=../etc/{{ CA_CERT_FILE_PREFIX | default(omit) }}-truststore.p12;trustStorePassword={{ STORE_PASS | default(omit) }};verifyHost=false;enabledProtocols=TLSv1.2,TLSv1.3;"
 amq_acceptor_conn_ssl_params: "sslEnabled=true;keyStorePath=../etc/{{ inventory_hostname }}-keystore.p12;keyStorePassword={{ KEY_PASS | default(omit) }};verifyHost=false;enabledProtocols=TLSv1.2,TLSv1.3;"

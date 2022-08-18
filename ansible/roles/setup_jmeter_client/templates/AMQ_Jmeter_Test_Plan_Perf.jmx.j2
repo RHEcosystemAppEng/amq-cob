@@ -35,8 +35,8 @@
           <stringProp name="jms.expiration"></stringProp>
           <stringProp name="jms_error_reconnect_on_codes"></stringProp>
           <stringProp name="jms.priority"></stringProp>
-          <stringProp name="jms.security_principle">amq_user</stringProp>
-          <stringProp name="jms.security_credentials">amq_password</stringProp>
+          <stringProp name="jms.security_principle">{{ broker_user }}</stringProp>
+          <stringProp name="jms.security_credentials">{{ broker_pass }}</stringProp>
           <stringProp name="jms.text_message">Sample Text from </stringProp>
           <stringProp name="jms.input_file"></stringProp>
           <stringProp name="jms.random_path"></stringProp>

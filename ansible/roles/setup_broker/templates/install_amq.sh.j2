@@ -42,15 +42,20 @@ if [ -f $AMQ_BINARY_FULL_PATH ]; then
 
     # create broker instance
     $AMQ_INSTALL_DIR/{{ amq_binary_version }}/bin/artemis create \
-      --user amq_user \
-      --password amq_password \
+      --user {{ broker_user }} \
+      --password {{ broker_pass }} \
       --no-amqp-acceptor \
       --no-hornetq-acceptor \
       --no-mqtt-acceptor \
       --no-stomp-acceptor \
       --allow-anonymous \
-      --host $HOSTNAME \
+      --host {{ broker_private_ip }} \
+      --name $HOSTNAME \
       --relax-jolokia \
+      --clustered \
+      --cluster-user amq_cluster_user \
+      --cluster-password amq_cluster_password \
+      --message-load-balancing OFF \
       --data {{ amq_advanced_topology_dir }}/{{ broker_data_directory }} \
       {{ broker_name }}
 else
