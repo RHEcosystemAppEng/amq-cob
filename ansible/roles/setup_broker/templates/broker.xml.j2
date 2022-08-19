@@ -234,8 +234,8 @@ under the License.
                 <connector-ref>artemis</connector-ref>
                 <retry-interval>500</retry-interval>
                 <use-duplicate-detection>true</use-duplicate-detection>
-                <message-load-balancing>STRICT</message-load-balancing>
-                <max-hops>1</max-hops>
+                <message-load-balancing>OFF</message-load-balancing>
+                <max-hops>0</max-hops>
                 <discovery-group-ref discovery-group-name="dg-group1"/>
             </cluster-connection>
         </cluster-connections>
