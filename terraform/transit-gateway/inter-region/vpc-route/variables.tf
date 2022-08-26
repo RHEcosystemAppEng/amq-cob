@@ -1,0 +1,3 @@
+variable "ROUTE_TABLE_ID" {}
+variable "ROUTE_DESTINATION_CIDR_BLOCK" {}
+variable "ROUTE_TRANSIT_GATEWAY_ID" {}
