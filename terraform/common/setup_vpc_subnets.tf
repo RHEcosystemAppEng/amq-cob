@@ -11,7 +11,8 @@ resource "aws_vpc" "main" {
 
 resource "aws_subnet" "all" {
   # Creating all the subnets based on the length of the az names as some regions have 2 zones (e.g. us-west-1)
-  count = length(data.aws_availability_zones.zones.names)
+  # Limiting to 3 max as we don't have the static value to set (in the given map) for 4th entry
+  count = length(data.aws_availability_zones.zones.names) <= 2 ? length(data.aws_availability_zones.zones.names) : 2
 
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.CIDR_BLOCKS[tostring(count.index)].cidr

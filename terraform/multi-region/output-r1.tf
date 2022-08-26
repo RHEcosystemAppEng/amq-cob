@@ -14,32 +14,16 @@ output "r1-ami_name" {
   value = module.r1-vpc1.ami_name
 }
 
-output "r1-zone1" {
-  value = module.r1-vpc1.vpc_common.zone1
-}
-
-output "r1-zone2" {
-  value = module.r1-vpc1.vpc_common.zone2
-}
-
-output "r1-zone3" {
-  value = module.r1-vpc1.vpc_common.zone3
+output "r1-zones" {
+  value = module.r1-vpc1.vpc_common.zones
 }
 
 output "r1-vpc1-cidr" {
   value = module.r1-vpc1.vpc_common.vpc_cidr
 }
 
-output "r1-vpc1-zone1_cidr" {
-  value = module.r1-vpc1.vpc_common.zone1_cidr
-}
-
-output "r1-vpc1-zone2_cidr" {
-  value = module.r1-vpc1.vpc_common.zone2_cidr
-}
-
-output "r1-vpc1-zone3_cidr" {
-  value = module.r1-vpc1.vpc_common.zone3_cidr
+output "r1-vpc1-zone_cidrs" {
+  value = module.r1-vpc1.vpc_common.zone_cidrs
 }
 
 output "r1-vpc1-route_table-main-id" {
@@ -94,16 +78,8 @@ output "r1-vpc2-cidr" {
   value = module.r1-vpc2.vpc_common.vpc_cidr
 }
 
-output "r1-vpc2-zone1_cidr" {
-  value = module.r1-vpc2.vpc_common.zone1_cidr
-}
-
-output "r1-vpc2-zone2_cidr" {
-  value = module.r1-vpc2.vpc_common.zone2_cidr
-}
-
-output "r1-vpc2-zone3_cidr" {
-  value = module.r1-vpc2.vpc_common.zone3_cidr
+output "r1-vpc2-zone_cidrs" {
+  value = module.r1-vpc2.vpc_common.zone_cidrs
 }
 
 output "r1-vpc2-route_table-main-id" {

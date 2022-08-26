@@ -10,8 +10,8 @@ locals {
 
   // Map to point to the two zones and corresponding subnets (Subnet should match zone)
   ZONE_N_SUBNET = {
-    "1" : { zone : module.common.zone1, subnet: module.common.subnet_1_id }
-    "2" : { zone : module.common.zone2, subnet: module.common.subnet_2_id }
+    "1" : { zone : module.common.subnets["0"].availability_zone, subnet: module.common.subnets["0"].id }
+    "2" : { zone : module.common.subnets["1"].availability_zone, subnet: module.common.subnets["1"].id }
   }
 
   NFS_SUFFIX         = var.INSTANCE_INFO[var.KEY_NFS].suffix
