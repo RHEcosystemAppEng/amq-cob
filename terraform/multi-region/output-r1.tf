@@ -426,11 +426,3 @@ output "r1-vpc2-efs_fs_id" {
 output "r1-vpc2-efs_fs_dns" {
   value = module.r1-vpc2.vpc_common.efs_fs_dns
 }
-
-output "r1-peering_connection" {
-  value = module.r1-vpc1-vpc2-peering.peering-info.id
-}
-
-output "r1-peering_connection_accept_status" {
-  value = module.r1-vpc1-vpc2-peering.peering-info.accept_status
-}
