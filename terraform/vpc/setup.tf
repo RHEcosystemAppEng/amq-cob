@@ -9,7 +9,6 @@ module "common" {
     "0" : { cidr : "${var.IP_NUMBER_PREFIX.0}.0/24" }  # 255 addresses for 1st AZ
     "1" : { cidr : "${var.IP_NUMBER_PREFIX.1}.0/24" }  # 255 addresses for 2nd AZ
     "2" : { cidr : "${var.IP_NUMBER_PREFIX.2}.0/24" }  # 255 addresses for 3rd AZ
-    "3" : { cidr : "${var.IP_NUMBER_PREFIX.2}.0/24" }  # 255 addresses for 3rd AZ
   }
 
   MAIN_CIDR_BLOCK = var.MAIN_CIDR_BLOCK
