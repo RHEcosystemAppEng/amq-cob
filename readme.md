@@ -1,6 +1,6 @@
 
 # Intro
-**DO NOT MERGE THIS BRANCH INTO main BRANCH.**
+**DO NOT MERGE THIS BRANCH INTO main BRANCH** as main branch uses Transit Gateway to establish VPC connectivity.
 
 Repo for config that is used to setup AMQ brokers and Interconnect Routers using Ansible and Terraform in AWS and IBM Cloud for DR/HA testing.
 
