@@ -1,8 +1,13 @@
 
 # Intro
+**DO NOT MERGE THIS BRANCH INTO main BRANCH.**
+
 Repo for config that is used to setup AMQ brokers and Interconnect Routers using Ansible and Terraform in AWS and IBM Cloud for DR/HA testing.
 
 _The setup is tested using JMeter._
+
+## Intra-region and inter-region VPC connectivity
+_**VPC peering** is used to establish connectivity between the VPCs, in the same region as well as between different regions._
 
 ## Directories that are part of this repo:
 * ansible
