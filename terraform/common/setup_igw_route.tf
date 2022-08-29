@@ -44,7 +44,8 @@ resource "aws_route_table_association" "main" {
      first apply only the resources that the for_each depends on.
   */
 
-  count = length(data.aws_availability_zones.zones.names)
+  # Limiting to 3 max as we don't have the static value to set (in the given map) for 4th entry
+  count = length(data.aws_availability_zones.zones.names) <= 2 ? length(data.aws_availability_zones.zones.names) : 2
 
   route_table_id = aws_route_table.main.id
   subnet_id      = aws_subnet.all[tostring(count.index)].id
