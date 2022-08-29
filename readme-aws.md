@@ -51,15 +51,15 @@ Configuring AMQ for DR, in **AWS**, following setup was used:
   * Routers to connect to live brokers in each clusters
     * Hub and other routers are part of hub and spoke topology
   * Two sets of Live/Backup brokers running in different availability zones (AZs) in each cluster
-  * VPC Peering to allow inter-VPC communication in the same region
+  * Transit Gateway to allow inter-VPC communication in the same region
 * Region 2 (Ohio) - `us-east-2`
   * Two clusters, each in separate VPC
   * Hub Router
   * Routers to connect to live brokers in each clusters
     * Hub and other routers are part of hub and spoke topology
   * Two sets of Live/Backup brokers running in different availability zones (AZs) in each cluster
-  * VPC Peering to allow inter-VPC communication in the same region
-* Inter-region VPC peering
+  * Transit Gateway to allow inter-VPC communication in the same region
+* Inter-region VPC peering using Transit Gateway
   * This is to allow the following inter-region communication:
     * Between region1.vpc1 and region2.vpc1 
     * Between region1.vpc2 and region2.vpc2 
@@ -260,20 +260,20 @@ As part of cluster2 config, following interconnect router is also created and se
       * Broker04: `cob-test-AMQ_COB-broker08-bak2`
       * Router03 (spoke): `cob-test-AMQ_COB-spoke-router3`
     * Public IPs for each of the above Instances
-  * **Local (intra-region) VPC Peering**
-    * `cob-test-AMQ_COB - peering`
+  * **Intra-region Transit Gateway**
+    * `cob-test-AMQ_COB - gateway - intra_region` - _Region1 and Region2_
       * Facilitates communications between Hub router (router 1) and Spoke routers (router 2 and 3).
         Spoke router (router 3) is running in a different VPC than the Hub router
-    * _Purpose of this VPC peering is to allow communications between the Hub router and spoke routers, within same region_
-  * **Inter-region VPC Peering**
+    * _Purpose of this Transit Gateway is to allow communications between the Hub router and spoke routers, within
+      same region as well as across the two regions_
+  * **Inter-region Transit Gateway Attachments**
     * `cob-test-AMQ_COB - peering - inter_region - 01` - _Region1 only_
-      * _Purpose of this VPC peering is to allow communications between the brokers, running in VPC1, across the two regions_
-    * `cob-test-AMQ_COB - peering - inter_region - 02` - _Region1 only_
-      * _Purpose of this VPC peering is to allow communications between the brokers, running in VPC2, across the two regions_
-      * _Above is in Region 1_
+    * `cob-test-AMQ_COB - peering - inter_region - 02` - _Region2 only_
+      * _Purpose of the above two Transit Gateway peering attachments is to allow communications between the brokers, 
+        running in VPC1/VPC2, across the two regions_
     * `cob-test-AMQ_COB - peering acceptor - 01` - _Region2 only_
       * _Acceptor for allowing communications between the brokers, running in VPC1, across the two regions_
-    * `cob-test-AMQ_COB - peering acceptor - 02` - _Region2 only_
+    * `cob-test-AMQ_COB - peering acceptor - 02` - _Region1 only_
       * _Acceptor for allowing communications between the brokers, running in VPC2, across the two regions_
   * **EFS**
     * `cob-test-AMQ_COB-1`

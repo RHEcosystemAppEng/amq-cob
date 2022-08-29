@@ -4,6 +4,9 @@ Repo for config that is used to setup AMQ brokers and Interconnect Routers using
 
 _The setup is tested using JMeter._
 
+## Intra-region and inter-region VPC connectivity
+_**Transit Gateway** is used to establish connectivity between the VPCs, in the same region as well as between different regions._
+
 ## Directories that are part of this repo:
 * ansible
   * Contains Ansible config to automatically setup/start/stop AMQ brokers / Interconnect routers / NAS etc.
