@@ -71,6 +71,13 @@ No Producers available as part of this test.
 ansible-playbook playbooks/setup_n_run_jmeter_n_messages_consumer_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
+### Ansible Playbooks to perform missing messages analysis.
+This playbook is designed to perform the AMQ test and analyze if there are any messages are not delivered or received multiple times. This `AMQ_Jmeter_Test_Plan_N_Missing_Messages_Analysis.jmx` file is designed to perform the test and record request and response in the xml format so that we can perform the analysis later. 
+
+```shell
+ansible-playbook playbooks/setup_n_run_jmeter_missing_messages_analysis_playbook.yml --extra-vars "@variable_override.yml"
+```
+
 ### Ansible Playbooks to perform test in parallel
 
 ```shell

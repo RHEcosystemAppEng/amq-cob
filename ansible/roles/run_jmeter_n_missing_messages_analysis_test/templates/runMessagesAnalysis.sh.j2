@@ -1,0 +1,39 @@
+#!/bin/bash
+TOTAL_MESSAGES_SENT_COUNTER=0
+MATCHED_MESSAGES_COUNTER=0
+DUPLICATE_MESSAGES_COUNTER=0
+NOT_RECEIVED_MESSAGES_COUNTER=0
+
+function lookupOnResponses(){
+  lineArg=$1  
+  RESP_COUNT=$(grep -o $lineArg {{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/responseIds.txt | wc -l)
+  if (($RESP_COUNT > 1));
+  then
+    echo "Duplicate messages received - $lineArg - $RESP_COUNT"
+    DUPLICATE_MESSAGES_COUNTER=$((DUPLICATE_MESSAGES_COUNTER+1))    
+  elif (($RESP_COUNT == 0));
+  then
+    echo "Message not received - $lineArg"
+    NOT_RECEIVED_MESSAGES_COUNTER=$((NOT_RECEIVED_MESSAGES_COUNTER+1))
+  elif (($RESP_COUNT == 1));
+  then    
+    MATCHED_MESSAGES_COUNTER=$((MATCHED_MESSAGES_COUNTER+1))
+  fi  
+}
+echo "Analysis start date time -`date`"
+cat {{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/requestIds.txt |
+(
+while read line
+do
+   TOTAL_MESSAGES_SENT_COUNTER=$((TOTAL_MESSAGES_SENT_COUNTER+1))
+   lookupOnResponses $line
+done
+echo "========================================================"
+echo "============ Summary of Messages Analysis =============="
+echo "========================================================"
+echo "Total Messages sent - $TOTAL_MESSAGES_SENT_COUNTER"
+echo "Messages sent and received properly - $MATCHED_MESSAGES_COUNTER"
+echo "Duplicate messages received - $DUPLICATE_MESSAGES_COUNTER"
+echo "Messages sent but not received - $NOT_RECEIVED_MESSAGES_COUNTER"
+)
+echo "Analysis end date time -`date`"
