@@ -48,6 +48,7 @@
   loop:
     - AMQ_Jmeter_Test_Plan_N_Messages_Consumer.jmx
     - AMQ_Jmeter_Test_Plan_Perf_Consumer.jmx
+    - AMQ_Jmeter_Test_Plan_N_Missing_Messages_Analysis.jmx
     - gen_throughput.sh
 
 - name: "Copy all dependent shell script template files and jndi.properties to {{ jmeter_remote_bin_dir_full_path }} "
@@ -59,7 +60,7 @@
     - { src: 'runBenchmarkTest_Perf.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf.sh' }
     - { src: 'runBenchmarkTest_Perf_Consumer.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf_Consumer.sh' }
     - { src: 'runBenchmarkTest_Perf_Producer.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf_Producer.sh' }
-    - { src: 'AMQ_Jmeter_Test_Plan_N_Messages.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_N_Messages.jmx' }
+    - { src: 'runBenchmarkTest_Perf_Missing_Messages_Analysis.sh.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf_Missing_Messages_Analysis.sh' }
     - { src: 'AMQ_Jmeter_Test_Plan_N_Messages_Producer.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_N_Messages_Producer.jmx' }
     - { src: 'AMQ_Jmeter_Test_Plan_Perf.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_Perf.jmx' }
     - { src: 'AMQ_Jmeter_Test_Plan_Perf_Producer.jmx.j2', dest: '{{ jmeter_remote_bin_dir_full_path }}/AMQ_Jmeter_Test_Plan_Perf_Producer.jmx' }

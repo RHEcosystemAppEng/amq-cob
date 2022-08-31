@@ -1,0 +1,27 @@
+---
+- name: Run the runBenchmarkTest_Perf.sh to perform benchmarking.
+  command: "{{ jmeter_remote_bin_dir_full_path }}/runBenchmarkTest_Perf_Missing_Messages_Analysis.sh"
+  register: runBenchmarkTest_Perf_console_output
+
+- name: Print benchmark results to console
+  debug:
+    msg: "{{runBenchmarkTest_Perf_console_output.stdout}}"
+
+- name: capturing request messages Ids to a file
+  shell: "xmllint --xpath '//testResults/sample/requestHeader/text()' {{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/results_automated.jtl | grep 'JMSMessageId' | cut -d: -f2- > {{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/requestIds.txt"
+
+- name: capturing response messages Ids to a file
+  shell: "xmllint --xpath '//testResults/sample/responseHeader/text()' {{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/results_automated.jtl | grep 'JMSMessageId' | cut -d: -f2- > {{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/responseIds.txt"
+
+- name: Copy the script
+  template:
+    src: runMessagesAnalysis.sh.j2
+    dest: "{{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/runMessagesAnalysis.sh"
+    mode: 0740
+
+- name: run the analysis shell script
+  shell: "{{ jmeter_remote_bin_dir_full_path }}/amq_benchmark_output/runMessagesAnalysis.sh"
+  register: messages_analysis_command_output
+
+- debug:
+    var: messages_analysis_command_output.stdout_lines
