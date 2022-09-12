@@ -23,6 +23,6 @@ _**Transit Gateway** is used to establish connectivity between the VPCs, in the 
 
 Follow the links given below to perform the setup on either AWS or IBM Cloud.
 
-* [AWS](readme-aws.md)
-* [IBM Cloud](readme-ibm.md)
+* [AWS](docs/readme-aws.md)
+* [IBM Cloud](docs/readme-ibm.md)
 

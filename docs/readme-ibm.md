@@ -427,7 +427,7 @@ To configure the instances using ansible, we need to extract the public ip for a
 JMeter is being used to run the performance tests on the AMQ brokers and routers.
 
 ### Running Jmeter test using Ansible.
-Refer this documentation to [perform Jmeter tests using Ansible](jmeter_ansible_readme.md)
+Refer this documentation to [perform Jmeter tests using Ansible](readme-jmeter.md)
 
 ## Other ansible plays
 Ansible can be used to perform other tasks, e.g. reset the config, stop, run the brokers/routers
