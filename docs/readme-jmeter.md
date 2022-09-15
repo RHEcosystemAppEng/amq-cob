@@ -1,3 +1,12 @@
+- [Running Jmeter test using Ansible.](#running-jmeter-test-using-ansible)
+  * [Ansible Playbooks to send/consumer messages for the specific duration.](#ansible-playbooks-to-send-consumer-messages-for-the-specific-duration)
+  * [Ansible Playbooks to send/consumer specific number of messages.](#ansible-playbooks-to-send-consumer-specific-number-of-messages)
+  * [Ansible Playbooks to perform missing messages analysis.](#ansible-playbooks-to-perform-missing-messages-analysis)
+  * [Ansible Playbooks to perform test in parallel](#ansible-playbooks-to-perform-test-in-parallel)
+  * [Changing default behaviour with configurations.](#changing-default-behaviour-with-configurations)
+
+
+
 ## Running Jmeter test using Ansible.
 
 There are multiple Ansible playbooks to preform Jmeter test on Apache AMQ using Ansible.
@@ -71,11 +80,20 @@ No Producers available as part of this test.
 ansible-playbook playbooks/setup_n_run_jmeter_n_messages_consumer_playbook.yml --extra-vars "@variable_override.yml"
 ```
 
+### Ansible Playbooks to perform missing messages analysis.
+This playbook is designed to perform the AMQ test and analyze if there are any messages are not delivered or received multiple times. This `AMQ_Jmeter_Test_Plan_N_Missing_Messages_Analysis.jmx` file is designed to perform the test and record request and response in the xml format so that we can perform the analysis later. 
+
+```shell
+ansible-playbook playbooks/setup_n_run_jmeter_missing_messages_analysis_playbook.yml --extra-vars "@variable_override.yml"
+```
+
 ### Ansible Playbooks to perform test in parallel
 
 ```shell
 ansible-playbook playbooks/setup_n_run_jmeter_n_messages_in_parallel_client_playbook.yml --extra-vars "@variable_override.yml"
 ```
+
+### Changing default behaviour with configurations.
 
 Please consider overriding following properties in [variable_override.yml](variable_override.yml) if you want to change the default behaviour.
 ```yaml
