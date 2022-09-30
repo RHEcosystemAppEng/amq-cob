@@ -95,7 +95,7 @@ Clone this repo to setup brokers/routers in AWS:
 * `git clone https://github.com/RHEcosystemAppEng/amq-cob.git`
 * Open up a terminal and run following commands
   ```shell
-  cd amq-cob/automation
+  cd amq-cob
   MAIN_CONFIG_DIR=`pwd`
   ```
 
@@ -119,7 +119,7 @@ Clone this repo to setup brokers/routers in AWS:
   aws_access_key_id = <AWS_ACCESS_KEY_ID_VALUE>
   aws_secret_access_key = <AWS_SECRET_ACCESS_KEY_VALUE>
   ```
-* _`terraform_redhat` is the profile that will be referenced by both Ansible as well as Terraform_
+* _`terraform_redhat` is the profile that will be referenced by both Ansible and Terraform_
 
 ### Create vault password - Manual step
 * Create a file (_if it doesn't already exists_) named `.vault_password` in `$MAIN_CONFIG_DIR/ansible` directory
@@ -134,7 +134,7 @@ Clone this repo to setup brokers/routers in AWS:
     * `redhat_password`  (_replace `PROVIDE_CORRECT_PASSWORD` with correct password_)
 
 ### Create SSH key for each region
-* _**Please skip these steps if a SSH key is already created and added to the account**_
+* _**Please skip these steps if an SSH key is already created and added to the account**_
 * Update `variable_override.yml` by providing name for key_pair (_Make sure it is unique in each of the regions.
   Simply changing the SUFFIX should make it unique_)
 * `key_pair_name: amq_cob-key_pair-<SUFFIX>`

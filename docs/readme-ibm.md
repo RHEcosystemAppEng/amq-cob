@@ -112,7 +112,7 @@ Clone this repo to setup brokers/routers in IBM Cloud:
 * `git clone https://github.com/RHEcosystemAppEng/amq-cob.git`
 * Open up a terminal and run following commands
   ```shell
-  cd amq-cob/automation
+  cd amq-cob
   MAIN_CONFIG_DIR=`pwd`
   ```
 
